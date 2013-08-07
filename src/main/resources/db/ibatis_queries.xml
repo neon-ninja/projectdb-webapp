@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ibatis_queries">
+
+   <select id="getProjectById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Project">
+       SELECT *
+       FROM project
+       WHERE id = #id#
+   </select>   
+
+   <select id="getResearcherById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Researcher">
+       SELECT *
+       FROM researcher
+       WHERE id = #id#
+   </select>   
+
+   <select id="getAdvisorById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Advisor">
+       SELECT *
+       FROM advisor
+       WHERE id = #id#
+   </select>   
+
+   <select id="getSiteById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Site">
+       SELECT *
+       FROM site
+       WHERE id = #id#
+   </select>   
+
+   <select id="getKpiById" resultClass="pm.pojo.Kpi">
+       SELECT *
+       FROM kpi
+       WHERE id = #id#
+   </select>   
+
+   <select id="getInstitutionalRoleById" parameterClass="java.lang.Integer" resultClass="pm.pojo.InstitutionalRole">
+       SELECT *
+       FROM institutionalrole
+       WHERE id = #id#
+   </select>   
+
+   <select id="getAdvisorRoleById" parameterClass="java.lang.Integer" resultClass="pm.pojo.AdvisorRole">
+       SELECT *
+       FROM advisorrole
+       WHERE id = #id#
+   </select>   
+
+   <select id="getResearcherRoleById" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearcherRole">
+       SELECT *
+       FROM researcherrole
+       WHERE id = #id#
+   </select>   
+      
+   <select id="getResearchOutputTypeById" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearchOutputType">
+       SELECT *
+       FROM researchoutputtype
+       WHERE id = #id#
+   </select>   
+
+   <select id="getProjectTypeById" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectType">
+       SELECT *
+       FROM projecttype
+       WHERE id = #id#
+   </select>   
+
+   <select id="getFollowUpById" parameterClass="java.lang.Integer" resultClass="pm.pojo.FollowUp">
+       SELECT *
+       FROM projectfollowup
+       WHERE id = #id#
+   </select>   
+
+   <select id="getReviewById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Review">
+       SELECT *
+       FROM projectreview
+       WHERE id = #id#
+   </select>   
+
+   <select id="getAdvisorActionById" parameterClass="java.lang.Integer" resultClass="pm.pojo.AdvisorAction">
+       SELECT *
+       FROM advisoraction
+       WHERE id = #id#
+   </select>   
+
+   <select id="getAllProjects" resultClass="pm.pojo.Project">
+       SELECT *
+       FROM project
+   </select>   
+
+   <select id="getAllResearchers" resultClass="pm.pojo.Researcher">
+       SELECT *
+       FROM researcher
+       ORDER BY fullName
+   </select>   
+
+   <select id="getAllAdvisors" resultClass="pm.pojo.Advisor">
+       SELECT *
+       FROM advisor
+       ORDER BY fullName
+   </select>   
+
+   <select id="getNumProjectsForAdvisor" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+       SELECT COUNT(*)
+       FROM advisor_project
+       WHERE advisorId = #id# AND
+             advisorRoleId = 1
+   </select>   
+   
+   <select id="getAllResearchersOnProject" resultClass="pm.pojo.Researcher">
+       SELECT *
+       FROM researcher
+       WHERE id IN
+         ( SELECT researcherId FROM researcher_project WHERE projectId=#id# )
+       ORDER BY fullName
+   </select>   
+   
+   <select id="getAllAdvisorsOnProject" resultClass="pm.pojo.Advisor">
+       SELECT *
+       FROM advisor
+       WHERE id IN
+         ( SELECT advisorId FROM advisor_project WHERE projectId=#id# )
+       ORDER BY fullName
+   </select>   
+
+   <select id="getAllFacilities" resultClass="pm.pojo.Facility">
+       SELECT *
+       FROM facility
+       ORDER BY name
+   </select>   
+
+   <select id="getAllKpis" resultClass="pm.pojo.Kpi">
+       SELECT *
+       FROM kpi
+       ORDER BY id
+   </select>   
+   
+   <select id="getAllFacilitiesOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Facility">
+       SELECT *
+       FROM facility
+       WHERE id IN
+         ( SELECT facilityId FROM project_facility WHERE projectId=#id# )
+       ORDER BY name
+   </select>   
+   
+   <select id="getAllResearchersNotOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Researcher">
+       SELECT *
+       FROM researcher
+       WHERE id NOT IN
+         ( SELECT researcherId FROM researcher_project WHERE projectId=#id# )
+       ORDER BY fullName
+   </select>   
+
+   <select id="getAllAdvisorsNotOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Advisor">
+       SELECT *
+       FROM advisor
+       WHERE id NOT IN
+         ( SELECT advisorId FROM advisor_project WHERE projectId=#id# )
+       ORDER BY fullName
+   </select>   
+
+   <select id="getAllFacilitiesNotOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Facility">
+       SELECT *
+       FROM facility
+       WHERE id NOT IN
+         ( SELECT facilityId FROM project_facility WHERE projectId=#id# )
+       ORDER BY name
+   </select>   
+
+   <select id="getAllResearcherRoles" resultClass="pm.pojo.ResearcherRole">
+       SELECT *
+       FROM researcherrole
+       ORDER BY name
+   </select>   
+
+   <select id="getAllAdvisorRoles" resultClass="pm.pojo.AdvisorRole">
+       SELECT *
+       FROM advisorrole
+       ORDER BY name
+   </select>   
+
+   <select id="getAllInstitutionalRoles" resultClass="pm.pojo.InstitutionalRole">
+       SELECT *
+       FROM institutionalrole
+       ORDER BY name
+   </select>   
+
+   <select id="getAllRPLinksForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.RPLink">
+       SELECT *
+       FROM researcher_project
+       WHERE projectId = #id#
+   </select>   
+   
+   <select id="getAllAPLinksForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.APLink">
+       SELECT *
+       FROM advisor_project
+       WHERE projectId = #id#
+   </select>   
+
+   <select id="getAllReviewsForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Review">
+       SELECT *
+       FROM projectreview
+       WHERE projectId = #id#
+   </select>   
+
+   <select id="getAllFollowUpsForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.FollowUp">
+       SELECT *
+       FROM projectfollowup
+       WHERE projectId = #id#
+   </select>   
+   
+   <select id="getAllResearchOutputsForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearchOutput">
+       SELECT *
+       FROM researchoutput
+       WHERE projectId = #id#
+   </select>   
+   
+   <select id="getAllAttachmentsForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Attachment">
+       SELECT *
+       FROM attachment
+       WHERE projectId = #id#
+   </select>   
+   
+   <select id="getAllAdvisorActionsForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.AdvisorAction">
+       SELECT *
+       FROM advisoraction
+       WHERE projectId = #id#
+   </select>   
+
+   <select id="getAllKpisForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectKpi">
+       SELECT *
+       FROM project_kpi
+       WHERE projectId = #id#
+   </select>   
+
+   <select id="getAllProjectsForResearcherId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Project">
+       SELECT *
+       FROM project
+       WHERE id IN
+         ( SELECT projectId FROM researcher_project WHERE researcherId=#id# )
+   </select>   
+   
+   <select id="getAllProjectsForAdvisorId" parameterClass="java.lang.Integer" resultClass="pm.pojo.Project">
+       SELECT *
+       FROM project
+       WHERE id IN
+         ( SELECT projectId FROM advisor_project WHERE 
+             advisorId=#id# AND
+             advisorRoleId=1
+         )
+   </select>   
+   
+   <insert id="createProject" parameterClass="pm.pojo.Project">
+      INSERT INTO project (
+        projectId,
+        projectTypeId, 
+        name, 
+        description, 
+        hostInstitution, 
+        startDate, 
+        nextReviewDate, 
+        nextFollowUpDate, 
+        endDate, 
+        notes,
+        todo,
+        requirements
+      ) values (
+        #projectId#, 
+        #projectTypeId#, 
+        #name#, 
+        #description#, 
+        #hostInstitution#, 
+        #startDate#, 
+        #nextReviewDate#,
+        #nextFollowUpDate#, 
+        #endDate#, 
+        #notes#,
+        #todo#,
+        #requirements#
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createRPLink" parameterClass="pm.pojo.RPLink">
+      INSERT INTO researcher_project (
+        researcherId,
+        projectId, 
+        researcherRoleId, 
+        notes
+      ) values (
+        #researcherId#,
+        #projectId#, 
+        #researcherRoleId#, 
+        #notes#
+      )
+   </insert>
+
+   <insert id="createAPLink" parameterClass="pm.pojo.APLink">
+      INSERT INTO advisor_project (
+        advisorId,
+        projectId, 
+        advisorRoleId,
+        notes
+      ) values (
+        #advisorId#,
+        #projectId#, 
+        #advisorRoleId#, 
+        #notes#
+      )
+   </insert>
+   
+   <insert id="createResearcher" parameterClass="pm.pojo.Researcher">
+      INSERT INTO researcher (
+        fullName,
+        pictureUrl,
+        email,
+        phone,
+        institution,
+        department1,
+        department2,
+        institutionalRoleId,
+        startDate,
+        endDate,
+        notes
+      ) values (
+        #fullName#, 
+        #pictureUrl#, 
+        #email#, 
+        #phone#, 
+        #institution#, 
+        #department1#,
+        #department2#,
+        #institutionalRoleId#,
+        #startDate#,
+        #endDate#, 
+        #notes# 
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createAdvisor" parameterClass="pm.pojo.Advisor">
+      INSERT INTO advisor (
+        fullName,
+        pictureUrl,
+        email,
+        phone,
+        institution,
+        department1,
+        department2,
+        startDate,
+        endDate,
+        notes
+      ) values (
+        #fullName#, 
+        #pictureUrl#,
+        #email#, 
+        #phone#, 
+        #institution#, 
+        #department1#,
+        #department2#,
+        #startDate#,
+        #endDate#, 
+        #notes# 
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createReview" parameterClass="pm.pojo.Review">
+      INSERT INTO projectreview (
+        projectId,
+        advisorId,
+        date,
+        notes
+      ) values (
+        #projectId#,
+        #advisorId#,
+        #date#,
+        #notes#
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createFollowUp" parameterClass="pm.pojo.FollowUp">
+      INSERT INTO projectfollowup (
+        projectId,
+        advisorId,
+        date,
+        notes
+      ) values (
+        #projectId#,
+        #advisorId#,
+        #date#,
+        #notes#
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createResearchOutput" parameterClass="pm.pojo.ResearchOutput">
+      INSERT INTO researchoutput (
+        projectId,
+        typeId,
+        description,
+        link,
+        date
+      ) values (
+        #projectId#,
+        #typeId#,
+        #description#,
+        #link#,
+        #date#
+      )
+   </insert>
+
+   <insert id="createAttachment" parameterClass="pm.pojo.Attachment">
+      INSERT INTO attachment (
+        projectId,
+        followUpId,
+        reviewId,
+        advisorActionId,
+        description,
+        link,
+        date
+      ) values (
+        #projectId#,
+        #followUpId#,
+        #reviewId#,
+        #advisorActionId#,
+        #description#,
+        #link#,
+        #date#
+      )
+   </insert>
+
+   <insert id="createAdvisorAction" parameterClass="pm.pojo.AdvisorAction">
+      INSERT INTO advisoraction (
+        projectId,
+        date,
+        advisorId,
+        action
+      ) values (
+        #projectId#,
+        #date#,
+        #advisorId#,
+        #action#
+      )
+   	  <selectKey keyProperty="id" resultClass="int">
+        SELECT LAST_INSERT_ID() AS id
+	  </selectKey>
+   </insert>
+
+   <insert id="createProjectFacility" parameterClass="pm.pojo.ProjectFacility">
+      INSERT INTO project_facility (
+        projectId,
+        facilityId
+      ) values (
+        #projectId#,
+        #facilityId#
+      )
+   </insert>
+
+   <insert id="createProjectKpi" parameterClass="pm.pojo.ProjectKpi">
+      INSERT INTO project_kpi (
+        kpiId,
+        projectId,
+        date,
+        advisorId,
+        value,
+        notes
+      ) values (
+        #kpiId#,
+        #projectId#,
+        #date#,
+        #advisorId#,
+        #value#,
+        #notes#      
+      )
+   </insert>
+
+   <update id="updateProject" parameterClass="pm.pojo.Project">
+      UPDATE project set
+        projectId = #projectId#, 
+        projectTypeId = #projectTypeId#,
+        name = #name#, 
+        description = #description#, 
+        hostInstitution = #hostInstitution#, 
+        startDate = #startDate#, 
+        nextReviewDate = #nextReviewDate#, 
+        nextFollowUpDate = #nextFollowUpDate#, 
+        endDate = #endDate#, 
+        requirements = #requirements#,
+        notes = #notes#,
+        todo = #todo#
+      WHERE id = #id#
+   </update>
+
+   <update id="updateResearcher" parameterClass="pm.pojo.Researcher">
+      UPDATE researcher set
+        fullName = #fullName#,
+        pictureUrl = #pictureUrl#,
+        email = #email#,
+        phone = #phone#,
+        institution = #institution#,
+        department1 = #department1#,
+        department2 = #department2#,
+        institutionalRoleId = #institutionalRoleId#,
+        startDate = #startDate#,
+        endDate = #endDate#,
+        notes = #notes#
+      WHERE id = #id#
+   </update>
+
+   <update id="updateAdvisor" parameterClass="pm.pojo.Advisor">
+      UPDATE advisor set
+        fullName = #fullName#,
+        pictureUrl = #pictureUrl#,
+        email = #email#,
+        phone = #phone#,
+        institution = #institution#,
+        department1 = #department1#,
+        department2 = #department2#,
+        startDate = #startDate#,
+        endDate = #endDate#,
+        notes = #notes#
+      WHERE id = #id#
+  </update>
+
+   <delete id="deleteProject" parameterClass="java.lang.Integer">
+      DELETE FROM project
+      WHERE id = #id#
+  </delete>
+  
+   <delete id="deleteResearcher" parameterClass="java.lang.Integer">
+      DELETE FROM researcher
+      WHERE id = #id#
+  </delete>
+  
+   <delete id="deleteAdvisor" parameterClass="java.lang.Integer">
+      DELETE FROM advisor
+      WHERE id = #id#
+  </delete>
+
+  <delete id="deleteResearcherFromProject" parameterClass="java.util.Map">
+      DELETE FROM researcher_project
+      WHERE 
+        researcherId = #researcherId# AND
+        projectId = #projectId#
+  </delete>
+
+  <delete id="deleteAdvisorFromProject" parameterClass="java.util.Map">
+      DELETE FROM advisor_project
+      WHERE 
+        advisorId = #advisorId# AND
+        projectId = #projectId#
+  </delete>
+  
+  <delete id="deleteReview" parameterClass="java.lang.Integer">
+      DELETE FROM projectreview
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteFollowUp" parameterClass="java.lang.Integer">
+      DELETE FROM projectfollowup
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteResearchOutput" parameterClass="java.lang.Integer">
+      DELETE FROM researchoutput
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteAttachment" parameterClass="java.lang.Integer">
+      DELETE FROM attachment
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteAdvisorAction" parameterClass="java.lang.Integer">
+      DELETE FROM advisoraction
+      WHERE id = #id#
+  </delete>
+  
+  <delete id="deleteFacilityFromProject" parameterClass="java.util.Map">
+      DELETE FROM project_facility
+      WHERE projectId = #projectId# AND
+            facilityId = #facilityId#
+  </delete>
+  
+  <delete id="deleteProjectKpi" parameterClass="java.lang.Integer">
+      DELETE FROM project_kpi
+      WHERE id = #id#
+  </delete>
+  
+  <select id="getAllSites" resultClass="pm.pojo.Site">
+      SELECT *
+      FROM site
+      ORDER BY name
+  </select>
+
+  <select id="getAllProjectTypes" resultClass="pm.pojo.ProjectType">
+      SELECT *
+      FROM projecttype
+      ORDER BY name
+  </select>
+
+  <select id="getResearchOutputTypes" resultClass="pm.pojo.ResearchOutputType">
+      SELECT *
+      FROM researchoutputtype
+      ORDER BY name
+  </select>   
+  
+</sqlMap>

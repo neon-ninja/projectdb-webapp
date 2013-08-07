@@ -1,0 +1,87 @@
+TODO:
+#####
+
+* On advisor profile:
+   - list projects where person is primary advisor
+   - list project where person is support
+* Add ToDo field to project.
+  If something is filled in todo, show it with a tag (*) in the project list
+  This makes it easier to find projects where something needs to be done
+* Be able to add multiple HPC facilities on project creation
+* Add primary advisor to list of projects
+* Have a field to indicate whether a researcher works on any active project
+  or not in the list of researchers
+* Have watermarks for all input fields
+* Define more precisely what is being removed and what not on delete cascade
+* Change Start date and End date for projects to First day and Last day, to
+  be more precise (Ben)
+* Don't delete entries, but rather mark them inactive/passive and hide them
+  from the view
+* Figure out view policies how to handle 'dead' projects/researchers
+* Have a way to merge researcher profiles
+* Whenever a follow-up is created: automatically adjust the date of the next follow-up
+* Whenever a review is created: automatically adjust the date of the next review
+* Dropdown for all affiliation fields
+* Make everything editable
+* Add autoincrement for collaborator projects
+
+DONE:
+######
+* Change project type 'Merit' to 'Research'
+* Display end date of researcher on list of researchers
+* On advisor list: add column that shows on how many active projects an
+  advisor is a primary advisor
+* Add timestamp to research output and attachments to be able to search for
+  projects with research output in a certain period
+* Have a page that shows how many projects are assigned to each advisor
+
+
+Smaller features:
+#################
+
+* Watermarks for form fields
+* Auto-filled form fields (dates, etc)
+* Advisors have different roles on projects
+
+Desired queries:
+#################
+
+Show me all researchers that are linked to a NeSI project
+Show me all research outcomes of researchers affiliated to the Faculty of Science
+Show me the total number of research outcomes
+Give me the e-mail addresses and project ids of all PIs of all projects
+Figure out how information from gold can be handled: allocation, start, stop, clocked up core hours: provision it via cron into the DB, or have the website contact gold
+
+
+Discussion on how to organize the data of NeSI/CeR research projects
+####################################################################
+
+There are plans to use the Drupal Field API to model the project data.
+Using the Drupal field API makes development quick and efficient, and it results in the organization 
+of the data in the underlying database that suits Drupal, but the data is distributed across many
+tables in a schema that doesn't intuitively reflect the real-world meaning and relations of the data,
+and is thus not easily query-able by other means.
+ 
+This document does not question the use of Drupal as viewing technology for the project 
+data, but raises the question how the data is stored under the hood.
+The questions and concerns here are raised because the project data is considered mission-critical.
+
+* Drupal lock-in to access the data: The only easy mechanism to access the data is Drupal.
+  Questions and Consequences: 
+    * Views on the data not yet implemented by the web UI require writing Drupal views,
+      rather than more widely-known SQL queries.
+    * How straight-forward is it to get data out of the database if we ever need the data non-drupalized?
+    * How difficult is it to feed in data from other sources into the project database e.g. using scripts
+      (e.g. Gold allocation information)
+    * If access to the data is limited to Drupal, Drupal may become a single point of failure.
+  Our dependency on expert Drupal knowledge to access mission-critical data will be high.
+* It's unclear what features we will need in the future, e.g. access to the data by command-line scripts.
+  The more specialized the organization of the data is, the more difficult it may become to implement
+  such features.
+* Architecture: The GUI/technology defines the organization of the data. One could argue it should be
+  the other way round given the importance of the data.
+
+Note: If there will be an easy way to get the data out of Drupal into an RDBMS in a schema that
+reflects the real-world meaning of the data better and is thus queryable more easily, all these
+concerns will be mitigated.
+

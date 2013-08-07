@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	
+	<display-name>Project Management</display-name>
+
+	<!-- Load root application context -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/root-context.xml, /WEB-INF/pm-servlet.xml</param-value>
+	</context-param>
+	
+	<!-- Servlet definitions -->
+	<servlet>
+		<servlet-name>pm</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<!-- Servlet mappings -->
+	<servlet-mapping>
+		<servlet-name>pm</servlet-name>
+		<url-pattern>/html/*</url-pattern>
+	</servlet-mapping>
+	
+	<jsp-config>
+      <taglib>
+        <taglib-uri>/spring</taglib-uri>
+        <taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
+      </taglib>
+    </jsp-config>
+  
+</web-app>
+

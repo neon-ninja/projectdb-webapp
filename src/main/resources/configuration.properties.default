@@ -1,0 +1,8 @@
+# Database configuration
+jdbc.driver.className=
+jdbc.url=
+jdbc.username=
+jdbc.password=
+
+# Default profile picture
+profile.default.picture=http://cluster.ceres.auckland.ac.nz/project_management/pics/avatar.gif
