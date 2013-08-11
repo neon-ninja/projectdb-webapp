@@ -114,7 +114,9 @@ public class CreateProjectController extends SimpleFormController {
 		}
 		if (researcherRolesTmp != null) {
 			for (ResearcherRole rr : researcherRolesTmp) {
-				researcherRoles.put(rr.getId(), rr.getName());
+				if (rr.getName().equals("PI")) {
+				    researcherRoles.put(rr.getId(), rr.getName());
+				}
 			}
 		}
 		

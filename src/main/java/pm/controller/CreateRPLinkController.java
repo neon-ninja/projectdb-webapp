@@ -48,7 +48,9 @@ public class CreateRPLinkController extends SimpleFormController {
 		HashMap<Integer,String> researcherRoles = new LinkedHashMap<Integer, String>();
 		if (rRolesTmp != null) {
 			for (ResearcherRole rr: rRolesTmp) {
-				researcherRoles.put(rr.getId(), rr.getName());
+				if (!rr.getName().equals("PI")) {
+					researcherRoles.put(rr.getId(), rr.getName());
+				}
 			}
 		}
 		Map<Integer,String> rNotOnProject = new LinkedHashMap<Integer,String>();
@@ -57,6 +59,7 @@ public class CreateRPLinkController extends SimpleFormController {
 				rNotOnProject.put(r.getId(), r.getFullName());
 			}
 		}
+		
 		modelMap.put("pid", pid);
         modelMap.put("rNotOnProject", rNotOnProject);
         modelMap.put("researcherRoles", researcherRoles);
