@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 public class ConstructionController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(ConstructionController.class.getName()); 
 	
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {

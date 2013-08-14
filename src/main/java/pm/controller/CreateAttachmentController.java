@@ -20,7 +20,7 @@ import pm.util.Util;
 
 public class CreateAttachmentController extends SimpleFormController {
 
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(CreateAttachmentController.class.getName()); 
 	private ProjectDao projectDao;
 	
 	@Override

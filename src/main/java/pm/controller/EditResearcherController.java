@@ -20,7 +20,7 @@ import pm.pojo.Researcher;
 
 public class EditResearcherController extends SimpleFormController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(EditResearcherController.class.getName()); 
 	private ProjectDao projectDao;
 
 	@Override

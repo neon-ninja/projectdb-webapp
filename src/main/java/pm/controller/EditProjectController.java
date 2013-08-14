@@ -33,7 +33,7 @@ import pm.util.Util;
 
 public class EditProjectController extends SimpleFormController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(EditProjectController.class.getName()); 
 	private ProjectDao projectDao;
 
 	@Override

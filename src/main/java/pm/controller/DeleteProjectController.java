@@ -15,7 +15,7 @@ import pm.pojo.Project;
 
 public class DeleteProjectController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(DeleteProjectController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,

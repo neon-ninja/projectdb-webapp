@@ -17,7 +17,7 @@ import pm.pojo.Advisor;
 
 public class CreateAdvisorController extends SimpleFormController {
 
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(CreateAdvisorController.class.getName()); 
 	private ProjectDao projectDao;
 	private String profileDefaultPicture;
 	

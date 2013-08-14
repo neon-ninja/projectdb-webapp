@@ -24,7 +24,7 @@ import pm.util.Util;
 
 public class CreateAdvisorActionController extends SimpleFormController {
 
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(CreateAdvisorActionController.class.getName()); 
 	private ProjectDao projectDao;
 	
 	@Override

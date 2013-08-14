@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 
+import pm.controller.EditResearcherController;
 import pm.db.ProjectDao;
 import pm.pojo.APLink;
 import pm.pojo.Advisor;
@@ -25,7 +26,7 @@ import pm.pojo.Site;
 
 public class Util {
 
-	private Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(Util.class.getName()); 
 
 	public void addProjectInfosToMav(ModelAndView mav, ProjectDao dao, Integer projectId) throws Exception {
 		Project p = dao.getProjectById(projectId);

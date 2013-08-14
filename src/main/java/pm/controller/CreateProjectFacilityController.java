@@ -21,7 +21,7 @@ import pm.util.Util;
 
 public class CreateProjectFacilityController extends SimpleFormController {
 
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(CreateProjectFacilityController.class.getName()); 
 	private ProjectDao projectDao;
 	
 	@Override

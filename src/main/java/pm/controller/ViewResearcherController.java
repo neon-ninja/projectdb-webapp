@@ -16,7 +16,7 @@ import pm.pojo.Researcher;
 
 public class ViewResearcherController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private static Log log = LogFactory.getLog(ViewResearcherController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,

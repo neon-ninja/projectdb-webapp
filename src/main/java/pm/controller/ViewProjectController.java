@@ -13,7 +13,7 @@ import pm.util.Util;
 
 public class ViewProjectController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(ViewProjectController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,

@@ -14,7 +14,7 @@ import pm.util.Util;
 
 public class DeleteAdvisorFromProjectController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(DeleteAdvisorFromProjectController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,

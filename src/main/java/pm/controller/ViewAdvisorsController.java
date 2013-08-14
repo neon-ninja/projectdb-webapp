@@ -15,7 +15,7 @@ import pm.pojo.Advisor;
 
 public class ViewAdvisorsController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(ViewAdvisorsController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,

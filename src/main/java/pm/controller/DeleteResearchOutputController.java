@@ -12,7 +12,7 @@ import pm.db.ProjectDao;
 
 public class DeleteResearchOutputController extends AbstractController {
 	
-	private static Log log = LogFactory.getLog(Thread.currentThread().getClass()); 
+	private Log log = LogFactory.getLog(DeleteResearchOutputController.class.getName()); 
 	private ProjectDao projectDao;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
