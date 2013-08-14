@@ -17,7 +17,17 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/root-context.xml, /WEB-INF/pm-servlet.xml</param-value>
 	</context-param>
-	
+
+	<filter>
+		<filter-name>AuditFilter</filter-name>
+		<filter-class>pm.filter.AuditFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuditFilter</filter-name>
+		<servlet-name>pm</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+			
 	<!-- Servlet definitions -->
 	<servlet>
 		<servlet-name>pm</servlet-name>
