@@ -31,8 +31,10 @@
   <div id="body">
   
   <a href="<%=request.getContextPath()%>/html/createproject">Create new project</a><br>
+  <!--
   <a href="http://cluster.ceres.auckland.ac.nz/project_management/ResearcherQuestionnaire.txt">Researcher Questionnaire</a>
-  
+  -->
+   
   <h3>Projects</h3>
   Total number of projects: ${f:length(projects)}<br>
   <table id="myTable" class="tablesorter">
