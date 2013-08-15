@@ -31,5 +31,11 @@
     <bean id="projectDao" class="pm.db.IBatisProjectDao">
         <property name="sqlMapClient" ref="sqlMapClient"/>
     </bean>
+    
+    <bean id="AuditFilter" class="pm.filter.AuditFilter">
+        <property name="proxy" value="${proxy}"/>
+        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
+        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
+    </bean>
 
 </beans>
