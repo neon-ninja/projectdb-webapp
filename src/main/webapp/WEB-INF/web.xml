@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
-	
+
 	<display-name>Project Management</display-name>
 
 	<!-- Load root application context -->
@@ -18,35 +18,36 @@
 		<param-value>/WEB-INF/root-context.xml, /WEB-INF/pm-servlet.xml</param-value>
 	</context-param>
 
+    <!-- Spring-enabled servlet filter -->
 	<filter>
 		<filter-name>AuditFilter</filter-name>
-		<filter-class>pm.filter.AuditFilter</filter-class>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
+
 	<filter-mapping>
 		<filter-name>AuditFilter</filter-name>
 		<servlet-name>pm</servlet-name>
-		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
-			
+
 	<!-- Servlet definitions -->
 	<servlet>
 		<servlet-name>pm</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-		
+
 	<!-- Servlet mappings -->
 	<servlet-mapping>
 		<servlet-name>pm</servlet-name>
 		<url-pattern>/html/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<jsp-config>
-      <taglib>
-        <taglib-uri>/spring</taglib-uri>
-        <taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
-      </taglib>
-    </jsp-config>
-  
+		<taglib>
+			<taglib-uri>/spring</taglib-uri>
+			<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
 </web-app>
 
