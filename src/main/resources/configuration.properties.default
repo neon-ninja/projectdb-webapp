@@ -6,3 +6,8 @@ jdbc.password=
 
 # Default profile picture
 profile.default.picture=http://cluster.ceres.auckland.ac.nz/project_management/pics/avatar.gif
+
+# Proxy configuration
+proxy=
+remoteUserHeader=
+remoteAddrHeader=
