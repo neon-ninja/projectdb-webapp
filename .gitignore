@@ -14,7 +14,6 @@ target
 .project
 .settings
 
-configuration.properties
 configuration.properties.bevan
 configuration.properties.local
 configuration.properties.prod
