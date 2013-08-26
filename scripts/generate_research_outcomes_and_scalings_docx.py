@@ -220,8 +220,8 @@ def printOutput(inst, dep1, dep2, body, relationships):
     else:
       tmp = '%s, %s, %s' % (affil['institution'], affil['department1'], affil['department2'])
       #print '(Project description, Research Output and/or KPI information is listed under the PIs (%s) institution (%s))' % (affil['fullName'], tmp.strip().strip(','))
+      description = '(Project description, Research Output and/or KPI information is listed under the PIs (%s) institution (%s))' % (affil['fullName'], tmp.strip().strip(','))
    
-    # FIXME: Print project information only if project PI is in current affiliation 
     title = heading(removeNonAscii(title),4)
     researchers = paragraph([(removeNonAscii(researchers),'b')])
     kpis = paragraph([(removeNonAscii(kpis),'i')])
@@ -290,23 +290,22 @@ try:
     dep1Count = 0
 finally:
   db.close()
-  # Create our properties, contenttypes, and other support files
-  title    = 'Research Outcomes and Outputs'
-  subject  = 'A report on project statuses'
-  creator  = 'Center for E-research'
-  keywords = ['research', 'cer', 'kpis']
 
-  coreprops = coreproperties(title=title, subject=subject, creator=creator,
-                             keywords=keywords)
-  appprops = appproperties()
-  contenttypes = contenttypes()
-  websettings = websettings()
-  wordrelationships = wordrelationships(relationships)
-  filename = 'Reporting_%s.docx' % datetime.now().strftime('%Y-%m-%d_%H-%M')
+# Create our properties, contenttypes, and other support files
+title    = 'Research Outcomes and Outputs'
+subject  = 'A report on project statuses'
+creator  = 'Center for E-research'
+keywords = ['research', 'cer', 'kpis']
 
-  # Save our document
-  savedocx(document, coreprops, appprops, contenttypes, websettings,
-           wordrelationships, filename)
-  print 'saved to ' + filename
+coreprops = coreproperties(title=title, subject=subject, creator=creator, keywords=keywords)
+appprops = appproperties()
+contenttypes = contenttypes()
+websettings = websettings()
+wordrelationships = wordrelationships(relationships)
+filename = 'Reporting_%s.docx' % datetime.now().strftime('%Y-%m-%d_%H-%M')
+
+# Save our document
+savedocx(document, coreprops, appprops, contenttypes, websettings, wordrelationships, filename)
+print 'Saved to ' + filename
 
 
