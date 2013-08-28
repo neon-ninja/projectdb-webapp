@@ -1,0 +1,4 @@
+generate_research_outcomes_and_scalings_docx_config.py
+img
+*.docx
+*.pyc

@@ -4,7 +4,7 @@
 # http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
 # http://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow
 # Replace \pythondocx\template\word\styles.xml with your desired style template
-# Python docx has been modified to suit this script, to scale images and preserve aspect ratio
+# Pythondocx has been modified to support header row style changes
 # By Martin Feller, Nick Young
 
 import sys
@@ -13,7 +13,8 @@ import subprocess
 import _mysql
 from datetime import datetime
 import pprint
-from docx import *
+import generate_research_outcomes_and_scalings_docx_example_config
+from pythondocx.docx import *
 import urllib2
 
 # @IndentOk
@@ -35,15 +36,7 @@ whitelist = {
 # Don't underline institutions and departments
 skip_formatting = 1
 
-# database connection parameters. 
-config = {
-   'host': '',
-   'user': '',
-   'passwd': '',
-   'db': ''
-}
-
-pic_width=100
+if not os.path.exists('img') : os.mkdir('img')
 
 def query(sqlQuery):
   ''' Run a SQL query against the project database '''
@@ -67,18 +60,29 @@ def removeNonAscii(s):
 def downloadAndSaveImage(url, path):
   ''' Download and save an image. Set user agent header to avoid
       errors from web pages checking for recognised user agents.
+      Returns true on success, false on failure
   '''
-  req = urllib2.Request(url, headers={'User-Agent' : "Mozilla/5.0"})
-  img = urllib2.urlopen(req)
-  if img.headers.maintype == 'image':
-    buf = img.read()
-    downloaded_image = file(path, "wb")
-    downloaded_image.write(buf)
-    downloaded_image.close()
-    img.close()
-  else:
-    raise Exception("%s is not an image!" % url)
-                                                                                                                                            
+  try :
+    req = urllib2.Request(url, headers={'User-Agent' : "Mozilla/5.0"})
+    img = urllib2.urlopen(req)
+    if img.headers.maintype == 'image':
+      buf = img.read()
+      downloaded_image = file(path, "wb")
+      downloaded_image.write(buf)
+      downloaded_image.close()
+      img.close()
+      return True
+    else:
+      raise Exception("%s is not an image!" % url)
+      return False
+  except urllib2.HTTPError, err:
+    if err.code == 404:
+       print "%s 404'd!" % url
+    elif err.code == 403:
+       print "%s is 403!" % url
+    else:
+       print "%s when fetching %s" % err.code, url
+    return False
 
 def scaleImage(path):
   ''' Scale image. docx apparently can't do it '''
@@ -164,17 +168,36 @@ def printOutput(inst, dep1, dep2, body, relationships):
                                   INNER JOIN researcherrole rr ON rr.id=rp.researcherRoleId' % pid)
     researcherString = ''
     pictures = paragraph('')
+    
+    global pic_width
+    
+    suffix = ''
+    
+    if len(researchers_and_roles) < 4 :
+      pic_width=100
+    else :
+      pic_width=50
+      suffix = '_small'
+      
+    os.chdir('img')
+    
     for researcher_and_role in [tmp for tmp in researchers_and_roles]:
+      picpara = None
+      filename = researcher_and_role['pictureUrl'].split('/')[-1]
+      ext = filename.split('.')[-1]
+      filename = filename.split('.')[0]
+      if filename != 'avatar' :
+        #fetch the image if we don't have it already
+        filename = filename + suffix + '.' + ext
+        if not os.path.isfile(filename):
+          hasDownloaded = downloadAndSaveImage(researcher_and_role['pictureUrl'],filename)
+          if hasDownloaded : scaleImage(filename)
+        else :
+          hasDownloaded = True
+        # Generate a picture paragraph if the picture has downloaded
+        if hasDownloaded : (relationships, picpara) = picture(relationships, filename, researcher_and_role['fullName'])
+      
       if researcher_and_role['role'] == 'PI':
-        picpara = None
-        filename = researcher_and_role['pictureUrl'].split('/')[-1]
-        if filename.split('.')[0] != 'avatar' :
-          #fetch the image if we don't have it already
-          # FIXME: use separate directory to store images
-          if not os.path.isfile(filename):
-            downloadAndSaveImage(researcher_and_role['pictureUrl'],filename)
-          scaleImage(filename) 
-          (relationships, picpara) = picture(relationships, filename, researcher_and_role['fullName'])
         researcherString += '%s|%s' % (researcher_and_role['fullName'], researcherString)
         if (picpara != None) : 
             picpara.append(pictures)
@@ -182,6 +205,8 @@ def printOutput(inst, dep1, dep2, body, relationships):
       else:
         researcherString = '%s|%s' % (researcherString, researcher_and_role['fullName'])
         if (picpara != None) : pictures.append(picpara) 
+        
+    os.chdir('../')
 
     #print '%s\n' % (title)
     researchers = researcherString.strip('|').replace('||', ', ').replace('|', ', ')
@@ -222,13 +247,14 @@ def printOutput(inst, dep1, dep2, body, relationships):
       #print '(Project description, Research Output and/or KPI information is listed under the PIs (%s) institution (%s))' % (affil['fullName'], tmp.strip().strip(','))
    
     # FIXME: Print project information only if project PI is in current affiliation 
-    title = heading(removeNonAscii(title),4)
-    researchers = paragraph([(removeNonAscii(researchers),'b')])
+    title = heading(removeNonAscii(title),2)
+    researchers = heading(removeNonAscii(researchers),5)
     kpis = paragraph([(removeNonAscii(kpis),'i')])
     pictures.append(kpis)
     description = removeNonAscii(description)
     descriptionParagraph = paragraph('')
     
+    #split at newline and make a new para for each element
     for d in description.split('\n') :
       descriptionParagraph.append(paragraph(d))
          
@@ -237,7 +263,8 @@ def printOutput(inst, dep1, dep2, body, relationships):
                 ]
     body.append(table(tbl_rows,
                       borders={'all': {'color': 'grey', 'space': 0, 'sz': 6, 'val': 'single',}},
-                      heading=False,
+                      heading=True,
+                      headingShade='light1',
                       colw=[80,20],
                       cwunit='pct'))
     
@@ -246,7 +273,8 @@ def printOutput(inst, dep1, dep2, body, relationships):
         outputs.append(paragraph('')) #final element must be p
         body.append(table([[outputs]],
                       borders={'all': {'color': 'grey', 'space': 0, 'sz': 6, 'val': 'single',}},
-                      heading=False))
+                      heading=True,
+                      headingShade='light2'))
           
     body.append(paragraph('\n' * 2))
 
@@ -256,7 +284,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
 instPrinted = dep1Printed = dep2Printed = instCount = dep1Count = dep2Count = 0
 
 # create db connection
-db = _mysql.connect(**config)
+db = _mysql.connect(**generate_research_outcomes_and_scalings_docx_example_config.config)
 
 try:
   institutions = query('SELECT DISTINCT institution FROM researcher ORDER BY institution')
