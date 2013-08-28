@@ -338,4 +338,5 @@ filename = 'Reporting_%s.docx' % datetime.now().strftime('%Y-%m-%d_%H-%M')
 # Save our document
 savedocx(document, coreprops, appprops, contenttypes, websettings,
          wordrelationships, filename)
-print 'saved to ' + filename
+print 'saved to ' + filename + "\nEnter to quit"
+raw_input()
