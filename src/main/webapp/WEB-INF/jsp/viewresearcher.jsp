@@ -27,7 +27,7 @@
   
   <h3>${researcher.fullName}</h3>
 
-  <br><img src="${researcher.pictureUrl}"/><br><br>
+  <br><img src="${researcher.pictureUrl}" width="40px"/><br><br>
   
   <table border="0" cellspacing="0" cellpadding="5">
     <tr>
