@@ -14,19 +14,30 @@ public class DeleteAttachmentController extends AbstractController {
 	
 	private Log log = LogFactory.getLog(DeleteAttachmentController.class.getName()); 
 	private ProjectDao projectDao;
+	private String successView;
+	private String proxy;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
-    	ModelAndView mav = new ModelAndView("redirectToEditProject");
+    	ModelAndView mav = new ModelAndView(this.successView);
         Integer attachmentId = Integer.valueOf(request.getParameter("attachmentId"));
     	Integer projectId = Integer.valueOf(request.getParameter("projectId"));
 		mav.addObject("id", projectId);
-    	projectDao.deleteAttachment(attachmentId);
+		mav.addObject("proxy", this.proxy);
+    	projectDao.deleteAttachment(projectId, attachmentId);
 		return mav;
 	}
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setSuccessView(String successView) {
+		this.successView = successView;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }
