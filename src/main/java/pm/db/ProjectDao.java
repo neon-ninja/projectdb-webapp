@@ -28,6 +28,7 @@ public interface ProjectDao {
 	public Project getProjectById(Integer id) throws Exception;
 	public Researcher getResearcherById(Integer id) throws Exception;
 	public Advisor getAdvisorById(Integer id) throws Exception;
+	public Advisor getAdvisorByTuakiriUniqueId(String id) throws Exception;
 	public InstitutionalRole getInstitutionalRoleById(Integer id) throws Exception;
 	public FollowUp getFollowUpById(Integer id) throws Exception;
 	public Review getReviewById(Integer id) throws Exception;
@@ -65,31 +66,31 @@ public interface ProjectDao {
 	public Integer createProject(Project p) throws Exception;
 	public Integer createResearcher(Researcher r) throws Exception;
 	public Integer createAdvisor(Advisor a) throws Exception;
-	public void createRPLink(RPLink r) throws Exception;
-	public void createAPLink(APLink a) throws Exception;
-	public Integer createReview(Review r) throws Exception;
-	public Integer createFollowUp(FollowUp f) throws Exception;
-	public void createResearchOutput(ResearchOutput o) throws Exception;
-	public void createAttachment(Attachment a) throws Exception;
-	public Integer createAdvisorAction(AdvisorAction a) throws Exception;
-	public void createProjectFacility(ProjectFacility f) throws Exception;
-	public void createProjectKpi(ProjectKpi k) throws Exception;
+	public void createRPLink(Integer projectId, RPLink r) throws Exception;
+	public void createAPLink(Integer projectId, APLink a) throws Exception;
+	public Integer createReview(Integer projectId, Review r) throws Exception;
+	public Integer createFollowUp(Integer projectId, FollowUp f) throws Exception;
+	public void createResearchOutput(Integer projectId, ResearchOutput o) throws Exception;
+	public void createAttachment(Integer projectId, Attachment a) throws Exception;
+	public Integer createAdvisorAction(Integer projectId, AdvisorAction a) throws Exception;
+	public void createProjectFacility(Integer projectId, ProjectFacility f) throws Exception;
+	public void createProjectKpi(Integer projectId, ProjectKpi k) throws Exception;
 	
-	public void updateProject(Project p) throws Exception;
+	public void updateProject(Integer projectId, Project p) throws Exception;
 	public void updateResearcher(Researcher r) throws Exception;
 	public void updateAdvisor(Advisor a) throws Exception;
 	
-	public void deleteProject(Integer id) throws Exception;
+	public void deleteProject(Integer projectId) throws Exception;
 	public void deleteResearcher(Integer id) throws Exception;
 	public void deleteAdvisor(Integer id) throws Exception;
-	public void deleteReview(Integer id) throws Exception;
-	public void deleteFollowUp(Integer id) throws Exception;
-	public void deleteResearchOutput(Integer id) throws Exception;
-	public void deleteAttachment(Integer id) throws Exception;
-	public void deleteAdvisorAction(Integer id) throws Exception;
-	public void deleteResearcherFromProject(Integer researcherId, Integer projectId) throws Exception;
-	public void deleteAdvisorFromProject(Integer advisorId, Integer projectId) throws Exception;
+	public void deleteReview(Integer projectId, Integer id) throws Exception;
+	public void deleteFollowUp(Integer projectId, Integer id) throws Exception;
+	public void deleteResearchOutput(Integer projectId, Integer id) throws Exception;
+	public void deleteAttachment(Integer projectId, Integer id) throws Exception;
+	public void deleteAdvisorAction(Integer projectId, Integer id) throws Exception;
+	public void deleteResearcherFromProject(Integer projectId, Integer researcherId) throws Exception;
+	public void deleteAdvisorFromProject(Integer projectId, Integer advisorId) throws Exception;
 	public void deleteFacilityFromProject(Integer projectId, Integer facilityId) throws Exception;
-	public void deleteProjectKpi(Integer id) throws Exception;
+	public void deleteProjectKpi(Integer projectId, Integer id) throws Exception;
 	
 }
