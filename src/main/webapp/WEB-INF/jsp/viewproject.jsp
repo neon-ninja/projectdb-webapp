@@ -80,8 +80,8 @@
       <td>${project.endDate}</td>
     </tr>
     <tr>
-      <td><nobr>ID (NeSI ID):</nobr></td>
-      <td>${project.projectId}</td>
+      <td><nobr>Project Code:</nobr></td>
+      <td>${project.projectCode}</td>
     </tr>
     <tr>
       <td valign="top">Requirements:</td>
@@ -105,9 +105,9 @@
       <tr>
 	    <th>Picture</th>
 	    <th>Name</th>
-   	    <th>Role</th>
+   	    <th>Role on Project</th>
    	    <th>Institution</th>
-   	    <th>Institutional role</th>
+   	    <th>Institutional Role</th>
    	    <th>Notes</th>
       </tr>
     </thead>
@@ -133,7 +133,7 @@
       <tr>
 	    <th>Picture</th>
 	    <th>Name</th>
-   	    <th>Role</th>
+   	    <th>Role on Project</th>
    	    <th>Notes</th>
       </tr>
     </thead>
