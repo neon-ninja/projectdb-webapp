@@ -9,5 +9,7 @@ profile.default.picture=http://cluster.ceres.auckland.ac.nz/project_management/p
 
 # Proxy configuration
 proxy=
+proxyIp=
+
 remoteUserHeader=
 remoteAddrHeader=
