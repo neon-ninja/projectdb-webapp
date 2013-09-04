@@ -22,19 +22,17 @@ public class CreateAttachmentController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateAttachmentController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		Attachment a = (Attachment) o;
-		Integer pid = a.getProjectId();
+		Integer projectId = a.getProjectId();
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", pid);
-		try {
-			this.projectDao.createAttachment(a);
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.createAttachment(projectId, a);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -56,6 +54,10 @@ public class CreateAttachmentController extends SimpleFormController {
 
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }
