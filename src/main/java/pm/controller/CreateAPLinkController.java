@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -24,18 +23,17 @@ public class CreateAPLinkController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateAPLinkController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		APLink apLink = (APLink) o;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", apLink.getProjectId());
-		try {
-			this.projectDao.createAPLink(apLink);
-			new Util().addProjectInfosToMav(mav, this.projectDao, apLink.getProjectId());
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	Integer projectId = apLink.getProjectId();
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.createAPLink(projectId, apLink);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -67,4 +65,7 @@ public class CreateAPLinkController extends SimpleFormController {
 		this.projectDao = projectDao;
 	}
 
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
 }
