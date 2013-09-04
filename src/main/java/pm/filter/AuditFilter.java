@@ -16,7 +16,7 @@ public class AuditFilter implements Filter {
 
 	private Logger flog = Logger.getLogger("file."+AuditFilter.class.getName()); 
 	private Logger log = Logger.getLogger(AuditFilter.class.getName()); 
-    private String proxy;
+    private String proxyIp;
     private String remoteUserHeader;
     private String remoteAddrHeader;
     
@@ -28,17 +28,22 @@ public class AuditFilter implements Filter {
 			String remoteUser = request.getHeader(this.remoteUserHeader);
 		    String remoteAddr = request.getHeader(this.remoteAddrHeader);
 			
-			if (!request.getRemoteAddr().equals(this.proxy)) {
+		    // FIXME IN PROD
+		    if (!request.getRemoteAddr().equals(this.proxyIp)) {
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
-				log.error("Denying access from host " + request.getRemoteAddr());
+				log.error("Denying access from host " + request.getRemoteAddr() + " (doesn't match " + this.proxyIp + ")");
 				return;
 			}
 		    
+		    
+		    // FIXME IN PROD
+		    // Set default remoteUser for local testing here;
 		    if (remoteUser == null || remoteUser.trim().equals("")) {
 				log.error("Denying access for anonymous user");
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
 				return;
 		    }
+		    request.setAttribute(this.remoteUserHeader, remoteUser);
 
 		    if (remoteAddr == null || remoteAddr.trim().equals("")) {
 		    	remoteAddr = request.getRemoteAddr();
@@ -87,11 +92,11 @@ public class AuditFilter implements Filter {
 		this.remoteAddrHeader = remoteAddrHeader;
 	}
 
-	public String getProxy() {
-		return proxy;
+	public String getProxyIp() {
+		return proxyIp;
 	}
 
-	public void setProxy(String proxy) {
-		this.proxy = proxy;
+	public void setProxyIp(String proxyIp) {
+		this.proxyIp = proxyIp;
 	}
 }
