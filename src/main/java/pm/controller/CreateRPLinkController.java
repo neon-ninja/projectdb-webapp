@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -24,18 +23,17 @@ public class CreateRPLinkController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateRPLinkController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		RPLink rpLink = (RPLink) o;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", rpLink.getProjectId());
-		try {
-			this.projectDao.createRPLink(rpLink);
-			new Util().addProjectInfosToMav(mav, this.projectDao, rpLink.getProjectId());
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	Integer projectId = rpLink.getProjectId();
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.createRPLink(projectId, rpLink);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -68,6 +66,10 @@ public class CreateRPLinkController extends SimpleFormController {
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }
