@@ -43,22 +43,18 @@ public class CreateProjectController extends SimpleFormController {
 		RPLink rpLink = createProject.getRpLink();
 		APLink apLink = createProject.getApLink();
 		ProjectFacility pf = createProject.getHpcFacility();
-		Integer pid = -1;
+		Integer projectId = -1;
 		
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		try {
-		    pid = this.projectDao.createProject(project);
-			project.setId(pid);
-			rpLink.setProjectId(pid);
-			apLink.setProjectId(pid);
-			pf.setProjectId(pid);
-			this.projectDao.createRPLink(rpLink);
-			this.projectDao.createAPLink(apLink);
-			this.projectDao.createProjectFacility(pf);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
-		new Util().addProjectInfosToMav(mav, this.projectDao, pid);
+		projectId = this.projectDao.createProject(project);
+		project.setId(projectId);
+		rpLink.setProjectId(projectId);
+		apLink.setProjectId(projectId);
+		pf.setProjectId(projectId);
+		this.projectDao.createRPLink(projectId, rpLink);
+		this.projectDao.createAPLink(projectId, apLink);
+		this.projectDao.createProjectFacility(projectId, pf);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
