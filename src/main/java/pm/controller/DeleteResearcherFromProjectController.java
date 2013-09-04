@@ -1,6 +1,5 @@
 package pm.controller;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,23 +14,31 @@ public class DeleteResearcherFromProjectController extends AbstractController {
 	
 	private Log log = LogFactory.getLog(DeleteResearcherFromProjectController.class.getName()); 
 	private ProjectDao projectDao;
+	private String successView;
+	private String proxy;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
-    	ModelAndView mav = new ModelAndView("redirectToEditProject");
-		try {
-			Integer researcherId = Integer.valueOf(request.getParameter("researcherId"));
-			Integer projectId = Integer.valueOf(request.getParameter("projectId"));
-			mav.addObject("id", projectId);
-            this.projectDao.deleteResearcherFromProject(researcherId, projectId);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	ModelAndView mav = new ModelAndView(this.successView);
+		Integer researcherId = Integer.valueOf(request.getParameter("researcherId"));
+		Integer projectId = Integer.valueOf(request.getParameter("projectId"));
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+        this.projectDao.deleteResearcherFromProject(projectId, researcherId);
 		return mav;
 	}
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
 	}
+
+	public void setSuccessView(String successView) {
+		this.successView = successView;
+	}
+	
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
+
 
 }
