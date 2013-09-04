@@ -26,19 +26,17 @@ public class CreateResearchOutputController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateResearchOutputController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		ResearchOutput r = (ResearchOutput) o;
-    	Integer pid = r.getProjectId(); 
+    	Integer projectId = r.getProjectId(); 
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", pid);
-		try {
-			this.projectDao.createResearchOutput(r);
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.createResearchOutput(projectId, r);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -67,6 +65,10 @@ public class CreateResearchOutputController extends SimpleFormController {
 
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }
