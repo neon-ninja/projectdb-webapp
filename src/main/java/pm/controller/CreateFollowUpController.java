@@ -26,29 +26,27 @@ public class CreateFollowUpController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateFollowUpController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		FollowUp f = (FollowUp) o;
-    	Integer pid = f.getProjectId(); 
+    	Integer projectId = f.getProjectId(); 
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-    	mav.addObject("id", pid);
-		try {
-			Integer followUpId = this.projectDao.createFollowUp(f);
-			if ((f.getAttachmentDescription() != null && f.getAttachmentDescription() != "") ||
-				(f.getAttachmentLink() != null && f.getAttachmentLink() != "")) {
-				Attachment a = new Attachment();
-				a.setDate(f.getDate());
-				a.setDescription(f.getAttachmentDescription());
-				a.setLink(f.getAttachmentLink());
-				a.setFollowUpId(followUpId);
-				a.setProjectId(f.getProjectId());
-				this.projectDao.createAttachment(a);
-			}
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	mav.addObject("id", projectId);
+    	mav.addObject("proxy", this.proxy);
+		Integer followUpId = this.projectDao.createFollowUp(projectId, f);
+		if ((f.getAttachmentDescription() != null && f.getAttachmentDescription() != "") ||
+			(f.getAttachmentLink() != null && f.getAttachmentLink() != "")) {
+			Attachment a = new Attachment();
+			a.setDate(f.getDate());
+			a.setDescription(f.getAttachmentDescription());
+			a.setLink(f.getAttachmentLink());
+			a.setFollowUpId(followUpId);
+			a.setProjectId(f.getProjectId());
+			this.projectDao.createAttachment(projectId, a);
+		}
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -56,7 +54,7 @@ public class CreateFollowUpController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<Advisor> advisorsTmp = this.projectDao.getAllAdvisors();
+		List<Advisor> advisorsTmp =  this.projectDao.getAllAdvisorsOnProject(pid);
 		Map<Integer,String> advisors = new LinkedHashMap<Integer,String>();
 		if (advisorsTmp != null) {
 			for (Advisor a : advisorsTmp) {
@@ -80,4 +78,7 @@ public class CreateFollowUpController extends SimpleFormController {
 		this.projectDao = projectDao;
 	}
 
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
 }
