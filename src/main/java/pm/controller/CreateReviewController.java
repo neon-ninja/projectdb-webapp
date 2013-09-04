@@ -26,29 +26,27 @@ public class CreateReviewController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateReviewController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		Review r = (Review) o;
-    	Integer pid = r.getProjectId(); 
+    	Integer projectId = r.getProjectId(); 
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-    	mav.addObject("id", pid);
-		try {
-			Integer reviewId = this.projectDao.createReview(r);
-			if ((r.getAttachmentDescription() != null && r.getAttachmentDescription() != "") ||
-					(r.getAttachmentLink() != null && r.getAttachmentLink() != "")) {
-					Attachment a = new Attachment();
-					a.setDate(r.getDate());
-					a.setDescription(r.getAttachmentDescription());
-					a.setLink(r.getAttachmentLink());
-					a.setReviewId(reviewId);
-					a.setProjectId(r.getProjectId());
-					this.projectDao.createAttachment(a);
-				}
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	mav.addObject("id", projectId);
+    	mav.addObject("proxy", this.proxy);
+		Integer reviewId = this.projectDao.createReview(projectId, r);
+		if ((r.getAttachmentDescription() != null && r.getAttachmentDescription() != "") ||
+				(r.getAttachmentLink() != null && r.getAttachmentLink() != "")) {
+			Attachment a = new Attachment();
+			a.setDate(r.getDate());
+			a.setDescription(r.getAttachmentDescription());
+			a.setLink(r.getAttachmentLink());
+			a.setReviewId(reviewId);
+			a.setProjectId(r.getProjectId());
+			this.projectDao.createAttachment(projectId, a);
+		}
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -80,4 +78,7 @@ public class CreateReviewController extends SimpleFormController {
 		this.projectDao = projectDao;
 	}
 
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
 }
