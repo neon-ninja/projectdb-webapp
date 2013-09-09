@@ -27,7 +27,7 @@
 
   <h3>${advisor.fullName}</h3>
 
-  <br><img src="${advisor.pictureUrl}"/><br><br>    
+  <br><img src="${advisor.pictureUrl}" width="40px"/><br><br>    
 
   <table border="0" cellspacing="0" cellpadding="5">
     <tr>
@@ -71,8 +71,9 @@
     <thead>
       <tr>
 	    <th>Name</th>
-	    <th>Next review</th>
-	    <th>Next follow-up</th>
+	    <th>Host Institution</th>
+	    <th>Next Review</th>
+	    <th>Next Follow-up</th>
 	    <th>Type</th>
       </tr>
     </thead>
@@ -84,6 +85,7 @@
           <font color="red">(todo)</font>
         </c:if>
         </td>
+        <td>${project.hostInstitution}</td>
         <c:choose>
           <c:when test="${f:contains(project.nextReviewDate, 'due')}">
             <td><font color="red">${project.nextReviewDate}</font></td>   

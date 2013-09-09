@@ -84,9 +84,9 @@
       <td><form:input id="datepicker4" path="project.endDate" size="20"/></td>
     </tr>
     <tr>
-      <td>ID</td>
+      <td>Project Code</td>
       <td>&nbsp;</td>
-      <td><form:input id="project_id"  path="project.projectId" size="20"/></td>
+      <td><form:input id="project_id"  path="project.projectCode" size="20"/></td>
     </tr>
     <tr>
       <td valign="top">Requirements</td>

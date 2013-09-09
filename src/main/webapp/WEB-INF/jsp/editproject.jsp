@@ -81,9 +81,9 @@
       <td><form:input id="datepicker4" path="endDate" size="20"/></td>
     </tr>
     <tr>
-      <td>ID:</td>
+      <td>Project Code:</td>
       <td>&nbsp;</td>
-      <td><form:input id="project_id" path="projectId" size="20"/></td>
+      <td><form:input id="project_id" path="projectCode" size="20"/></td>
     </tr>
     <tr>
       <td valign="top">Requirements:</td>
@@ -115,7 +115,7 @@
       <tr>
 	    <th>Picture</th>
 	    <th>Name</th>
-   	    <th>Role</th>
+   	    <th>Role on Project</th>
    	    <th>Institution</th>
    	    <th>Institutional role</th>
    	    <th>Notes</th>
@@ -150,7 +150,7 @@
       <tr>
 	    <th>Picture</th>
 	    <th>Name</th>
-   	    <th>Role</th>
+   	    <th>Role on Project</th>
    	    <th>Notes</th>
    	    <th>Action</th>
       </tr>

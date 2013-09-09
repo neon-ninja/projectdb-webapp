@@ -26,29 +26,27 @@ public class CreateAdvisorActionController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateAdvisorActionController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		AdvisorAction aa = (AdvisorAction) o;
-    	Integer pid = aa.getProjectId(); 
+    	Integer projectId = aa.getProjectId(); 
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-    	mav.addObject("id", pid);
-		try {
-			Integer advisorActionId = this.projectDao.createAdvisorAction(aa);
-			if ((aa.getAttachmentDescription() != null && aa.getAttachmentDescription() != "") ||
+    	mav.addObject("id", projectId);
+    	mav.addObject("proxy", this.proxy);
+		Integer advisorActionId = this.projectDao.createAdvisorAction(projectId, aa);
+		if ((aa.getAttachmentDescription() != null && aa.getAttachmentDescription() != "") ||
 				(aa.getAttachmentLink() != null && aa.getAttachmentLink() != "")) {
-				Attachment a = new Attachment();
-				a.setDate(aa.getDate());
-				a.setDescription(aa.getAttachmentDescription());
-				a.setLink(aa.getAttachmentLink());
-				a.setAdvisorActionId(advisorActionId);
-				a.setProjectId(aa.getProjectId());
-				this.projectDao.createAttachment(a);
-			}
-			new Util().addProjectInfosToMav(mav, this.projectDao, aa.getProjectId());
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+			Attachment a = new Attachment();
+			a.setDate(aa.getDate());
+			a.setDescription(aa.getAttachmentDescription());
+			a.setLink(aa.getAttachmentLink());
+			a.setAdvisorActionId(advisorActionId);
+			a.setProjectId(aa.getProjectId());
+			this.projectDao.createAttachment(projectId, a);
+		}
+		new Util().addProjectInfosToMav(mav, this.projectDao, aa.getProjectId());
 		return mav;
 	}
 
@@ -78,6 +76,10 @@ public class CreateAdvisorActionController extends SimpleFormController {
 
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }

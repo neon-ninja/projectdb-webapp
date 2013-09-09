@@ -23,19 +23,17 @@ public class CreateProjectFacilityController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateProjectFacilityController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		ProjectFacility pf = (ProjectFacility) o;
-    	Integer pid = pf.getProjectId(); 
+    	Integer projectId = pf.getProjectId(); 
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-    	mav.addObject("id", pid);
-		try {
-			this.projectDao.createProjectFacility(pf);
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+    	mav.addObject("id", projectId);
+    	mav.addObject("proxy", this.proxy);
+		this.projectDao.createProjectFacility(projectId, pf);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -57,6 +55,10 @@ public class CreateProjectFacilityController extends SimpleFormController {
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }

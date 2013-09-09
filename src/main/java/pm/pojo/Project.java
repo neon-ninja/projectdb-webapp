@@ -3,7 +3,7 @@ package pm.pojo;
 public class Project {
 
 	private Integer id;
-	private String projectId;
+	private String projectCode;
 	private String projectType;
 	private Integer projectTypeId;
 	private String name;
@@ -33,12 +33,12 @@ public class Project {
 		this.projectTypeId = projectTypeId;
 	}
 
-	public String getProjectId() {
-		return projectId;
+	public String getProjectCode() {
+		return projectCode;
 	}
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
 	}
 
 	public String getProjectType() {
@@ -129,4 +129,7 @@ public class Project {
 		this.todo = todo;
 	}
 
+	public Integer getProjectId() {
+		return this.id;
+	}
 }

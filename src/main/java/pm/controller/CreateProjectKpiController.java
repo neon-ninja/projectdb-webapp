@@ -28,19 +28,17 @@ public class CreateProjectKpiController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateProjectKpiController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 	
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		ProjectKpi pk = (ProjectKpi) o;
-		Integer pid = pk.getProjectId();
+		Integer projectId = pk.getProjectId();
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", pid);
-		try {
-			this.projectDao.createProjectKpi(pk);
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.createProjectKpi(projectId, pk);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -66,7 +64,7 @@ public class CreateProjectKpiController extends SimpleFormController {
 			tmpkpis.put(kpi.getId(), kpi.getType() + "-" + kpi.getId() + ": " + kpi.getTitle());
 		}
 		
-		List<Advisor> advisorsTmp = this.projectDao.getAllAdvisors();
+		List<Advisor> advisorsTmp = this.projectDao.getAllAdvisorsOnProject(pid);
 		Map<Integer,String> advisors = new LinkedHashMap<Integer,String>();
 		if (advisorsTmp != null) {
 			for (Advisor a : advisorsTmp) {
@@ -81,6 +79,10 @@ public class CreateProjectKpiController extends SimpleFormController {
 
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }

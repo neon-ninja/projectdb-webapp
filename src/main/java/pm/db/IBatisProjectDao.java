@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
+import pm.authz.annotation.RequireAdmin;
+import pm.authz.annotation.RequireAdvisor;
+import pm.authz.annotation.RequireAdvisorOnProject;
 import pm.pojo.APLink;
 import pm.pojo.Advisor;
 import pm.pojo.AdvisorAction;
@@ -45,6 +48,12 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 
 	public Advisor getAdvisorById(final Integer id) throws Exception {
 		Advisor a = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", id);
+		a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
+		return a;
+	}
+
+	public Advisor getAdvisorByTuakiriUniqueId(final String id) throws Exception {
+		Advisor a = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorByTuakiriUniqueId", id);
 		a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
 		return a;
 	}
@@ -250,123 +259,160 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	}
 
     public List<Project> getAllProjectsForResearcherId(Integer id) throws Exception {
-    	return (List<Project>) getSqlMapClientTemplate().queryForList("getAllProjectsForResearcherId", id);
+    	List<Project> ps = getSqlMapClientTemplate().queryForList("getAllProjectsForResearcherId", id);
+		for (Project p: ps) {
+			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+			p.setProjectType(t.getName());
+		}
+		return ps;
     }
 
     public List<Project> getAllProjectsForAdvisorId(Integer id) throws Exception {
-    	return (List<Project>) getSqlMapClientTemplate().queryForList("getAllProjectsForAdvisorId", id);
+    	List<Project> ps = getSqlMapClientTemplate().queryForList("getAllProjectsForAdvisorId", id);
+		for (Project p: ps) {
+			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+			p.setProjectType(t.getName());
+		}
+		return ps;
     }
 
+    @RequireAdvisor
 	public synchronized Integer createProject(final Project p) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createProject", p);
 	}
 
+    @RequireAdvisor
 	public synchronized Integer createResearcher(final Researcher r) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createResearcher", r);
 	}
 
+    @RequireAdvisor
 	public synchronized Integer createAdvisor(final Advisor a) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createAdvisor", a);
 	}
 
-	public void createRPLink(RPLink r) throws Exception {
+    @RequireAdvisorOnProject
+	public void createRPLink(Integer projectId, RPLink r) throws Exception {
 		getSqlMapClientTemplate().insert("createRPLink", r);
 	}
 	
-	public void createAPLink(APLink a) throws Exception {
+    @RequireAdvisorOnProject
+    public void createAPLink(Integer projectId, APLink a) throws Exception {
 		getSqlMapClientTemplate().insert("createAPLink", a);
 	}
 	
-	public Integer createReview(Review r) throws Exception {
+    @RequireAdvisorOnProject
+	public Integer createReview(Integer projectId, Review r) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createReview", r);
 	}
 	
-	public Integer createFollowUp(FollowUp f) throws Exception {
+    @RequireAdvisorOnProject
+	public Integer createFollowUp(Integer projectId, FollowUp f) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createFollowUp", f);
 	}
 	
-	public void createResearchOutput(ResearchOutput o) throws Exception {
+    @RequireAdvisorOnProject
+	public void createResearchOutput(Integer projectId, ResearchOutput o) throws Exception {
 		getSqlMapClientTemplate().insert("createResearchOutput", o);
 	}
 	
-	public void createAttachment(Attachment a) throws Exception {
+    @RequireAdvisorOnProject
+	public void createAttachment(Integer projectId, Attachment a) throws Exception {
 		getSqlMapClientTemplate().insert("createAttachment", a);
 	}
 	
-	public Integer createAdvisorAction(AdvisorAction a) throws Exception {
+    @RequireAdvisorOnProject
+	public Integer createAdvisorAction(Integer projectId, AdvisorAction a) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createAdvisorAction", a);
 	}
 	
-	public void createProjectFacility(ProjectFacility f) throws Exception {
+    @RequireAdvisorOnProject
+	public void createProjectFacility(Integer projectId, ProjectFacility f) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectFacility", f);
 	}
 	
-	public void createProjectKpi(ProjectKpi pk) throws Exception {
+    @RequireAdvisorOnProject
+	public void createProjectKpi(Integer projectId, ProjectKpi pk) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectKpi", pk);
 	}
 	
-	public void updateProject(final Project p) throws Exception {
+    @RequireAdvisorOnProject
+	public void updateProject(Integer projectId, final Project p) throws Exception {
 		getSqlMapClientTemplate().update("updateProject", p);
 	}
 
+    @RequireAdvisor
 	public void updateResearcher(final Researcher r) throws Exception {
 		getSqlMapClientTemplate().update("updateResearcher", r);
 	}
 
+    @RequireAdvisor
 	public void updateAdvisor(final Advisor a) throws Exception {
 		getSqlMapClientTemplate().update("updateAdvisor", a);
 	}
 
-	public void deleteProject(final Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteProject", id);
+    @RequireAdvisorOnProject
+	public void deleteProject(Integer projectId) throws Exception {
+		getSqlMapClientTemplate().update("deleteProject", projectId);
 	}
 
+    @RequireAdmin
 	public void deleteResearcher(final Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearcher", id);
 	}
 
+    @RequireAdmin
 	public void deleteAdvisor(final Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteAdvisor", id);
 	}
 	
-	public void deleteResearcherFromProject(final Integer researcherId, final Integer projectId) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteResearcherFromProject(Integer projectId, Integer researcherId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("researcherId", researcherId);
         params.put("projectId", projectId);
         getSqlMapClientTemplate().update("deleteResearcherFromProject", params);
 	}
 
-	public void deleteAdvisorFromProject(final Integer advisorId, final Integer projectId) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteAdvisorFromProject(Integer projectId, Integer advisorId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("advisorId", advisorId);
         params.put("projectId", projectId);
         getSqlMapClientTemplate().update("deleteAdvisorFromProject", params);
 	}
 	
-	public void deleteReview(final Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteReview(Integer projectId, final Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteReview", id);
 	}
 
-	public void deleteFollowUp(final Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteFollowUp(Integer projectId, final Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteFollowUp", id);
 	}
 
-	public void deleteResearchOutput(Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteResearchOutput(Integer projectId, Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearchOutput", id);
 	}
 	
-	public void deleteAttachment(Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteAttachment(Integer projectId, Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteAttachment", id);		
 	}
 	
-	public void deleteAdvisorAction(Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteAdvisorAction(Integer projectId, Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteAdvisorAction", id);		
 	}
 
-	public void deleteProjectKpi(Integer id) throws Exception {
+    @RequireAdvisorOnProject
+	public void deleteProjectKpi(Integer projectId, Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteProjectKpi", id);		
 	}
 
+    @RequireAdvisorOnProject
 	public void deleteFacilityFromProject(Integer projectId, Integer facilityId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("projectId", projectId);

@@ -14,6 +14,8 @@ public class Advisor {
 	private String startDate;
 	private String endDate;
 	private String notes;
+	private String tuakiriUniqueId;
+	private Integer isAdmin;
 
 	public Integer getId() {
 		return id;
@@ -109,6 +111,22 @@ public class Advisor {
 
 	public void setNumProjects(Integer numProjects) {
 		this.numProjects = numProjects;
+	}
+
+	public String getTuakiriUniqueId() {
+		return tuakiriUniqueId;
+	}
+
+	public void setTuakiriUniqueId(String tuakiriUniqueId) {
+		this.tuakiriUniqueId = tuakiriUniqueId;
+	}
+
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
 }

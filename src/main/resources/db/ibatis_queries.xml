@@ -23,6 +23,12 @@
        WHERE id = #id#
    </select>   
 
+   <select id="getAdvisorByTuakiriUniqueId" parameterClass="java.lang.String" resultClass="pm.pojo.Advisor">
+       SELECT *
+       FROM advisor
+       WHERE tuakiriUniqueId = #id#
+   </select>   
+
    <select id="getSiteById" parameterClass="java.lang.Integer" resultClass="pm.pojo.Site">
        SELECT *
        FROM site
@@ -252,7 +258,7 @@
    
    <insert id="createProject" parameterClass="pm.pojo.Project">
       INSERT INTO project (
-        projectId,
+        projectCode,
         projectTypeId, 
         name, 
         description, 
@@ -265,7 +271,7 @@
         todo,
         requirements
       ) values (
-        #projectId#, 
+        #projectCode#, 
         #projectTypeId#, 
         #name#, 
         #description#, 
@@ -488,7 +494,7 @@
 
    <update id="updateProject" parameterClass="pm.pojo.Project">
       UPDATE project set
-        projectId = #projectId#, 
+        projectCode = #projectCode#, 
         projectTypeId = #projectTypeId#,
         name = #name#, 
         description = #description#, 

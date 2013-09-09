@@ -20,11 +20,7 @@ public class EditAdvisorController extends SimpleFormController {
 	public ModelAndView onSubmit(Object a) throws Exception {
 		Advisor advisor = (Advisor) a;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		try {
-            this.projectDao.updateAdvisor(advisor);
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
+        this.projectDao.updateAdvisor(advisor);
 		mav.addObject("advisor", advisor);
 		mav.addObject("projects", projectDao.getAllProjectsForAdvisorId(advisor.getId()));
 		return mav;

@@ -42,7 +42,7 @@
       <tr>
         <th>#</th>
 	    <th>Name</th>
-	    <th>ID</th>
+	    <th>Code</th>
 <!--
    	    <th><img src="<%=request.getContextPath()%>/pics/attachment.png"/></th>
    	    <th><img src="<%=request.getContextPath()%>/pics/kpi.jpg"/></th>
@@ -61,7 +61,7 @@
       <tr>
         <td>&nbsp;</td>
         <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${project.id}">${project.name}</a></td>
-        <td>${project.projectId}</td>
+        <td>${project.projectCode}</td>
 <!--
         <td>
           <c:if test="${empty project.projectId}">

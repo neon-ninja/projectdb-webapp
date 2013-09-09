@@ -35,19 +35,17 @@ public class EditProjectController extends SimpleFormController {
 	
 	private Log log = LogFactory.getLog(EditProjectController.class.getName()); 
 	private ProjectDao projectDao;
+	private String proxy;
 
 	@Override
-	public ModelAndView onSubmit(Object o) throws ServletException {
+	public ModelAndView onSubmit(Object o) throws Exception {
 		Project p = (Project) o;
-		Integer pid = p.getId();
+		Integer projectId = p.getId();
 		ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", pid);
-		try {
-			this.projectDao.updateProject(p);
-			new Util().addProjectInfosToMav(mav, this.projectDao, pid);
-		} catch (Exception e) {
-			throw new ServletException(e);
-	    }
+		mav.addObject("id", projectId);
+		mav.addObject("proxy", this.proxy);
+		this.projectDao.updateProject(projectId, p);
+		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 	
@@ -123,6 +121,10 @@ public class EditProjectController extends SimpleFormController {
 
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }
