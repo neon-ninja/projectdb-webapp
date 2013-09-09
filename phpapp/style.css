@@ -1,0 +1,96 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tr,th, td {
+  border: 1px solid black;
+}
+
+th {
+  background: #CCD9FF;
+  vertical-align: center;
+}
+
+td {
+  vertical-align: top;
+}
+
+a {
+  color: #00c;
+  font: bold 100%/140% verdana;
+  text-decoration: none;
+}
+
+h1,h2 {
+  color: #4F81BD;
+  margin: 15px;
+  text-align:center;
+}
+
+.outputs {
+  background: #F0F0F0;
+}
+
+.header {
+  width: 100%;
+  text-align:center;
+  padding-bottom: 50px;
+}
+
+/* Button styles */
+
+.backButton {
+  position:absolute;
+  left:15px;
+  top:15px;
+	-moz-box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	-webkit-box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	box-shadow:inset 0px 0px 0px 0px #bbdaf7;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
+	background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
+	background-color:#79bbff;
+	-webkit-border-top-left-radius:25px;
+	-moz-border-radius-topleft:25px;
+	border-top-left-radius:25px;
+	-webkit-border-top-right-radius:25px;
+	-moz-border-radius-topright:25px;
+	border-top-right-radius:25px;
+	-webkit-border-bottom-right-radius:25px;
+	-moz-border-radius-bottomright:25px;
+	border-bottom-right-radius:25px;
+	-webkit-border-bottom-left-radius:25px;
+	-moz-border-radius-bottomleft:25px;
+	border-bottom-left-radius:25px;
+	text-indent:0;
+	border:2px solid #84bbf3;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	font-weight:bold;
+	font-style:normal;
+	height:35px;
+	line-height:35px;
+  padding-bottom:35px;
+	width:100px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #528ecc;
+}
+.backButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
+	background:-moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
+	background-color:#378de5;
+}.backButton:active {
+	
+}
+
+
+.instBlock {
+  text-align:center;
+  text-decoration:underline;
+  margin: 15px;
+}
