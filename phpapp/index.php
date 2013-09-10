@@ -13,6 +13,7 @@ include ('config.php');
 
 // Handles errors. Prints a message to the user with an email link, where the subject contains an error code to pinpoint the problem
 function error($errorcode) {
+  global $adminEmail;
   print "Something has gone wrong. Please contact the <a href='mailto:$adminEmail?Subject=projectdb phpapp $errorcode'>administrator</a>";
   die;
 }
@@ -26,13 +27,23 @@ if ($db->connect_errno) {
 if (!isset($_GET['inst'])) {
   echo '<div class="header"><h1>Current Projects</h1></div>';
   // Print institutions (UOA, UOC etc)
-  if ($institutions = $db->query("SELECT DISTINCT hostInstitution FROM project ORDER BY hostInstitution")) {
+  if ($institutions = $db->query("SELECT DISTINCT hostInstitution FROM project
+                                  INNER JOIN researcher_project rp ON rp.projectId=project.id
+                                  INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
+                                  INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
+                                  WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
+                                  ORDER BY hostInstitution")) {
     while ($row = $institutions->fetch_row()) {
       $i = $row[0];
       if (in_array($i,$blacklist)) continue;
       echo "<div class='instBlock'><div style='margin:15px'><a href='?inst=$i'><h2 style='display:inline'>$i</h2></a></div>";
       // Then print departments under that institution
-      if ($departments = $db->query("SELECT DISTINCT department1 FROM researcher WHERE institution='$i' ORDER BY department1")) {
+      if ($departments = $db->query("SELECT DISTINCT r.department1 FROM project
+                                     INNER JOIN researcher_project rp ON rp.projectId=project.id
+                                     INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
+                                     INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
+                                     WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
+                                     AND institution='$i' ORDER BY department1")) {
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {
           $d = $row[0];
