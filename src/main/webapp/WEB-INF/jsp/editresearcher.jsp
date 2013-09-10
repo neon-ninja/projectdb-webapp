@@ -87,7 +87,7 @@
     </tr>
   </table>
   <br>
-  <input type="submit" align="center" value="Submit changes">
+  <input type="submit" align="center" value="Save">
   <input type="reset" align="center" value="Reset">
   </form:form>
       

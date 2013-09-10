@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -17,15 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
-import pm.pojo.APLink;
-import pm.pojo.Advisor;
-import pm.pojo.AdvisorRole;
-import pm.pojo.CreateProject;
+import pm.pojo.Adviser;
+import pm.pojo.AdviserRole;
 import pm.pojo.Facility;
 import pm.pojo.Project;
-import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectType;
-import pm.pojo.RPLink;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
 import pm.pojo.Site;
@@ -38,22 +33,9 @@ public class CreateProjectController extends SimpleFormController {
 	
 	@Override
 	public ModelAndView onSubmit(Object cp) throws Exception {
-		CreateProject createProject = (CreateProject) cp;
-		Project project = createProject.getProject();
-		RPLink rpLink = createProject.getRpLink();
-		APLink apLink = createProject.getApLink();
-		ProjectFacility pf = createProject.getHpcFacility();
-		Integer projectId = -1;
-		
+		Integer projectId = -1;		
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		projectId = this.projectDao.createProject(project);
-		project.setId(projectId);
-		rpLink.setProjectId(projectId);
-		apLink.setProjectId(projectId);
-		pf.setProjectId(projectId);
-		this.projectDao.createRPLink(projectId, rpLink);
-		this.projectDao.createAPLink(projectId, apLink);
-		this.projectDao.createProjectFacility(projectId, pf);
+    	// TODO
 		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
@@ -61,20 +43,20 @@ public class CreateProjectController extends SimpleFormController {
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
-		List<Site> sitesTmp = this.projectDao.getAllSites();
-		List<ProjectType> projectTypesTmp = this.projectDao.getAllProjectTypes();
-		List<Researcher> researcherTmp = this.projectDao.getAllResearchers();
-		List<Advisor> advisorTmp = this.projectDao.getAllAdvisors();
-		List<ResearcherRole> researcherRolesTmp = this.projectDao.getAllResearcherRoles();
-		List<AdvisorRole> advisorRolesTmp = this.projectDao.getAllAdvisorRoles();
-		List<Facility> facilitiesTmp = this.projectDao.getAllFacilities();
+		List<Site> sitesTmp = this.projectDao.getSites();
+		List<ProjectType> projectTypesTmp = this.projectDao.getProjectTypes();
+		List<Researcher> researcherTmp = this.projectDao.getResearchers();
+		List<Adviser> adviserTmp = this.projectDao.getAdvisers();
+		List<ResearcherRole> researcherRolesTmp = this.projectDao.getResearcherRoles();
+		List<AdviserRole> adviserRolesTmp = this.projectDao.getAdviserRoles();
+		List<Facility> facilitiesTmp = this.projectDao.getFacilities();
 		Map<Integer,String> sites = new LinkedHashMap<Integer,String>();
 		Map<Integer,String> projectTypes = new LinkedHashMap<Integer,String>();
-		Map<Integer,String> advisorRoles = new LinkedHashMap<Integer,String>();
+		Map<Integer,String> adviserRoles = new LinkedHashMap<Integer,String>();
 		Map<Integer,String> researcherRoles = new LinkedHashMap<Integer,String>();
 		Map<Integer,String> facilities = new LinkedHashMap<Integer,String>();
 		Map<Integer,String> researchers = new LinkedHashMap<Integer,String>();
-		Map<Integer,String> advisors = new LinkedHashMap<Integer,String>();
+		Map<Integer,String> advisers = new LinkedHashMap<Integer,String>();
 		
 		if (projectTypesTmp != null) {
 			for (ProjectType t : projectTypesTmp) {
@@ -86,9 +68,9 @@ public class CreateProjectController extends SimpleFormController {
 				researchers.put(r.getId(), r.getFullName());
 			}
 		}
-		if (advisorTmp != null) {
-			for (Advisor a : advisorTmp) {
-				advisors.put(a.getId(), a.getFullName());
+		if (adviserTmp != null) {
+			for (Adviser a : adviserTmp) {
+				advisers.put(a.getId(), a.getFullName());
 			}
 		}
 		if (facilitiesTmp != null) {
@@ -101,10 +83,10 @@ public class CreateProjectController extends SimpleFormController {
 				sites.put(s.getId(),s.getName());
 			}
 		}
-		if (advisorRolesTmp != null) {
-			for (AdvisorRole ar : advisorRolesTmp) {
-				if (ar.getName().equals("Primary Advisor")) {
-					advisorRoles.put(ar.getId(), ar.getName());
+		if (adviserRolesTmp != null) {
+			for (AdviserRole ar : adviserRolesTmp) {
+				if (ar.getName().equals("Primary Adviser")) {
+					adviserRoles.put(ar.getId(), ar.getName());
 				}
 			}
 		}
@@ -118,18 +100,17 @@ public class CreateProjectController extends SimpleFormController {
 		
         modelMap.put("sites", sites);
         modelMap.put("projectTypes", projectTypes);
-        modelMap.put("advisors", advisors);
+        modelMap.put("advisers", advisers);
         modelMap.put("researchers", researchers);
         modelMap.put("researcherRoles", researcherRoles);
-        modelMap.put("advisorRoles", advisorRoles);
+        modelMap.put("adviserRoles", adviserRoles);
         modelMap.put("hpcFacilities", facilities);
 
         return modelMap;
     }
 	
 	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		CreateProject cp = new CreateProject();
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		Project p = new Project();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date startDate = new Date();
@@ -140,12 +121,7 @@ public class CreateProjectController extends SimpleFormController {
 		p.setStartDate(df.format(startDate));
 		p.setNextFollowUpDate(df.format(nextFollowUp));
 		p.setNextReviewDate(df.format(nextReview));
-		p.setNotes("Job submission characteristics prior to using NeSI facilities:<br>\nNumber CPU Cores used: N/A<br>\nAmount of memory[GB] used: N/A<br>\nNumber Concurrent Jobs: N/A<br>\n");
-		cp.setProject(p);
-		cp.setRpLink(new RPLink());
-		cp.setApLink(new APLink());
-		cp.setHpcFacility(new ProjectFacility());
-		return cp;
+		return p;
 	}
 
 	public void setProjectDao(ProjectDao projectDao) {

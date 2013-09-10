@@ -32,8 +32,8 @@
 
   <a href="<%=request.getContextPath()%>/html/createresearcher">Create new researcher</a>
   
-  <h3>Researchers</h3>
-  Total number of researchers: ${f:length(researchers)}<br>
+  <h3>Researchers (${f:length(researchers)})</h3>
+
   <table id="myTable" class="tablesorter">
     <thead>
       <tr>
@@ -52,12 +52,12 @@
     <c:forEach items="${researchers}" var="researcher">
       <tr>
         <td>&nbsp;</td>
-        <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}"><img src="${researcher.pictureUrl}" width="40px"/></a></td>
+        <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}"><img src="${researcher.pictureUrl}" width="60px"/></a></td>
         <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}">${researcher.fullName}</a></td>        
         <td>${researcher.institution}</td>
         <td>${researcher.department1}</td>
         <td>${researcher.department2}</td>
-        <td>${researcher.institutionalRole}</td>
+        <td>${researcher.institutionalRoleName}</td>
         <td>${researcher.startDate}</td>
         <td>${researcher.endDate}</td>
       </tr>

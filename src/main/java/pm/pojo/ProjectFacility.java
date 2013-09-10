@@ -4,7 +4,7 @@ public class ProjectFacility {
 
 	private Integer projectId;
 	private Integer facilityId;
-	private String facility;
+	private String facilityName;
 
 	public Integer getProjectId() {
 		return projectId;
@@ -14,12 +14,12 @@ public class ProjectFacility {
 		this.projectId = projectId;
 	}
 
-	public String getFacility() {
-		return facility;
+	public String getFacilityName() {
+		return facilityName;
 	}
 
-	public void setFacility(String facility) {
-		this.facility = facility;
+	public void setFacilityName(String facilityName) {
+		this.facilityName = facilityName;
 	}
 
 	public Integer getFacilityId() {

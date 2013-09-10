@@ -2,6 +2,7 @@ package pm.controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,15 +15,19 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
+import pm.pojo.APLink;
+import pm.pojo.Adviser;
 import pm.pojo.RPLink;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
-import pm.util.Util;
+import pm.pojo.ProjectWrapper;
+import pm.temp.TempProjectManager;
 
 public class CreateRPLinkController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateRPLinkController.class.getName()); 
 	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
 	
 	@Override
@@ -30,34 +35,42 @@ public class CreateRPLinkController extends SimpleFormController {
 		RPLink rpLink = (RPLink) o;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
     	Integer projectId = rpLink.getProjectId();
-		mav.addObject("id", projectId);
+    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
+    	rpLink.setResearcher(this.projectDao.getResearcherById(rpLink.getResearcherId()));
+    	rpLink.setResearcherRoleName(this.projectDao.getResearcherRoleById(rpLink.getResearcherRoleId()).getName());
+    	pw.getRpLinks().add(rpLink);
+    	this.tempProjectManager.update(projectId, pw);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#researchers");
 		mav.addObject("proxy", this.proxy);
-		this.projectDao.createRPLink(projectId, rpLink);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
+		log.error("preparing create rp link view 1...");
 		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<Researcher> notOnProject = this.projectDao.getAllResearchersNotOnProject(pid);
-		List<ResearcherRole> rRolesTmp = this.projectDao.getAllResearcherRoles();
+    	ProjectWrapper pw = this.tempProjectManager.get(pid);
+		log.error("preparing create rp link view 2...");
+    	List<Integer> l = new LinkedList<Integer>();
+    	for (RPLink r: pw.getRpLinks()) {
+    		l.add(r.getResearcherId());
+    	}
+		List<Researcher> notOnProject = this.projectDao.getResearchersNotOnList(l);
+		List<ResearcherRole> rRolesTmp = this.projectDao.getResearcherRoles();
 		HashMap<Integer,String> researcherRoles = new LinkedHashMap<Integer, String>();
 		if (rRolesTmp != null) {
-			for (ResearcherRole rr: rRolesTmp) {
-				if (!rr.getName().equals("PI")) {
-					researcherRoles.put(rr.getId(), rr.getName());
-				}
+			for (ResearcherRole ar: rRolesTmp) {
+				researcherRoles.put(ar.getId(), ar.getName());
 			}
 		}
 		Map<Integer,String> rNotOnProject = new LinkedHashMap<Integer,String>();
 		if (notOnProject != null) {
-			for (Researcher r : notOnProject) {
-				rNotOnProject.put(r.getId(), r.getFullName());
+			for (Researcher a : notOnProject) {
+				rNotOnProject.put(a.getId(), a.getFullName());
 			}
 		}
-		
 		modelMap.put("pid", pid);
         modelMap.put("rNotOnProject", rNotOnProject);
         modelMap.put("researcherRoles", researcherRoles);
@@ -68,8 +81,11 @@ public class CreateRPLinkController extends SimpleFormController {
 		this.projectDao = projectDao;
 	}
 
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
+	}
+
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
 	}
-
 }

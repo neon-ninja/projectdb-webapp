@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import pm.db.ProjectDao;
-import pm.util.Util;
+import pm.pojo.ProjectWrapper;
 
 public class ViewProjectController extends AbstractController {
 	
@@ -18,8 +18,10 @@ public class ViewProjectController extends AbstractController {
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
+		Integer projectId = Integer.valueOf(request.getParameter("id"));
     	ModelAndView mav = new ModelAndView("viewproject");
-		new Util().addProjectInfosToMav(mav, this.projectDao, Integer.valueOf(request.getParameter("id")));
+		ProjectWrapper pw = projectDao.getProjectWrapperById(projectId);
+		mav.addObject("pw", pw);
 		return mav;
 	}
 	

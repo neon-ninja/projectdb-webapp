@@ -10,7 +10,7 @@ public class Researcher {
 	private String department1;
 	private String department2;
 	private Integer institutionalRoleId;
-	private String institutionalRole;
+	private String institutionalRoleName;
 	private String pictureUrl;
 	private String startDate;
 	private String endDate;
@@ -112,12 +112,12 @@ public class Researcher {
 		this.notes = notes;
 	}
 
-	public String getInstitutionalRole() {
-		return institutionalRole;
+	public String getInstitutionalRoleName() {
+		return institutionalRoleName;
 	}
 
-	public void setInstitutionalRole(String institutionalRole) {
-		this.institutionalRole = institutionalRole;
+	public void setInstitutionalRoleName(String institutionalRoleName) {
+		this.institutionalRoleName = institutionalRoleName;
 	}
 
 }

@@ -4,8 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -15,29 +15,59 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
+import pm.pojo.AdviserAction;
 import pm.pojo.Attachment;
-import pm.util.Util;
+import pm.pojo.FollowUp;
+import pm.pojo.ProjectWrapper;
+import pm.pojo.Review;
+import pm.temp.TempProjectManager;
 
 public class CreateAttachmentController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateAttachmentController.class.getName()); 
-	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
-	
+	private Random random = new Random();
+
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		Attachment a = (Attachment) o;
-		Integer projectId = a.getProjectId();
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", projectId);
+    	Integer projectId = a.getProjectId(); 
+    	String anchor = "";
+    	ModelAndView mav = new ModelAndView();
+    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
+    	a.setId(random.nextInt());
+    	if (a.getReviewId() != null) {
+            for (Review r: pw.getReviews()) {
+            	if (r.getId().equals(a.getReviewId())) {
+            		r.getAttachments().add(a);
+            	}
+            }
+            anchor = "#reviews";
+    	} else if (a.getFollowUpId() != null) {
+            for (FollowUp fu: pw.getFollowUps()) {
+            	if (fu.getId().equals(a.getFollowUpId())) {
+            		fu.getAttachments().add(a);
+            	}
+            }
+            anchor = "#followups";
+    	} else if (a.getAdviserActionId() != null) {
+            for (AdviserAction aa: pw.getAdviserActions()) {
+            	if (aa.getId().equals(a.getAdviserActionId())) {
+            		aa.getAttachments().add(a);
+            	}
+            }	
+            anchor = "#adviseractions";
+    	}
+    	this.tempProjectManager.update(projectId, pw);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + anchor);
 		mav.addObject("proxy", this.proxy);
-		this.projectDao.createAttachment(projectId, a);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
 	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		Attachment a = new Attachment();
 		a.setProjectId(Integer.getInteger(request.getParameter("id")));
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -52,12 +82,11 @@ public class CreateAttachmentController extends SimpleFormController {
         return modelMap;
     }
 
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
 	}
 
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
 	}
-
 }

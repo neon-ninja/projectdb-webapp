@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -18,30 +18,38 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
+import pm.pojo.ProjectWrapper;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
+import pm.temp.TempProjectManager;
 import pm.util.Util;
 
 public class CreateResearchOutputController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateResearchOutputController.class.getName()); 
 	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
+	private Random random = new Random();
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		ResearchOutput r = (ResearchOutput) o;
-    	Integer projectId = r.getProjectId(); 
+		Integer projectId = r.getProjectId();
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", projectId);
+    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
+    	r.setId(random.nextInt());
+    	r.setType(this.projectDao.getResearchOutputTypeById(r.getTypeId()).getName());
+    	pw.getResearchOutputs().add(r);
+    	this.tempProjectManager.update(projectId, pw);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#outputs");
 		mav.addObject("proxy", this.proxy);
-		this.projectDao.createResearchOutput(projectId, r);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
 	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		ResearchOutput r = new ResearchOutput();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		r.setDate(df.format(new Date()));
@@ -71,4 +79,8 @@ public class CreateResearchOutputController extends SimpleFormController {
 		this.proxy = proxy;
 	}
 
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
+	}
+	
 }

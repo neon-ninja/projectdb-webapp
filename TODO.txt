@@ -1,14 +1,17 @@
 TODO:
 #####
 
-* On advisor profile:
-   - list projects where person is primary advisor
+* Rename tables from advisor to adviser
+* Create table tempproject
+
+* On adviser profile:
+   - list projects where person is primary adviser
    - list project where person is support
 * Add ToDo field to project.
   If something is filled in todo, show it with a tag (*) in the project list
   This makes it easier to find projects where something needs to be done
 * Be able to add multiple HPC facilities on project creation
-* Add primary advisor to list of projects
+* Add primary adviser to list of projects
 * Have a field to indicate whether a researcher works on any active project
   or not in the list of researchers
 * Have watermarks for all input fields
@@ -29,11 +32,11 @@ DONE:
 ######
 * Change project type 'Merit' to 'Research'
 * Display end date of researcher on list of researchers
-* On advisor list: add column that shows on how many active projects an
-  advisor is a primary advisor
+* On adviser list: add column that shows on how many active projects an
+  adviser is a primary adviser
 * Add timestamp to research output and attachments to be able to search for
   projects with research output in a certain period
-* Have a page that shows how many projects are assigned to each advisor
+* Have a page that shows how many projects are assigned to each adviser
 
 
 Smaller features:
@@ -41,7 +44,7 @@ Smaller features:
 
 * Watermarks for form fields
 * Auto-filled form fields (dates, etc)
-* Advisors have different roles on projects
+* Advisers have different roles on projects
 
 Desired queries:
 #################

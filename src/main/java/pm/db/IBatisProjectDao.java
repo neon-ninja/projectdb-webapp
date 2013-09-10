@@ -1,18 +1,19 @@
 package pm.db;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import pm.authz.annotation.RequireAdmin;
-import pm.authz.annotation.RequireAdvisor;
-import pm.authz.annotation.RequireAdvisorOnProject;
+import pm.authz.annotation.RequireAdviser;
+import pm.authz.annotation.RequireAdviserOnProject;
 import pm.pojo.APLink;
-import pm.pojo.Advisor;
-import pm.pojo.AdvisorAction;
-import pm.pojo.AdvisorRole;
+import pm.pojo.Adviser;
+import pm.pojo.AdviserAction;
+import pm.pojo.AdviserRole;
 import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
@@ -22,6 +23,7 @@ import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectType;
+import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
@@ -32,200 +34,404 @@ import pm.pojo.Site;
 
 public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectDao {
 
+    @RequireAdviser
+	public synchronized Integer createProjectWrapper(final ProjectWrapper pw) throws Exception {
+    	Integer pid = this.createProject(pw.getProject());
+    	List<RPLink> rpLinks = pw.getRpLinks();
+    	List<APLink> apLinks = pw.getApLinks();
+    	List<ResearchOutput> ros = pw.getResearchOutputs();
+    	List<ProjectKpi> kpis = pw.getProjectKpis();
+    	List<Review> reviews = pw.getReviews();
+    	List<FollowUp> fus = pw.getFollowUps();
+    	List<AdviserAction> aas = pw.getAdviserActions();
+    	List<ProjectFacility> pfs = pw.getProjectFacilities();
+    	
+		for (RPLink l : rpLinks) {
+			l.setProjectId(pid);
+			this.createRPLink(l);
+		}
+		for (APLink l : apLinks) {
+			l.setProjectId(pid);
+			this.createAPLink(l);
+		}
+		for (ResearchOutput ro : ros) {
+			ro.setProjectId(pid);
+			this.createResearchOutput(ro);
+		}
+		for (ProjectKpi pk : kpis) {
+			pk.setProjectId(pid);
+			this.createProjectKpi(pk);
+		}
+		for (Review r : reviews) {
+			r.setProjectId(pid);
+			this.createReview(r);
+		}
+		for (FollowUp fu : fus) {
+			fu.setProjectId(pid);
+			this.createFollowUp(fu);
+		}
+		for (AdviserAction aa : aas) {
+			aa.setProjectId(pid);
+			this.createAdviserAction(aa);
+		}
+		for (ProjectFacility pf : pfs) {
+			pf.setProjectId(pid);
+			this.createProjectFacility(pf);
+		}
+    	return pid;
+	}
+
+    // TODO: ugly implementation. Fix it
+    @RequireAdviserOnProject
+	public synchronized void updateProjectWrapper(int projectId, ProjectWrapper pw) throws Exception {
+    	Integer pid = pw.getProject().getId();
+    	this.updateProject(pid, pw.getProject());
+    	
+    	List<RPLink> rpLinks = pw.getRpLinks();
+    	List<APLink> apLinks = pw.getApLinks();
+    	List<ResearchOutput> ros = pw.getResearchOutputs();
+    	List<ProjectKpi> kpis = pw.getProjectKpis();
+    	List<Review> reviews = pw.getReviews();
+    	List<FollowUp> fus = pw.getFollowUps();
+    	List<AdviserAction> aas = pw.getAdviserActions();
+    	List<ProjectFacility> pfs = pw.getProjectFacilities();
+
+		this.deleteRPLinks(pid);
+		for (RPLink rpLink : rpLinks) {
+			this.createRPLink(rpLink);
+		}
+
+		this.deleteAPLinks(pid);
+		for (APLink apLink : apLinks) {
+			this.createAPLink(apLink);
+		}
+
+		this.deleteResearchOutputs(pid);
+		for (ResearchOutput ro : ros) {
+			this.createResearchOutput(ro);
+		}
+    	
+    	this.deleteProjectKpis(pid);
+		for (ProjectKpi pk : kpis) {
+			this.createProjectKpi(pk);
+		}
+    	
+    	this.deleteReviews(pid);
+		for (Review r : reviews) {
+			this.createReview(r);
+		}
+    	
+    	this.deleteFollowUps(pid);
+		for (FollowUp fu : fus) {
+			this.createFollowUp(fu);
+		}
+    	
+    	this.deleteAdviserActions(pid);
+		for (AdviserAction aa : aas) {
+			this.createAdviserAction(aa);
+		}
+		
+		this.deleteProjectFacilities(pid);
+		for (ProjectFacility pf: pfs) {
+			this.createProjectFacility(pf);
+		}
+	}
+
+    @RequireAdviser
+	public Integer createResearcher(final Researcher r) throws Exception {
+		return (Integer) getSqlMapClientTemplate().insert("createResearcher", r);
+	}
+
+    @RequireAdviser
+	public Integer createAdviser(final Adviser a) throws Exception {
+		return (Integer) getSqlMapClientTemplate().insert("createAdviser", a);
+	}
+
+	public List<Project> getProjects() throws Exception {
+		List<Project> ps = (List<Project>) getSqlMapClientTemplate().queryForList("getProjects");
+		for (Project p: ps) {
+			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+			p.setProjectTypeName(t.getName());
+		}
+		return ps;
+	}
+
+	public List<Researcher> getResearchers() throws Exception {
+		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchers");
+		if (l != null) {
+			for (Researcher r: l) {
+				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
+				r.setInstitutionalRoleName(ir.getName());
+			}
+		}
+		return l;
+	}
+	
+	public List<Adviser> getAdvisers() throws Exception {
+		List<Adviser> list = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisers");
+		for (Adviser a: list) {
+			a.setNumProjects(this.getNumProjectsForAdviser(a.getId()));
+		}
+		return list;
+	}
+
+	public synchronized ProjectWrapper getProjectWrapperById(Integer projectId) throws Exception {
+		ProjectWrapper pw = new ProjectWrapper();
+		pw.setProject(this.getProjectById(projectId));
+		pw.setRpLinks(this.getRPLinksForProject(projectId));
+		pw.setApLinks(this.getAPLinksForProject(projectId));
+		pw.setResearchOutputs(this.getResearchOutputsForProjectId(projectId));
+		pw.setProjectKpis(this.getKpisForProjectId(projectId));
+		pw.setReviews(this.getReviewsForProjectId(projectId));
+		pw.setFollowUps(this.getFollowUpsForProjectId(projectId));
+		pw.setAdviserActions(this.getAdviserActionsForProjectId(projectId));
+		pw.setProjectFacilities(this.getFacilitiesOnProject(projectId));
+		return pw;
+	}
+
+	@RequireAdviserOnProject
+	public synchronized void deleteProjectWrapper(Integer projectId) throws Exception {
+		getSqlMapClientTemplate().update("deleteProject", projectId);
+	}
+
 	public Project getProjectById(final Integer id) throws Exception {
 		Project p = (Project) getSqlMapClientTemplate().queryForObject("getProjectById", id);
 		ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
-		p.setProjectType(t.getName());
+		p.setProjectTypeName(t.getName());
 		return p;
 	}
 
 	public Researcher getResearcherById(final Integer id) throws Exception {
 		Researcher r = (Researcher) getSqlMapClientTemplate().queryForObject("getResearcherById", id);
 		InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
-		r.setInstitutionalRole(ir.getName());
+		r.setInstitutionalRoleName(ir.getName());
 		return r;
 	}
 
-	public Advisor getAdvisorById(final Integer id) throws Exception {
-		Advisor a = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", id);
-		a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
+	public Adviser getAdviserById(final Integer id) throws Exception {
+		Adviser a = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", id);
+		a.setNumProjects(this.getNumProjectsForAdviser(a.getId()));
 		return a;
 	}
 
-	public Advisor getAdvisorByTuakiriUniqueId(final String id) throws Exception {
-		Advisor a = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorByTuakiriUniqueId", id);
-		a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
+	public Adviser getAdviserByTuakiriUniqueId(final String id) throws Exception {
+		Adviser a = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserByTuakiriUniqueId", id);
 		return a;
 	}
 
-	public InstitutionalRole getInstitutionalRoleById(final Integer id) throws Exception {
-		return (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", id);
-	}
-
-	public FollowUp getFollowUpById(Integer id) throws Exception {
-		return (FollowUp) getSqlMapClientTemplate().queryForObject("getFollowUpById", id);
-	}
-	
-	public Review getReviewById(Integer id) throws Exception {
-		return (Review) getSqlMapClientTemplate().queryForObject("getReviewById", id);	
-	}
-	
-	public Kpi getKpiById(Integer id) throws Exception {
-		return (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", id);	
-	}
-
-	public AdvisorAction getAdvisorActionById(Integer id) throws Exception {
-		return (AdvisorAction) getSqlMapClientTemplate().queryForObject("getAdvisorActionById", id);
-	}
-
-	public List<Project> getAllProjects() throws Exception {
-		List<Project> ps = (List<Project>) getSqlMapClientTemplate().queryForList("getAllProjects");
-		for (Project p: ps) {
-			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
-			p.setProjectType(t.getName());
-		}
-		return ps;
-	}
-
-	public List<Researcher> getAllResearchers() throws Exception {
-		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getAllResearchers");
-		if (l != null) {
-			for (Researcher r: l) {
-				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
-				r.setInstitutionalRole(ir.getName());
-			}
-		}
-		return l;
-	}
-
-	public List<Advisor> getAllAdvisors() throws Exception {
-		List<Advisor> list = (List<Advisor>) getSqlMapClientTemplate().queryForList("getAllAdvisors");
-		for (Advisor a: list) {
-			a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
-		}
-		return list;
-	}
-
-	public Integer getNumProjectsForAdvisor(Integer advisorId) throws Exception {
-		return (Integer) getSqlMapClientTemplate().queryForObject("getNumProjectsForAdvisor", advisorId);		
+	public Integer getNumProjectsForAdviser(Integer adviserId) throws Exception {
+		return (Integer) getSqlMapClientTemplate().queryForObject("getNumProjectsForAdviser", adviserId);		
 	}
 	
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception {
 		return (List<ResearchOutputType>) getSqlMapClientTemplate().queryForList("getResearchOutputTypes");	
 	}
 
-	public List<Site> getAllSites() throws Exception {
-		return (List<Site>) getSqlMapClientTemplate().queryForList("getAllSites");
+	public ResearchOutputType getResearchOutputTypeById(Integer id) throws Exception {
+		return (ResearchOutputType) getSqlMapClientTemplate().queryForObject("getResearchOutputTypeById", id);
 	}
 
-	public List<Kpi> getAllKpis() throws Exception {
-		return (List<Kpi>) getSqlMapClientTemplate().queryForList("getAllKpis");
+	public List<Site> getSites() throws Exception {
+		return (List<Site>) getSqlMapClientTemplate().queryForList("getSites");
 	}
 
-	public List<ProjectType> getAllProjectTypes() throws Exception {
-		return (List<ProjectType>) getSqlMapClientTemplate().queryForList("getAllProjectTypes");
+	public List<Kpi> getKpis() throws Exception {
+		return (List<Kpi>) getSqlMapClientTemplate().queryForList("getKpis");
 	}
 
-	public List<Researcher> getAllResearchersOnProject(Integer pid) throws Exception {
-		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getAllResearchersOnProject", pid);		
+	public List<ProjectType> getProjectTypes() throws Exception {
+		return (List<ProjectType>) getSqlMapClientTemplate().queryForList("getProjectTypes");
+	}
+
+	public List<Researcher> getResearchersOnProject(Integer pid) throws Exception {
+		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersOnProject", pid);		
 		if (l != null) {
 			for (Researcher r: l) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
-				r.setInstitutionalRole(ir.getName());
+				r.setInstitutionalRoleName(ir.getName());
 			}
 		}
 		return l;
 	}
 
-	public List<Advisor> getAllAdvisorsOnProject(Integer pid) throws Exception {
-		List<Advisor> list = (List<Advisor>) getSqlMapClientTemplate().queryForList("getAllAdvisorsOnProject", pid);		
-		for (Advisor a: list) {
-			a.setNumProjects(this.getNumProjectsForAdvisor(a.getId()));
+	public List<Adviser> getAdvisersOnProject(Integer pid) throws Exception {
+		List<Adviser> list = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisersOnProject", pid);		
+		for (Adviser a: list) {
+			a.setNumProjects(this.getNumProjectsForAdviser(a.getId()));
 		}
 		return list;
 	}
 
-	public List<Facility> getAllFacilities() throws Exception {
-		return (List<Facility>) getSqlMapClientTemplate().queryForList("getAllFacilities");		
+	public Facility getFacilityById(Integer id) throws Exception {
+		return (Facility) getSqlMapClientTemplate().queryForObject("getFacilityById", id);		
 	}
 
-	public List<Facility> getAllFacilitiesOnProject(Integer pid) throws Exception {
-		return (List<Facility>) getSqlMapClientTemplate().queryForList("getAllFacilitiesOnProject", pid);		
+	public List<Facility> getFacilities() throws Exception {
+		return (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilities");		
 	}
 
-	public List<Researcher> getAllResearchersNotOnProject(Integer pid) throws Exception {
-		List<Researcher> l = (List<Researcher>) getSqlMapClientTemplate().queryForList("getAllResearchersNotOnProject", pid);
-		if (l != null) {
-			for (Researcher r: l) {
+	public List<ProjectFacility> getFacilitiesOnProject(Integer pid) throws Exception {
+		List<Facility> fs = (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilitiesOnProject", pid);		
+	    List<ProjectFacility> pfs = new LinkedList<ProjectFacility>();
+	    for (Facility f: fs) {
+	    	ProjectFacility pf = new ProjectFacility();
+	    	pf.setProjectId(pid);
+	    	pf.setFacilityId(f.getId());
+	    	pf.setFacilityName(f.getName());
+	    	pfs.add(pf);
+	    }
+	    return pfs;
+	}
+
+	public List<Researcher> getResearchersNotOnList(List<Integer> l) throws Exception {
+		List<Researcher> tmp = null;
+		if (l.size() == 0) {
+			tmp = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchers");
+		} else {
+			tmp = (List<Researcher>) getSqlMapClientTemplate().queryForList("getResearchersNotOnList", l);			
+		}
+		if (tmp != null) {
+			for (Researcher r: tmp) {
 				InstitutionalRole ir = (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", r.getInstitutionalRoleId());
-				r.setInstitutionalRole(ir.getName());
+				r.setInstitutionalRoleName(ir.getName());
+			}
+		}
+		return tmp;
+	}
+
+	public List<Adviser> getAdvisersNotOnList(List<Integer> l) throws Exception {
+		List<Adviser> tmp = null;
+		if (l.size() == 0) {
+			tmp = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisers");
+		} else {
+			tmp = (List<Adviser>) getSqlMapClientTemplate().queryForList("getAdvisersNotOnList", l);
+		}
+		return tmp;
+	}
+
+	public List<Facility> getFacilitiesNotOnList(List<Integer> l) throws Exception {
+		List<Facility> tmp = null;
+		if (l.size() == 0) {
+			tmp = (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilities");
+		} else {
+			tmp = (List<Facility>) getSqlMapClientTemplate().queryForList("getFacilitiesNotOnList", l);
+		}
+		return tmp;
+	}
+
+	public List<ResearcherRole> getResearcherRoles() throws Exception {
+		return (List<ResearcherRole>) getSqlMapClientTemplate().queryForList("getResearcherRoles");		
+	}
+
+	public List<AdviserRole> getAdviserRoles() throws Exception {
+		return (List<AdviserRole>) getSqlMapClientTemplate().queryForList("getAdviserRoles");		
+	}
+
+	public List<InstitutionalRole> getInstitutionalRoles() throws Exception {
+		return (List<InstitutionalRole>) getSqlMapClientTemplate().queryForList("getInstitutionalRoles");		
+	}
+
+	public InstitutionalRole getInstitutionalRoleById(final Integer id) throws Exception {
+		return (InstitutionalRole) getSqlMapClientTemplate().queryForObject("getInstitutionalRoleById", id);
+	}
+
+    @RequireAdviser
+	public void updateResearcher(final Researcher r) throws Exception {
+		getSqlMapClientTemplate().update("updateResearcher", r);
+	}
+
+    @RequireAdviser
+	public void updateAdviser(final Adviser a) throws Exception {
+		getSqlMapClientTemplate().update("updateAdviser", a);
+	}
+ 
+    @RequireAdmin
+	public void deleteResearcher(final Integer id) throws Exception {
+		getSqlMapClientTemplate().update("deleteResearcher", id);
+	}
+
+    @RequireAdmin
+	public void deleteAdviser(final Integer id) throws Exception {
+		getSqlMapClientTemplate().update("deleteAdviser", id);
+	}
+
+	public Kpi getKpiById(Integer id) throws Exception {
+		return (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", id);	
+	}
+
+    public List<Project> getProjectsForResearcherId(Integer id) throws Exception {
+    	List<Project> ps = getSqlMapClientTemplate().queryForList("getProjectsForResearcherId", id);
+		for (Project p: ps) {
+			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+			p.setProjectTypeName(t.getName());
+		}
+		return ps;
+    }
+
+    public List<Project> getProjectsForAdviserId(Integer id) throws Exception {
+    	List<Project> ps = getSqlMapClientTemplate().queryForList("getProjectsForAdviserId", id);
+		for (Project p: ps) {
+			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
+			p.setProjectTypeName(t.getName());
+		}
+		return ps;
+    }
+	
+    public AdviserRole getAdviserRoleById(Integer id) throws Exception {
+    	return (AdviserRole) getSqlMapClientTemplate().queryForObject("getAdviserRoleById", id);
+    }
+
+    public ResearcherRole getResearcherRoleById(Integer id) throws Exception {
+    	return (ResearcherRole) getSqlMapClientTemplate().queryForObject("getResearcherRoleById", id);
+    }
+    
+	private List<RPLink> getRPLinksForProject(Integer pid) throws Exception {
+		List<RPLink> l = (List<RPLink>) getSqlMapClientTemplate().queryForList("getRPLinksForProjectId", pid);
+		if (l != null) {
+			for (RPLink rp: l) {
+				rp.setResearcher(this.getResearcherById(rp.getResearcherId()));
+				ResearcherRole rr = (ResearcherRole) getSqlMapClientTemplate().queryForObject("getResearcherRoleById", rp.getResearcherRoleId());
+				rp.setResearcherRoleName(rr.getName());
 			}
 		}
 		return l;
 	}
 
-	public List<Advisor> getAllAdvisorsNotOnProject(Integer pid) throws Exception {
-		return (List<Advisor>) getSqlMapClientTemplate().queryForList("getAllAdvisorsNotOnProject", pid);
-	}
-
-	public List<Facility> getAllFacilitiesNotOnProject(Integer pid) throws Exception {
-		return (List<Facility>) getSqlMapClientTemplate().queryForList("getAllFacilitiesNotOnProject", pid);
-	}
-
-	public List<ResearcherRole> getAllResearcherRoles() throws Exception {
-		return (List<ResearcherRole>) getSqlMapClientTemplate().queryForList("getAllResearcherRoles");		
-	}
-
-	public List<AdvisorRole> getAllAdvisorRoles() throws Exception {
-		return (List<AdvisorRole>) getSqlMapClientTemplate().queryForList("getAllAdvisorRoles");		
-	}
-
-	public List<InstitutionalRole> getAllInstitutionalRoles() throws Exception {
-		return (List<InstitutionalRole>) getSqlMapClientTemplate().queryForList("getAllInstitutionalRoles");		
-	}
-
-	public List<RPLink> getAllRPLinksForProjectId(Integer id) throws Exception {
-		List<RPLink> l = (List<RPLink>) getSqlMapClientTemplate().queryForList("getAllRPLinksForProjectId", id);
+	private List<APLink> getAPLinksForProject(Integer pid) throws Exception {
+		List<APLink> l = (List<APLink>) getSqlMapClientTemplate().queryForList("getAPLinksForProjectId", pid);
 		if (l != null) {
-			for (RPLink rl: l) {
-				ResearcherRole ar = (ResearcherRole) getSqlMapClientTemplate().queryForObject("getResearcherRoleById", rl.getResearcherRoleId());
-				rl.setResearcherRole(ar.getName());
+			for (APLink ap: l) {
+				ap.setAdviser(this.getAdviserById(ap.getAdviserId()));
+				AdviserRole ar = (AdviserRole) getSqlMapClientTemplate().queryForObject("getAdviserRoleById", ap.getAdviserRoleId());
+				ap.setAdviserRoleName(ar.getName());
 			}
 		}
 		return l;
 	}
-	
-	public List<APLink> getAllAPLinksForProjectId(Integer id) throws Exception {
-		List<APLink> l = (List<APLink>) getSqlMapClientTemplate().queryForList("getAllAPLinksForProjectId", id);
-		if (l != null) {
-			for (APLink al: l) {
-				AdvisorRole ar = (AdvisorRole) getSqlMapClientTemplate().queryForObject("getAdvisorRoleById", al.getAdvisorRoleId());
-				al.setAdvisorRole(ar.getName());
-			}
-		}		
-		return l;
-	}
-	
-	public List<Review> getAllReviewsForProjectId(Integer id) throws Exception {
-		List<Review> l = (List<Review>) getSqlMapClientTemplate().queryForList("getAllReviewsForProjectId", id);
+
+	private List<Review> getReviewsForProjectId(Integer id) throws Exception {
+		List<Review> l = (List<Review>) getSqlMapClientTemplate().queryForList("getReviewsForProjectId", id);
 		for (Review r: l) {
-			Advisor tmp = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", r.getAdvisorId());
-			r.setAdvisor(tmp.getFullName());
+			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", r.getAdviserId());
+			r.setAdviserName(tmp.getFullName());
+			r.setAttachments(this.getAttachmentsForReviewId(r.getId()));
 		}
 		return l;
 	}
 
-	public List<FollowUp> getAllFollowUpsForProjectId(Integer id) throws Exception {
-		List<FollowUp> l = (List<FollowUp>) getSqlMapClientTemplate().queryForList("getAllFollowUpsForProjectId", id);		
+	private List<FollowUp> getFollowUpsForProjectId(Integer id) throws Exception {
+		List<FollowUp> l = (List<FollowUp>) getSqlMapClientTemplate().queryForList("getFollowUpsForProjectId", id);
 		for (FollowUp f: l) {
-			Advisor tmp = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", f.getAdvisorId());
-			f.setAdvisor(tmp.getFullName());
+			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", f.getAdviserId());
+			f.setAdviserName(tmp.getFullName());
+			f.setAttachments(this.getAttachmentsForFollowUpId(f.getId()));
 		}
 		return l;
 	}
 
-	public List<ResearchOutput> getAllResearchOutputsForProjectId(Integer id) throws Exception {
-		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getAllResearchOutputsForProjectId", id);
+	
+	private List<ResearchOutput> getResearchOutputsForProjectId(Integer id) throws Exception {
+		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getResearchOutputsForProjectId", id);
 		for (ResearchOutput ro: l) {
 			ResearchOutputType tmp = (ResearchOutputType) getSqlMapClientTemplate().queryForObject("getResearchOutputTypeById", ro.getTypeId());
 			ro.setType(tmp.getName());
@@ -233,190 +439,201 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		return l;
 	}
 
-	public List<Attachment> getAllAttachmentsForProjectId(Integer id) throws Exception {
-		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAllAttachmentsForProjectId", id);		
-	}
-
-	public List<AdvisorAction> getAllAdvisorActionsForProjectId(Integer id) throws Exception {
-		List<AdvisorAction> l = (List<AdvisorAction>) getSqlMapClientTemplate().queryForList("getAllAdvisorActionsForProjectId", id);
-		for (AdvisorAction aa: l) {
-			Advisor tmp = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", aa.getAdvisorId());
-		    aa.setAdvisor(tmp.getFullName());
-		}
-		return l;
-	}
-
-	public List<ProjectKpi> getAllKpisForProjectId(Integer id) throws Exception {
-		List<ProjectKpi> l = (List<ProjectKpi>) getSqlMapClientTemplate().queryForList("getAllKpisForProjectId", id);
+	private List<ProjectKpi> getKpisForProjectId(Integer id) throws Exception {
+		List<ProjectKpi> l = (List<ProjectKpi>) getSqlMapClientTemplate().queryForList("getKpisForProjectId", id);
 		for (ProjectKpi pk: l) {
-			Advisor tmp = (Advisor) getSqlMapClientTemplate().queryForObject("getAdvisorById", pk.getAdvisorId());
+			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", pk.getAdviserId());
 			Kpi kpi = (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", pk.getKpiId());
-			pk.setAdvisor(tmp.getFullName());
+			pk.setAdviser(tmp.getFullName());
 			pk.setKpiType(kpi.getType());
 			pk.setKpiTitle(kpi.getTitle());
 		}
 		return l;
 	}
-
-    public List<Project> getAllProjectsForResearcherId(Integer id) throws Exception {
-    	List<Project> ps = getSqlMapClientTemplate().queryForList("getAllProjectsForResearcherId", id);
-		for (Project p: ps) {
-			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
-			p.setProjectType(t.getName());
+	
+	private List<AdviserAction> getAdviserActionsForProjectId(Integer id) throws Exception {
+		List<AdviserAction> l = (List<AdviserAction>) getSqlMapClientTemplate().queryForList("getAdviserActionsForProjectId", id);
+		for (AdviserAction aa: l) {
+			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", aa.getAdviserId());
+		    aa.setAdviserName(tmp.getFullName());
+		    aa.setAttachments(this.getAttachmentsForAdviserActionId(aa.getId()));
 		}
-		return ps;
-    }
+		return l;
+	}
 
-    public List<Project> getAllProjectsForAdvisorId(Integer id) throws Exception {
-    	List<Project> ps = getSqlMapClientTemplate().queryForList("getAllProjectsForAdvisorId", id);
-		for (Project p: ps) {
-			ProjectType t = (ProjectType) getSqlMapClientTemplate().queryForObject("getProjectTypeById", p.getProjectTypeId());
-			p.setProjectType(t.getName());
-		}
-		return ps;
-    }
+	private List<Attachment> getAttachmentsForReviewId(Integer rid) throws Exception {
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForReviewId", rid);		
+	}
 
-    @RequireAdvisor
-	public synchronized Integer createProject(final Project p) throws Exception {
+	private List<Attachment> getAttachmentsForFollowUpId(Integer rid) throws Exception {
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForFollowUpId", rid);		
+	}
+
+	private List<Attachment> getAttachmentsForAdviserActionId(Integer rid) throws Exception {
+		return (List<Attachment>) getSqlMapClientTemplate().queryForList("getAttachmentsForAdviserActionId", rid);		
+	}
+
+	private Integer createProject(Project p) throws Exception {
 		return (Integer) getSqlMapClientTemplate().insert("createProject", p);
 	}
 
-    @RequireAdvisor
-	public synchronized Integer createResearcher(final Researcher r) throws Exception {
-		return (Integer) getSqlMapClientTemplate().insert("createResearcher", r);
-	}
-
-    @RequireAdvisor
-	public synchronized Integer createAdvisor(final Advisor a) throws Exception {
-		return (Integer) getSqlMapClientTemplate().insert("createAdvisor", a);
-	}
-
-    @RequireAdvisorOnProject
-	public void createRPLink(Integer projectId, RPLink r) throws Exception {
+	private void createRPLink(RPLink r) throws Exception {
 		getSqlMapClientTemplate().insert("createRPLink", r);
 	}
 	
-    @RequireAdvisorOnProject
-    public void createAPLink(Integer projectId, APLink a) throws Exception {
+    private void createAPLink(APLink a) throws Exception {
 		getSqlMapClientTemplate().insert("createAPLink", a);
 	}
 	
-    @RequireAdvisorOnProject
-	public Integer createReview(Integer projectId, Review r) throws Exception {
-		return (Integer) getSqlMapClientTemplate().insert("createReview", r);
+	private Integer createReview(Review r) throws Exception {
+		Integer rid = (Integer) getSqlMapClientTemplate().insert("createReview", r);
+		List<Attachment> attachments = r.getAttachments();
+		if ((r.getAttachmentDescription() != null && r.getAttachmentDescription() != "") ||
+			(r.getAttachmentLink() != null && r.getAttachmentLink() != "")) {
+			Attachment a = new Attachment();
+			a.setDate(r.getDate());
+			a.setDescription(r.getAttachmentDescription());
+			a.setLink(r.getAttachmentLink());
+			attachments.add(a);
+		}
+		for (Attachment a : attachments) {
+			a.setProjectId(r.getProjectId());
+			a.setReviewId(rid);
+			this.createAttachment(a);
+		}
+		return rid;
 	}
 	
-    @RequireAdvisorOnProject
-	public Integer createFollowUp(Integer projectId, FollowUp f) throws Exception {
-		return (Integer) getSqlMapClientTemplate().insert("createFollowUp", f);
+	private Integer createFollowUp(FollowUp f) throws Exception {
+		Integer fid = (Integer) getSqlMapClientTemplate().insert("createFollowUp", f);
+		List<Attachment> attachments = f.getAttachments();
+		if ((f.getAttachmentDescription() != null && f.getAttachmentDescription() != "") ||
+			(f.getAttachmentLink() != null && f.getAttachmentLink() != "")) {
+			Attachment a = new Attachment();
+			a.setDate(f.getDate());
+			a.setDescription(f.getAttachmentDescription());
+			a.setLink(f.getAttachmentLink());
+			attachments.add(a);
+		}
+		for (Attachment a : attachments) {
+			a.setProjectId(f.getProjectId());
+			a.setFollowUpId(fid);
+			this.createAttachment(a);
+		}
+		return fid;
 	}
 	
-    @RequireAdvisorOnProject
-	public void createResearchOutput(Integer projectId, ResearchOutput o) throws Exception {
+	private void createResearchOutput(ResearchOutput o) throws Exception {
 		getSqlMapClientTemplate().insert("createResearchOutput", o);
 	}
 	
-    @RequireAdvisorOnProject
-	public void createAttachment(Integer projectId, Attachment a) throws Exception {
+	private void createAttachment(Attachment a) throws Exception {
 		getSqlMapClientTemplate().insert("createAttachment", a);
 	}
 	
-    @RequireAdvisorOnProject
-	public Integer createAdvisorAction(Integer projectId, AdvisorAction a) throws Exception {
-		return (Integer) getSqlMapClientTemplate().insert("createAdvisorAction", a);
+	private Integer createAdviserAction(AdviserAction aa) throws Exception {
+		Integer aaid = (Integer) getSqlMapClientTemplate().insert("createAdviserAction", aa);
+		List<Attachment> attachments = aa.getAttachments();
+		if ((aa.getAttachmentDescription() != null && aa.getAttachmentDescription() != "") ||
+			(aa.getAttachmentLink() != null && aa.getAttachmentLink() != "")) {
+			Attachment a = new Attachment();
+			a.setDate(aa.getDate());
+			a.setDescription(aa.getAttachmentDescription());
+			a.setLink(aa.getAttachmentLink());
+		    attachments.add(a);
+		}
+		for (Attachment a : attachments) {
+			a.setProjectId(aa.getProjectId());
+			a.setAdviserActionId(aaid);
+			this.createAttachment(a);
+		}
+		return aaid;
 	}
 	
-    @RequireAdvisorOnProject
-	public void createProjectFacility(Integer projectId, ProjectFacility f) throws Exception {
+	// TODO: handle facilities on project
+	private void createProjectFacility(ProjectFacility f) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectFacility", f);
 	}
 	
-    @RequireAdvisorOnProject
-	public void createProjectKpi(Integer projectId, ProjectKpi pk) throws Exception {
+	private void createProjectKpi(ProjectKpi pk) throws Exception {
 		getSqlMapClientTemplate().insert("createProjectKpi", pk);
 	}
 	
-    @RequireAdvisorOnProject
-	public void updateProject(Integer projectId, final Project p) throws Exception {
+	private void updateProject(Integer projectId, Project p) throws Exception {
 		getSqlMapClientTemplate().update("updateProject", p);
 	}
 
-    @RequireAdvisor
-	public void updateResearcher(final Researcher r) throws Exception {
-		getSqlMapClientTemplate().update("updateResearcher", r);
+	private void deleteRPLinks(Integer projectId) throws Exception {
+        getSqlMapClientTemplate().update("deleteRPLinks", projectId);
 	}
 
-    @RequireAdvisor
-	public void updateAdvisor(final Advisor a) throws Exception {
-		getSqlMapClientTemplate().update("updateAdvisor", a);
-	}
-
-    @RequireAdvisorOnProject
-	public void deleteProject(Integer projectId) throws Exception {
-		getSqlMapClientTemplate().update("deleteProject", projectId);
-	}
-
-    @RequireAdmin
-	public void deleteResearcher(final Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteResearcher", id);
-	}
-
-    @RequireAdmin
-	public void deleteAdvisor(final Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteAdvisor", id);
-	}
-	
-    @RequireAdvisorOnProject
-	public void deleteResearcherFromProject(Integer projectId, Integer researcherId) throws Exception {
+	private void deleteRPLink(Integer projectId, Integer researcherId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("researcherId", researcherId);
         params.put("projectId", projectId);
-        getSqlMapClientTemplate().update("deleteResearcherFromProject", params);
+        getSqlMapClientTemplate().update("deleteRPLink", params);
 	}
 
-    @RequireAdvisorOnProject
-	public void deleteAdvisorFromProject(Integer projectId, Integer advisorId) throws Exception {
+	private void deleteAPLinks(Integer projectId) throws Exception {
+        getSqlMapClientTemplate().update("deleteAPLinks", projectId);
+	}
+
+	private void deleteAPLink(Integer projectId, Integer adviserId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
-        params.put("advisorId", advisorId);
+        params.put("adviserId", adviserId);
         params.put("projectId", projectId);
-        getSqlMapClientTemplate().update("deleteAdvisorFromProject", params);
+        getSqlMapClientTemplate().update("deleteAPLink", params);
 	}
 	
-    @RequireAdvisorOnProject
-	public void deleteReview(Integer projectId, final Integer id) throws Exception {
+	private void deleteReviews(Integer pid) throws Exception {
+		getSqlMapClientTemplate().update("deleteReviews", pid);
+	}
+
+	private void deleteReview(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteReview", id);
 	}
 
-    @RequireAdvisorOnProject
-	public void deleteFollowUp(Integer projectId, final Integer id) throws Exception {
+	private void deleteFollowUps(Integer pid) throws Exception {
+		getSqlMapClientTemplate().update("deleteFollowUps", pid);
+	}
+
+	private void deleteFollowUp(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteFollowUp", id);
 	}
 
-    @RequireAdvisorOnProject
-	public void deleteResearchOutput(Integer projectId, Integer id) throws Exception {
+	private void deleteResearchOutputs(Integer id) throws Exception {
+		getSqlMapClientTemplate().update("deleteResearchOutputs", id);
+	}
+	
+	private void deleteResearchOutput(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteResearchOutput", id);
 	}
 	
-    @RequireAdvisorOnProject
-	public void deleteAttachment(Integer projectId, Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteAttachment", id);		
-	}
-	
-    @RequireAdvisorOnProject
-	public void deleteAdvisorAction(Integer projectId, Integer id) throws Exception {
-		getSqlMapClientTemplate().update("deleteAdvisorAction", id);		
+	private void deleteAdviserActions(Integer pid) throws Exception {
+		getSqlMapClientTemplate().update("deleteAdviserActions", pid);		
 	}
 
-    @RequireAdvisorOnProject
-	public void deleteProjectKpi(Integer projectId, Integer id) throws Exception {
+	private void deleteProjectFacilities(Integer pid) throws Exception {
+		getSqlMapClientTemplate().update("deleteProjectFacilities", pid);		
+	}
+
+	private void deleteAdviserAction(Integer id) throws Exception {
+		getSqlMapClientTemplate().update("deleteAdviserAction", id);		
+	}
+
+	private void deleteProjectKpis(Integer id) throws Exception {
+		getSqlMapClientTemplate().update("deleteProjectKpis", id);		
+	}
+
+	private void deleteProjectKpi(Integer id) throws Exception {
 		getSqlMapClientTemplate().update("deleteProjectKpi", id);		
 	}
 
-    @RequireAdvisorOnProject
-	public void deleteFacilityFromProject(Integer projectId, Integer facilityId) throws Exception {
+	private void deleteFacilityFromProject(Integer projectId, Integer facilityId) throws Exception {
         Map<String,Object> params=new HashMap<String, Object>();
         params.put("projectId", projectId);
         params.put("facilityId", facilityId);
 		getSqlMapClientTemplate().update("deleteFacilityFromProject", params);		
 	}
+	
 }

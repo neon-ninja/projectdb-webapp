@@ -27,7 +27,7 @@
   
   <h3>${researcher.fullName}</h3>
 
-  <br><img src="${researcher.pictureUrl}" width="40px"/><br><br>
+  <br><img src="${researcher.pictureUrl}" width="80px"/><br><br>
   
   <table border="0" cellspacing="0" cellpadding="5">
     <tr>
@@ -52,7 +52,7 @@
     </tr>
     <tr>
       <td>Institutional role:</td>
-      <td>${researcher.institutionalRole}</td>
+      <td>${researcher.institutionalRoleName}</td>
     </tr>
     <tr>
       <td>Start date:</td>
@@ -86,7 +86,7 @@
         <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${project.id}">${project.name}</a></td>
         <td>${project.nextReviewDate}</td>
         <td>${project.nextFollowUpDate}</td>
-        <td>${project.projectType}</td>
+        <td>${project.projectTypeName}</td>
       </tr>
     </c:forEach>
     </tbody>

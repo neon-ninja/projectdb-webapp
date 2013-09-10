@@ -39,9 +39,9 @@
  
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
-      <td>Advisor</td>
+      <td>Adviser</td>
       <td>&nbsp;</td>
-      <td><form:select path="advisorId" items="${advisors}"/></td>
+      <td><form:select path="adviserId" items="${advisers}"/></td>
     </tr>
     <tr>
       <td>Date</td>

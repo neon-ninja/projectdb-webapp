@@ -4,7 +4,6 @@ public class Project {
 
 	private Integer id;
 	private String projectCode;
-	private String projectType;
 	private Integer projectTypeId;
 	private String name;
 	private String description;
@@ -16,6 +15,7 @@ public class Project {
 	private String notes;
 	private String todo;
 	private String requirements;
+	private String projectTypeName;
 
 	public Integer getId() {
 		return id;
@@ -41,12 +41,12 @@ public class Project {
 		this.projectCode = projectCode;
 	}
 
-	public String getProjectType() {
-		return projectType;
+	public String getProjectTypeName() {
+		return projectTypeName;
 	}
 
-	public void setProjectType(String projectType) {
-		this.projectType = projectType;
+	public void setProjectTypeName(String projectTypeName) {
+		this.projectTypeName = projectTypeName;
 	}
 
 	public String getName() {

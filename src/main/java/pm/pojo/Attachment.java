@@ -6,7 +6,7 @@ public class Attachment {
 	Integer projectId;
 	Integer followUpId;
 	Integer reviewId;
-	Integer advisorActionId;
+	Integer adviserActionId;
 	String description;
 	String link;
 	String date;
@@ -39,12 +39,12 @@ public class Attachment {
 		this.reviewId = reviewId;
 	}
 
-	public Integer getAdvisorActionId() {
-		return advisorActionId;
+	public Integer getAdviserActionId() {
+		return adviserActionId;
 	}
 
-	public void setAdvisorActionId(Integer advisorActionId) {
-		this.advisorActionId = advisorActionId;
+	public void setAdviserActionId(Integer adviserActionId) {
+		this.adviserActionId = adviserActionId;
 	}
 
 	public String getDate() {

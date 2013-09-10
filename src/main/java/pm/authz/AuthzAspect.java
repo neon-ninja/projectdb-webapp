@@ -10,7 +10,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import pm.db.ProjectDao;
-import pm.pojo.Advisor;
+import pm.pojo.Adviser;
+import pm.util.CustomException;
 
 public class AuthzAspect {
 
@@ -18,13 +19,13 @@ public class AuthzAspect {
 	private String remoteUserHeader;
 	private ProjectDao projectDao;
 
-	public void verifyUserIsAdvisor() throws AuthzException {
-		log.info("verifying user " + this.getTuakiriUniqueIdFromRequest() + " is advisor");
+	public void verifyUserIsAdviser() throws CustomException {
+		log.info("verifying user " + this.getTuakiriUniqueIdFromRequest() + " is adviser");
 		try {
 			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
-			List<Advisor> advisors = this.projectDao.getAllAdvisors();
-			if (advisors != null) {
-				for (Advisor a: advisors) {
+			List<Adviser> advisers = this.projectDao.getAdvisers();
+			if (advisers != null) {
+				for (Adviser a: advisers) {
 					String tid = a.getTuakiriUniqueId();
 					if (tid != null && !tid.trim().equals("") && tid.equals(tuakiriUniqueId)) {
 						return;
@@ -32,24 +33,27 @@ public class AuthzAspect {
 				}
 			}
 		} catch (Exception e) {
-			throw new AuthzException(e.getMessage());
+			throw new CustomException(e.getMessage());
 		}
-		throw new AuthzException("Only an advisor can perform this operation.");
+		throw new CustomException("Only an adviser can perform this operation.");
 	}
 
-	public void verifyUserIsAdvisorOnProject(Integer projectId) throws AuthzException {
+	public void verifyUserIsAdviserOnProject(Integer projectId) throws CustomException {
 		try {
+			if (projectId < 1) {
+				return;
+			}
 			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
-			Advisor tmp = this.projectDao.getAdvisorByTuakiriUniqueId(tuakiriUniqueId);
+			Adviser tmp = this.projectDao.getAdviserByTuakiriUniqueId(tuakiriUniqueId);
 			if (tmp != null) {
 				if (tmp.getIsAdmin() > 0) {
 					return;
 				}
 			}
-			log.info("verifying user " + tuakiriUniqueId + " is admin or advisor on project " + projectId);
-			List<Advisor> advisors = this.projectDao.getAllAdvisorsOnProject(projectId);
-			if (advisors != null) {
-				for (Advisor a: advisors) {
+
+			List<Adviser> advisers = this.projectDao.getAdvisersOnProject(projectId);
+			if (advisers != null) {
+				for (Adviser a: advisers) {
 					String tid = a.getTuakiriUniqueId();
 					if (tid != null && !tid.trim().equals("") && tid.equals(tuakiriUniqueId)) {
 						return;
@@ -57,25 +61,25 @@ public class AuthzAspect {
 				}
 			}
 		} catch (Exception e) {
-			throw new AuthzException(e.getMessage());
+			throw new CustomException(e.getMessage());
 		}
-		throw new AuthzException("Only an advisor of this project or an admin can perform this operation.");
+		throw new CustomException("Only an adviser of this project or an admin can perform this operation.");
 	}
 
-	public void verifyUserIsAdmin() throws AuthzException {		
+	public void verifyUserIsAdmin() throws CustomException {		
 		log.info("verifying user " + this.getTuakiriUniqueIdFromRequest() + " is admin");
 		try {
 			String tuakiriUniqueId = this.getTuakiriUniqueIdFromRequest();
 			if (tuakiriUniqueId != null && !tuakiriUniqueId.trim().equals("")) {
-				Advisor advisor = this.projectDao.getAdvisorByTuakiriUniqueId(tuakiriUniqueId);
-				if (advisor.getIsAdmin() > 0) {
+				Adviser adviser = this.projectDao.getAdviserByTuakiriUniqueId(tuakiriUniqueId);
+				if (adviser.getIsAdmin() > 0) {
 					return;
 				}				
 			}
 		} catch (Exception e) {
-			throw new AuthzException(e.getMessage());
+			throw new CustomException(e.getMessage());
 		}
-		throw new AuthzException("Only an admin can perform this operation.");
+		throw new CustomException("Only an admin can perform this operation.");
 	}
 
 	public ProjectDao getProjectDao() {

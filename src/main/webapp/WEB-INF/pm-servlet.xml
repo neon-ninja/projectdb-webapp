@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:configuration.properties</value>
@@ -14,311 +14,330 @@
 		</property>
 	</bean>
 
-	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-	  <property name="exceptionMappings">
-        <props>
-          <prop key="pm.authz.AuthzException">authzexception</prop>
-        </props>
-      </property>
-    </bean>
-	
-    <bean id="authzAspect" class="pm.authz.AuthzAspect" scope="request">
-      <property name="remoteUserHeader" value="${remoteUserHeader}"/>
-	  <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="pm.util.CustomException">customexception</prop>
+			</props>
+		</property>
+	</bean>
 
-    <aop:config>
-      <aop:aspect id="AuthorziationAspect" ref="authzAspect">
-        <aop:pointcut id="requireAdvisorOnProject" expression="@annotation(pm.authz.annotation.RequireAdvisorOnProject) and args(projectId,..)"/>
-        <aop:pointcut id="requireAdvisor" expression="@annotation(pm.authz.annotation.RequireAdvisor)"/>
-        <aop:pointcut id="requireAdmin" expression="@annotation(pm.authz.annotation.RequireAdmin)"/>
-        <aop:before pointcut-ref="requireAdvisorOnProject" method="verifyUserIsAdvisorOnProject"/>    
-        <aop:before pointcut-ref="requireAdvisor" method="verifyUserIsAdvisor"/>    
-        <aop:before pointcut-ref="requireAdmin" method="verifyUserIsAdmin"/>    
-      </aop:aspect>
-    </aop:config>
-	
-    <!-- Controllers -->
-	<bean id="constructionController" class="pm.controller.ConstructionController"/>
+	<bean id="authzAspect" class="pm.authz.AuthzAspect">
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-    <bean id="createProjectController" class="pm.controller.CreateProjectController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="createProject"/>
-        <property name="commandClass" value="pm.pojo.CreateProject"/>
-        <property name="formView" value="createproject"/>
-        <property name="successView" value="viewproject"/>
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<aop:config>
+		<aop:aspect id="AuthorizationAspect" ref="authzAspect">
+			<aop:pointcut id="requireAdviserOnProject" expression="@annotation(pm.authz.annotation.RequireAdviserOnProject) and args(projectId,..)" />
+			<aop:pointcut id="requireAdviser" expression="@annotation(pm.authz.annotation.RequireAdviser)" />
+			<aop:pointcut id="requireAdmin" expression="@annotation(pm.authz.annotation.RequireAdmin)" />
+			<aop:before pointcut-ref="requireAdviserOnProject" method="verifyUserIsAdviserOnProject" />
+			<aop:before pointcut-ref="requireAdviser" method="verifyUserIsAdviser" />
+			<aop:before pointcut-ref="requireAdmin" method="verifyUserIsAdmin" />
+		</aop:aspect>
+	</aop:config>
 
-    <bean id="createResearcherController" class="pm.controller.CreateResearcherController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="researcher"/>
-        <property name="commandClass" value="pm.pojo.Researcher"/>
-        <property name="formView" value="createresearcher"/>
-        <property name="successView" value="viewresearcher"/>
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="profileDefaultPicture" value="${profile.default.picture}"/>
-    </bean>
+	<bean id="tempProjectManager" class="pm.temp.TempProjectManager"
+		scope="request">
+		<aop:scoped-proxy />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempDao" ref="tempProjectDao" />
+		<property name="sessionDuration" value="${session.duration.seconds}" />
+	</bean>
 
-    <bean id="createAdvisorController" class="pm.controller.CreateAdvisorController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="advisor"/>
-        <property name="commandClass" value="pm.pojo.Advisor"/>
-        <property name="formView" value="createadvisor"/>
-        <property name="successView" value="viewadvisor"/>
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="profileDefaultPicture" value="${profile.default.picture}"/>
-    </bean>
+	<!-- Controllers -->
+	<bean id="createResearcherController" class="pm.controller.CreateResearcherController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="researcher" />
+		<property name="commandClass" value="pm.pojo.Researcher" />
+		<property name="formView" value="createresearcher" />
+		<property name="successView" value="viewresearcher" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="profileDefaultPicture" value="${profile.default.picture}" />
+	</bean>
 
-    <bean id="createRPLinkController" class="pm.controller.CreateRPLinkController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="rpLink"/>
-        <property name="commandClass" value="pm.pojo.RPLink"/>
-        <property name="formView" value="createRPLink"/>
-        <property name="successView" value="redirectToEditProject"/>        
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createAdviserController" class="pm.controller.CreateAdviserController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="adviser" />
+		<property name="commandClass" value="pm.pojo.Adviser" />
+		<property name="formView" value="createadviser" />
+		<property name="successView" value="viewadviser" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="profileDefaultPicture" value="${profile.default.picture}" />
+	</bean>
 
-    <bean id="createAPLinkController" class="pm.controller.CreateAPLinkController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="apLink"/>
-        <property name="commandClass" value="pm.pojo.APLink"/>
-        <property name="formView" value="createAPLink"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createAPLinkController" class="pm.controller.CreateAPLinkController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="apLink" />
+		<property name="commandClass" value="pm.pojo.APLink" />
+		<property name="formView" value="createAPLink" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createReviewController" class="pm.controller.CreateReviewController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="review"/>
-        <property name="commandClass" value="pm.pojo.Review"/>
-        <property name="formView" value="createreview"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="deleteAPLinkController" class="pm.controller.DeleteAPLinkController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createFollowUpController" class="pm.controller.CreateFollowUpController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="followUp"/>
-        <property name="commandClass" value="pm.pojo.FollowUp"/>
-        <property name="formView" value="createfollowup"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createRPLinkController" class="pm.controller.CreateRPLinkController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="rpLink" />
+		<property name="commandClass" value="pm.pojo.RPLink" />
+		<property name="formView" value="createRPLink" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createResearchOutputController" class="pm.controller.CreateResearchOutputController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="researchOutput"/>
-        <property name="commandClass" value="pm.pojo.ResearchOutput"/>
-        <property name="formView" value="createresearchoutput"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="deleteRPLinkController" class="pm.controller.DeleteRPLinkController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createAttachmentController" class="pm.controller.CreateAttachmentController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="attachment"/>
-        <property name="commandClass" value="pm.pojo.Attachment"/>
-        <property name="formView" value="createattachment"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createProjectKpiController" class="pm.controller.CreateProjectKpiController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="projectkpi" />
+		<property name="commandClass" value="pm.pojo.ProjectKpi" />
+		<property name="formView" value="createprojectkpi" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createProjectKpiController" class="pm.controller.CreateProjectKpiController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="projectkpi"/>
-        <property name="commandClass" value="pm.pojo.ProjectKpi"/>
-        <property name="formView" value="createprojectkpi"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="deleteProjectKpiController" class="pm.controller.DeleteProjectKpiController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createAdvisorActionController" class="pm.controller.CreateAdvisorActionController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="advisorAction"/>
-        <property name="commandClass" value="pm.pojo.AdvisorAction"/>
-        <property name="formView" value="createadvisoraction"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createResearchOutputController" class="pm.controller.CreateResearchOutputController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="researchOutput" />
+		<property name="commandClass" value="pm.pojo.ResearchOutput" />
+		<property name="formView" value="createresearchoutput" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="createProjectFacilityController" class="pm.controller.CreateProjectFacilityController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="projectFacility"/>
-        <property name="commandClass" value="pm.pojo.ProjectFacility"/>
-        <property name="formView" value="createprojectfacility"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createReviewController" class="pm.controller.CreateReviewController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="review" />
+		<property name="commandClass" value="pm.pojo.Review" />
+		<property name="formView" value="createreview" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="viewProjectController" class="pm.controller.ViewProjectController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteReviewController" class="pm.controller.DeleteReviewController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="viewResearcherController" class="pm.controller.ViewResearcherController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="createFollowUpController" class="pm.controller.CreateFollowUpController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="followUp" />
+		<property name="commandClass" value="pm.pojo.FollowUp" />
+		<property name="formView" value="createfollowup" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="viewAdvisorController" class="pm.controller.ViewAdvisorController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteFollowUpController" class="pm.controller.DeleteFollowUpController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="editProjectController" class="pm.controller.EditProjectController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="project"/>
-        <property name="commandClass" value="pm.pojo.Project"/>
-        <property name="formView" value="editproject"/>
-        <property name="successView" value="redirectToEditProject"/>
-	    <property name="projectDao" ref="projectDao"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="createAdviserActionController" class="pm.controller.CreateAdviserActionController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="adviserAction" />
+		<property name="commandClass" value="pm.pojo.AdviserAction" />
+		<property name="formView" value="createadviseraction" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="editResearcherController" class="pm.controller.EditResearcherController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="researcher"/>
-        <property name="commandClass" value="pm.pojo.Researcher"/>
-        <property name="formView" value="editresearcher"/>
-        <property name="successView" value="viewresearcher"/>
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteAdviserActionController" class="pm.controller.DeleteAdviserActionController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="editAdvisorController" class="pm.controller.EditAdvisorController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandName" value="advisor"/>
-        <property name="commandClass" value="pm.pojo.Advisor"/>
-        <property name="formView" value="editadvisor"/>
-        <property name="successView" value="viewadvisor"/>
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="createProjectFacilityController" class="pm.controller.CreateProjectFacilityController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="projectFacility" />
+		<property name="commandClass" value="pm.pojo.ProjectFacility" />
+		<property name="formView" value="createprojectfacility" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteProjectController" class="pm.controller.DeleteProjectController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteProjectFacilityController" class="pm.controller.DeleteProjectFacilityController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteResearcherController" class="pm.controller.DeleteResearcherController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="createAttachmentController" class="pm.controller.CreateAttachmentController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="attachment" />
+		<property name="commandClass" value="pm.pojo.Attachment" />
+		<property name="formView" value="createattachment" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteAdvisorController" class="pm.controller.DeleteAdvisorController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteAttachmentController" class="pm.controller.DeleteAttachmentController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteResearcherFromProjectController" class="pm.controller.DeleteResearcherFromProjectController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="deleteResearchOutputController" class="pm.controller.DeleteResearchOutputController">
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteAdvisorFromProjectController" class="pm.controller.DeleteAdvisorFromProjectController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
 
-    <bean id="deleteReviewController" class="pm.controller.DeleteReviewController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="viewProjectController" class="pm.controller.ViewProjectController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-    <bean id="deleteFollowUpController" class="pm.controller.DeleteFollowUpController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="viewResearcherController" class="pm.controller.ViewResearcherController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-    <bean id="deleteResearchOutputController" class="pm.controller.DeleteResearchOutputController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="viewAdviserController" class="pm.controller.ViewAdviserController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-    <bean id="deleteAttachmentController" class="pm.controller.DeleteAttachmentController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="editProjectController" class="pm.controller.EditProjectController">
+	    <property name="authzAspect" ref="authzAspect"/>
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="projectWrapper" />
+		<property name="commandClass" value="pm.pojo.ProjectWrapper" />
+		<property name="formView" value="editproject" />
+		<property name="successView" value="viewprojects" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteAdvisorActionController" class="pm.controller.DeleteAdvisorActionController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="editResearcherController" class="pm.controller.EditResearcherController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="researcher" />
+		<property name="commandClass" value="pm.pojo.Researcher" />
+		<property name="formView" value="editresearcher" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteFacilityFromProjectController" class="pm.controller.DeleteFacilityFromProjectController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="editAdviserController" class="pm.controller.EditAdviserController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="adviser" />
+		<property name="commandClass" value="pm.pojo.Adviser" />
+		<property name="formView" value="editadviser" />
+		<property name="successView" value="viewadviser" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="deleteProjectKpiController" class="pm.controller.DeleteProjectKpiController">
-	    <property name="projectDao" ref="projectDao"/>
-	    <property name="successView" value="redirectToEditProject"/>
-        <property name="proxy" value="${proxy}"/>
-    </bean>
+	<bean id="deleteProjectController" class="pm.controller.DeleteProjectController">
+		<property name="projectDao" ref="projectDao" />
+	    <property name="authzAspect" ref="authzAspect"/>
+		<property name="tempProjectManager" ref="tempProjectManager" />
+	</bean>
 
-    <bean id="viewProjectsController" class="pm.controller.ViewProjectsController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteResearcherController" class="pm.controller.DeleteResearcherController">
+		<property name="projectDao" ref="projectDao" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="viewResearchersController" class="pm.controller.ViewResearchersController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="deleteAdviserController" class="pm.controller.DeleteAdviserController">
+		<property name="projectDao" ref="projectDao" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
-    <bean id="viewAdvisorsController" class="pm.controller.ViewAdvisorsController">
-	    <property name="projectDao" ref="projectDao"/>
-    </bean>
+	<bean id="viewProjectsController" class="pm.controller.ViewProjectsController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
 
-	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="viewResearchersController" class="pm.controller.ViewResearchersController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
+	<bean id="viewAdvisersController" class="pm.controller.ViewAdvisersController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map>
-				<entry key="/construction">
-					<ref bean="constructionController" />
-				</entry>
-				<entry key="/createproject">
-					<ref bean="createProjectController" />
-				</entry>
 				<entry key="/createresearcher">
 					<ref bean="createResearcherController" />
 				</entry>
-				<entry key="/createadvisor">
-					<ref bean="createAdvisorController" />
+				<entry key="/createadviser">
+					<ref bean="createAdviserController" />
 				</entry>
-				<entry key="/createRPLink">
-					<ref bean="createRPLinkController" />
-				</entry>
-				<entry key="/createAPLink">
+				<entry key="/createaplink">
 					<ref bean="createAPLinkController" />
 				</entry>
-				<entry key="/createreview">
-					<ref bean="createReviewController" />
+				<entry key="/deleteaplink">
+					<ref bean="deleteAPLinkController" />
 				</entry>
-				<entry key="/createfollowup">
-					<ref bean="createFollowUpController" />
+				<entry key="/createrplink">
+					<ref bean="createRPLinkController" />
+				</entry>
+				<entry key="/deleterplink">
+					<ref bean="deleteRPLinkController" />
+				</entry>
+				<entry key="/createprojectkpi">
+					<ref bean="createProjectKpiController" />
+				</entry>
+				<entry key="/deleteprojectkpi">
+					<ref bean="deleteProjectKpiController" />
 				</entry>
 				<entry key="/createresearchoutput">
 					<ref bean="createResearchOutputController" />
 				</entry>
-				<entry key="/createattachment">
-					<ref bean="createAttachmentController" />
-				</entry>
-				<entry key="/createprojectkpi">
-					<ref bean="createProjectKpiController" />
-				</entry>				
-				<entry key="/createadvisoraction">
-					<ref bean="createAdvisorActionController" />
+				<entry key="/deleteresearchoutput">
+					<ref bean="deleteResearchOutputController" />
 				</entry>
 				<entry key="/createprojectfacility">
 					<ref bean="createProjectFacilityController" />
+				</entry>
+				<entry key="/deleteprojectfacility">
+					<ref bean="deleteProjectFacilityController" />
+				</entry>
+				<entry key="/createreview">
+					<ref bean="createReviewController" />
+				</entry>
+				<entry key="/deletereview">
+					<ref bean="deleteReviewController" />
+				</entry>
+				<entry key="/createfollowup">
+					<ref bean="createFollowUpController" />
+				</entry>
+				<entry key="/deletefollowup">
+					<ref bean="deleteFollowUpController" />
+				</entry>
+				<entry key="/createadviseraction">
+					<ref bean="createAdviserActionController" />
+				</entry>
+				<entry key="/deleteadviseraction">
+					<ref bean="deleteAdviserActionController" />
+				</entry>
+				<entry key="/createattachment">
+					<ref bean="createAttachmentController" />
+				</entry>
+				<entry key="/deleteattachment">
+					<ref bean="deleteAttachmentController" />
 				</entry>
 				<entry key="/viewproject">
 					<ref bean="viewProjectController" />
@@ -326,8 +345,8 @@
 				<entry key="/viewresearcher">
 					<ref bean="viewResearcherController" />
 				</entry>
-				<entry key="/viewadvisor">
-					<ref bean="viewAdvisorController" />
+				<entry key="/viewadviser">
+					<ref bean="viewAdviserController" />
 				</entry>
 				<entry key="/editproject">
 					<ref bean="editProjectController" />
@@ -335,8 +354,8 @@
 				<entry key="/editresearcher">
 					<ref bean="editResearcherController" />
 				</entry>
-				<entry key="/editadvisor">
-					<ref bean="editAdvisorController" />
+				<entry key="/editadviser">
+					<ref bean="editAdviserController" />
 				</entry>
 				<entry key="/deleteproject">
 					<ref bean="deleteProjectController" />
@@ -344,53 +363,25 @@
 				<entry key="/deleteresearcher">
 					<ref bean="deleteResearcherController" />
 				</entry>
-				<entry key="/deleteadvisor">
-					<ref bean="deleteAdvisorController" />
+				<entry key="/deleteadviser">
+					<ref bean="deleteAdviserController" />
 				</entry>
-				<entry key="/deleteresearcherfromproject">
-					<ref bean="deleteResearcherFromProjectController" />
-				</entry>
-				<entry key="/deleteadvisorfromproject">
-					<ref bean="deleteAdvisorFromProjectController" />
-				</entry>
-				<entry key="/deletereview">
-					<ref bean="deleteReviewController" />
-				</entry>
-				<entry key="/deletefollowup">
-					<ref bean="deleteFollowUpController" />
-				</entry>
-				<entry key="/deleteresearchoutput">
-					<ref bean="deleteResearchOutputController" />
-				</entry>
-				<entry key="/deleteattachment">
-					<ref bean="deleteAttachmentController" />
-				</entry>
-				<entry key="/deleteadvisoraction">
-					<ref bean="deleteAdvisorActionController" />
-				</entry>
-				<entry key="/deletefacilityfromproject">
-					<ref bean="deleteFacilityFromProjectController" />
-				</entry>
-				<entry key="/deleteprojectkpi">
-					<ref bean="deleteProjectKpiController" />
-				</entry>
-				
 				<entry key="/viewprojects">
 					<ref bean="viewProjectsController" />
 				</entry>
 				<entry key="/viewresearchers">
 					<ref bean="viewResearchersController" />
 				</entry>
-				<entry key="/viewadvisors">
-					<ref bean="viewAdvisorsController" />
+				<entry key="/viewadvisers">
+					<ref bean="viewAdvisersController" />
 				</entry>
 			</map>
 		</property>
 	</bean>
-
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/jsp/"/>
-		<property name="suffix" value=".jsp"/>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
 	</bean>
 
 </beans>

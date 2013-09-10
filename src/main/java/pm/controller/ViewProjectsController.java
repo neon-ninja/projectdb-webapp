@@ -24,7 +24,7 @@ public class ViewProjectsController extends AbstractController {
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
     	ModelAndView mav = new ModelAndView("viewprojects");
-    	List<Project> ps = projectDao.getAllProjects();
+    	List<Project> ps = projectDao.getProjects();
     	
     	// mark projects as due if a review or follow-up is due
     	Date now = new Date();

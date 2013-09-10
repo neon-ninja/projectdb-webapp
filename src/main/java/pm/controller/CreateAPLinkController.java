@@ -2,6 +2,7 @@ package pm.controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,14 +16,16 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.APLink;
-import pm.pojo.Advisor;
-import pm.pojo.AdvisorRole;
-import pm.util.Util;
+import pm.pojo.Adviser;
+import pm.pojo.AdviserRole;
+import pm.pojo.ProjectWrapper;
+import pm.temp.TempProjectManager;
 
 public class CreateAPLinkController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateAPLinkController.class.getName()); 
 	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
 	
 	@Override
@@ -30,10 +33,14 @@ public class CreateAPLinkController extends SimpleFormController {
 		APLink apLink = (APLink) o;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
     	Integer projectId = apLink.getProjectId();
-		mav.addObject("id", projectId);
+    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
+    	apLink.setAdviser(this.projectDao.getAdviserById(apLink.getAdviserId()));
+    	apLink.setAdviserRoleName(this.projectDao.getAdviserRoleById(apLink.getAdviserRoleId()).getName());
+    	pw.getApLinks().add(apLink);
+    	this.tempProjectManager.update(projectId, pw);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#advisers");
 		mav.addObject("proxy", this.proxy);
-		this.projectDao.createAPLink(projectId, apLink);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
 		return mav;
 	}
 
@@ -41,28 +48,37 @@ public class CreateAPLinkController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<Advisor> notOnProject = this.projectDao.getAllAdvisorsNotOnProject(pid);
-		List<AdvisorRole> aRolesTmp = this.projectDao.getAllAdvisorRoles();
-		HashMap<Integer,String> advisorRoles = new LinkedHashMap<Integer, String>();
+    	ProjectWrapper pw = this.tempProjectManager.get(pid);
+    	List<Integer> l = new LinkedList<Integer>();
+    	for (APLink a: pw.getApLinks()) {
+    		l.add(a.getAdviserId());
+    	}
+		List<Adviser> notOnProject = this.projectDao.getAdvisersNotOnList(l);
+		List<AdviserRole> aRolesTmp = this.projectDao.getAdviserRoles();
+		HashMap<Integer,String> adviserRoles = new LinkedHashMap<Integer, String>();
 		if (aRolesTmp != null) {
-			for (AdvisorRole ar: aRolesTmp) {
-				advisorRoles.put(ar.getId(), ar.getName());
+			for (AdviserRole ar: aRolesTmp) {
+				adviserRoles.put(ar.getId(), ar.getName());
 			}
 		}
 		Map<Integer,String> aNotOnProject = new LinkedHashMap<Integer,String>();
 		if (notOnProject != null) {
-			for (Advisor a : notOnProject) {
+			for (Adviser a : notOnProject) {
 				aNotOnProject.put(a.getId(), a.getFullName());
 			}
 		}
 		modelMap.put("pid", pid);
         modelMap.put("aNotOnProject", aNotOnProject);
-        modelMap.put("advisorRoles", advisorRoles);
+        modelMap.put("adviserRoles", adviserRoles);
         return modelMap;
     }
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
+	}
+
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
 	}
 
 	public void setProxy(String proxy) {

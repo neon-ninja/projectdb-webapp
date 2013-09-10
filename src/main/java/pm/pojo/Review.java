@@ -1,16 +1,24 @@
 package pm.pojo;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Review {
 
-	Integer id;
-	Integer projectId;
-	String advisor;
-	Integer advisorId;
-	String date;
-	String notes;
-	String attachmentDescription;
-	String attachmentLink;
+	private Integer id;
+	private Integer projectId;
+	private Integer adviserId;
+	private String date;
+	private String notes;
+	private String adviserName;
+	private String attachmentDescription;
+	private String attachmentLink;
+	List<Attachment> attachments;
 
+	public Review() {
+		this.attachments = new LinkedList<Attachment>();
+	}
+	
 	public Integer getProjectId() {
 		return projectId;
 	}
@@ -19,28 +27,12 @@ public class Review {
 		this.projectId = projectId;
 	}
 
-	public String getAttachmentDescription() {
-		return attachmentDescription;
+	public String getAdviserName() {
+		return adviserName;
 	}
 
-	public void setAttachmentDescription(String attachmentDescription) {
-		this.attachmentDescription = attachmentDescription;
-	}
-
-	public String getAttachmentLink() {
-		return attachmentLink;
-	}
-
-	public void setAttachmentLink(String attachmentLink) {
-		this.attachmentLink = attachmentLink;
-	}
-
-	public String getAdvisor() {
-		return advisor;
-	}
-
-	public void setAdvisor(String advisor) {
-		this.advisor = advisor;
+	public void setAdviserName(String adviserName) {
+		this.adviserName = adviserName;
 	}
 
 	public String getDate() {
@@ -51,12 +43,12 @@ public class Review {
 		this.date = date;
 	}
 
-	public Integer getAdvisorId() {
-		return advisorId;
+	public Integer getAdviserId() {
+		return adviserId;
 	}
 
-	public void setAdvisorId(Integer advisorId) {
-		this.advisorId = advisorId;
+	public void setAdviserId(Integer adviserId) {
+		this.adviserId = adviserId;
 	}
 
 	public String getNotes() {
@@ -75,4 +67,28 @@ public class Review {
 		this.id = id;
 	}
 
+	public String getAttachmentDescription() {
+		return attachmentDescription;
+	}
+
+	public void setAttachmentDescription(String attachmentDescription) {
+		this.attachmentDescription = attachmentDescription;
+	}
+
+	public String getAttachmentLink() {
+		return attachmentLink;
+	}
+
+	public void setAttachmentLink(String attachmentLink) {
+		this.attachmentLink = attachmentLink;
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
+	}
+	
 }
