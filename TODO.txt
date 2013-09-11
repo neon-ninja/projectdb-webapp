@@ -1,7 +1,7 @@
 TODO:
 #####
 
-* Rename tables from advisor to adviser
+* Rename tables from adviser to adviser
 * Create table tempproject
 
 * On adviser profile:
