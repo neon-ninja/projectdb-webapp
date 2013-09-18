@@ -28,15 +28,14 @@ public class AuditFilter implements Filter {
 			String remoteUser = request.getHeader(this.remoteUserHeader);
 		    String remoteAddr = request.getHeader(this.remoteAddrHeader);
 			
-		    // FIXME IN PROD
+		    // Comment out for testing
 		    if (!request.getRemoteAddr().equals(this.proxyIp)) {
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
 				log.error("Denying access from host " + request.getRemoteAddr() + " (doesn't match " + this.proxyIp + ")");
 				return;
 			}
-		    
-		    // FIXME IN PROD
-		    // Set default remoteUser for local testing here;
+
+		    // Set remoteUser to tuakiri uniqe id for testing
 		    if (remoteUser == null || remoteUser.trim().equals("")) {
 				log.error("Denying access for anonymous user");
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
