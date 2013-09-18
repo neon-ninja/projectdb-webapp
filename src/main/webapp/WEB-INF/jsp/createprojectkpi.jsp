@@ -34,15 +34,11 @@
   
   <spring:bind path="projectkpi.projectId">
     <input type="hidden" name="projectId" value="${projectId}"/>
+    <input type="hidden" name="adviserId" value="${adviserId}"/>
   </spring:bind>
 
  
   <table border="0" cellspacing="0" cellpadding="3">
-    <tr>
-      <td>Adviser</td>
-      <td>&nbsp;</td>
-      <td><form:select path="adviserId" items="${advisers}"/></td>
-    </tr>
     <tr>
       <td>Date</td>
       <td>&nbsp;</td>
