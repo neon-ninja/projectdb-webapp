@@ -33,13 +33,9 @@
   <form:form method="post" commandName="followUp">
   <spring:bind path="followUp.projectId">
     <input type="hidden" name="projectId" value="${pid}"/>
+    <input type="hidden" name="adviserId" value="${adviserId}"/>
   </spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
-    <tr>
-      <td>Adviser doing the follow-up</td>
-      <td>&nbsp;</td>
-      <td><form:select path="adviserId" items="${advisers}"/></td>
-    </tr>
     <tr>
       <td>Date</td>
       <td>&nbsp;</td>
