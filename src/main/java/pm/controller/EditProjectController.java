@@ -1,5 +1,8 @@
 package pm.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +32,6 @@ public class EditProjectController extends SimpleFormController {
 	private String proxy;
 	private AuthzAspect authzAspect;	
 
-	private String FOLLOWUP_CONTROLLER = "createfollowup?";
-	private String REVIEW_CONTROLLER = "createreview?";
-	private String ADVISER_ACTION_CONTROLLER = "createadviseraction?";
-	private String CREATE_KPI_CONTROLLER = "createprojectkpi?";
-	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		ProjectWrapper pw = (ProjectWrapper) o;
@@ -85,10 +83,6 @@ public class EditProjectController extends SimpleFormController {
 		ProjectWrapper pwTemp = this.tempProjectManager.get(pid);
 		pwTemp.setProject(p);
 		pwTemp.setErrorMessage("");
-		if (!this.verifyAdvisorPresent(pwTemp, redirect)) {
-			pwTemp.setErrorMessage("This operation requires at least one adviser on the project");
-			redirect = "editproject?id=" + pid;
-		}
         this.tempProjectManager.update(pid, pwTemp);
 		mav.setViewName("redirect");
 		mav.addObject("pathAndQuerystring", redirect);
@@ -142,16 +136,6 @@ public class EditProjectController extends SimpleFormController {
 		mav.addObject("proxy", this.proxy);
 	}
 	
-	protected boolean verifyAdvisorPresent(ProjectWrapper pw, String redirect) {
-		if (redirect.startsWith(ADVISER_ACTION_CONTROLLER) || redirect.startsWith(REVIEW_CONTROLLER) ||
-			redirect.startsWith(CREATE_KPI_CONTROLLER) || redirect.startsWith(FOLLOWUP_CONTROLLER)) {
-			if (pw.getApLinks() == null || pw.getApLinks().size() < 1) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		Integer pid = null;
@@ -161,6 +145,15 @@ public class EditProjectController extends SimpleFormController {
 		ProjectWrapper pw = null;
 		if (pid == null) {
 			pw = new ProjectWrapper();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date startDate = new Date();
+			Date nextReview = new Date();
+			Date nextFollowUp = new Date();
+			nextReview.setYear(nextReview.getYear() + 1);
+			nextFollowUp.setMonth(nextFollowUp.getMonth() + 3);
+			pw.getProject().setStartDate(df.format(startDate));
+			pw.getProject().setNextFollowUpDate(df.format(nextFollowUp));
+			pw.getProject().setNextReviewDate(df.format(nextReview));
 	  	    this.tempProjectManager.register(pw);
 		} else {
 			if (pid < 0) {
@@ -180,7 +173,8 @@ public class EditProjectController extends SimpleFormController {
 				}
 		  	    this.tempProjectManager.register(pid, pw);
 			}
-		}	
+		}
+		
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
 		return pw;
 	}	
@@ -217,7 +211,7 @@ public class EditProjectController extends SimpleFormController {
 			return false;	
 		}
 		
-		// Exactly one primary advisor?
+		// Exactly one primary adviser?
 		count = 0;
 		for (APLink ap: pw.getApLinks()) {
 			if (ap.getAdviserRoleId() == 1) {
@@ -225,7 +219,7 @@ public class EditProjectController extends SimpleFormController {
 			}
 		}
 		if (count == 0 || count > 1) {
-			pw.setErrorMessage("There must be exactly 1 primary advisor on a project");
+			pw.setErrorMessage("There must be exactly 1 primary adviser on a project");
 			return false;
 		}
 		return true;
