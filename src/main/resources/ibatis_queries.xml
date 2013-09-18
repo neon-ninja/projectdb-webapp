@@ -432,12 +432,14 @@
    <insert id="createResearchOutput" parameterClass="pm.pojo.ResearchOutput">
       INSERT INTO researchoutput (
         projectId,
+        adviserId,
         typeId,
         description,
         link,
         date
       ) values (
         #projectId#,
+        #adviserId#,
         #typeId#,
         #description#,
         #link#,
