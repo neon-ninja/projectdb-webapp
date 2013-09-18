@@ -28,6 +28,7 @@
   <form:form method="post" commandName="researchOutput">
   <spring:bind path="researchOutput.projectId">
     <input type="hidden" name="projectId" value="${pid}"/>
+    <input type="hidden" name="adviserId" value="${adviserId}"/>
   </spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
