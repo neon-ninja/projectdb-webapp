@@ -25,7 +25,17 @@ if ($db->connect_errno) {
 }
 
 if (!isset($_GET['inst'])) {
-  echo '<div class="header"><h1>Current Projects</h1></div>';
+  echo '<div class="header">
+  <a href="http://www.eresearch.auckland.ac.nz/"><img src="cer_logo.jpg"/></a>
+  <h1 style="display:inline-block;">Research projects and outcomes<br/>from the NeSI Pan cluster</h1><a href="https://www.nesi.org.nz">
+  <img src="nesi_logo.png"/></a>
+  </div>
+  <div class="header" style="color: blue;">The Centre for eResearch is a cross-faculty research centre, hosted within the Faculty of Science. We develop new ways to apply computer and information sciences to all research and science disciplines, both at The University of Auckland and within nationwide research programmes. We aim to enhance the understanding of research processes and the delivery of research computing services.
+  <br/><br/>';
+  echo "
+  NeSI is New Zealand's computing research infrastructure. We provide high performance computers and support systems to enable the country's researchers to tackle the world's largest problems.
+  NeSI's strengths surround high performance computing. We place strong emphasis both on the technical aspects, such as providing excellent hardware and software, and the human aspects, such as support and training.
+  </div>";
   // Print institutions (UOA, UOC etc)
   if ($institutions = $db->query("SELECT DISTINCT hostInstitution FROM project
                                   INNER JOIN researcher_project rp ON rp.projectId=project.id
@@ -72,7 +82,7 @@ if (!isset($_GET['inst'])) {
   }
   
   print "<div class='header'>
-  <a href='/'><button class='backButton'>Back</button></a>
+  <a href='./'><button class='backButton'>Back</button></a>
   <h1>$i $d</h1>
   </div>";
   // Select recent project ids where the PI is from this dept
