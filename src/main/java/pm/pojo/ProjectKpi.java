@@ -7,7 +7,7 @@ public class ProjectKpi {
 	private String kpiType;
 	private String kpiTitle;
 	private Integer projectId;
-	private String adviser;
+	private String adviserName;
 	private Integer adviserId;
 	private String date;
 	private Float value;
@@ -25,12 +25,12 @@ public class ProjectKpi {
 		this.kpiType = kpiType;
 	}
 
-	public String getAdviser() {
-		return adviser;
+	public String getAdviserName() {
+		return adviserName;
 	}
 
-	public void setAdviser(String adviser) {
-		this.adviser = adviser;
+	public void setAdviserName(String adviserName) {
+		this.adviserName = adviserName;
 	}
 
 	public void setId(Integer id) {
