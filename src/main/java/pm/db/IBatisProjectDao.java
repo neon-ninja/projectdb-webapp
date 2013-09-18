@@ -433,8 +433,10 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 	private List<ResearchOutput> getResearchOutputsForProjectId(Integer id) throws Exception {
 		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getResearchOutputsForProjectId", id);
 		for (ResearchOutput ro: l) {
+			Adviser a = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", ro.getAdviserId());
 			ResearchOutputType tmp = (ResearchOutputType) getSqlMapClientTemplate().queryForObject("getResearchOutputTypeById", ro.getTypeId());
 			ro.setType(tmp.getName());
+			ro.setAdviserName(a.getFullName());
 		}
 		return l;
 	}
@@ -444,7 +446,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		for (ProjectKpi pk: l) {
 			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", pk.getAdviserId());
 			Kpi kpi = (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", pk.getKpiId());
-			pk.setAdviser(tmp.getFullName());
+			pk.setAdviserName(tmp.getFullName());
 			pk.setKpiType(kpi.getType());
 			pk.setKpiTitle(kpi.getTitle());
 		}
