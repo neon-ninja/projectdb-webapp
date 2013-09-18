@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -28,24 +27,19 @@ public class CreateResearcherController extends SimpleFormController {
 	private String profileDefaultPicture;
 	
 	@Override
-	public ModelAndView onSubmit(Object r) throws ServletException {
-		Researcher researcher = (Researcher) r;
+	public ModelAndView onSubmit(Object o) throws Exception {
+		Researcher r = (Researcher) o;
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		try {
-            researcher.setId(this.projectDao.createResearcher(researcher));
-    		InstitutionalRole ir = (InstitutionalRole) projectDao.getInstitutionalRoleById(researcher.getInstitutionalRoleId());
-    		researcher.setInstitutionalRole(ir.getName());
-		} catch (Exception e) {
-        	throw new ServletException(e);
-        }
-		mav.addObject("researcher", researcher);
+		Integer id = this.projectDao.createResearcher(r);
+		r = this.projectDao.getResearcherById(id);
+		mav.addObject("researcher", r);
 		return mav;
 	}
 	
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
-		List<InstitutionalRole> iRolesTmp = this.projectDao.getAllInstitutionalRoles();
+		List<InstitutionalRole> iRolesTmp = this.projectDao.getInstitutionalRoles();
 		HashMap<Integer,String> iRoles = new LinkedHashMap<Integer, String>();
 		if (iRolesTmp != null) {
 			for (InstitutionalRole ir: iRolesTmp) {
@@ -57,7 +51,7 @@ public class CreateResearcherController extends SimpleFormController {
 	}
 	
 	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		Researcher r = new Researcher();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		r.setStartDate(df.format(new Date()));

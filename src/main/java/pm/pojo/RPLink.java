@@ -5,8 +5,9 @@ public class RPLink {
 	private Integer researcherId;
 	private Integer projectId;
 	private Integer researcherRoleId;
-	private String researcherRole;
 	private String notes;
+	private String researcherRoleName;
+	private Researcher researcher;
 
 	public Integer getResearcherRoleId() {
 		return researcherRoleId;
@@ -32,12 +33,12 @@ public class RPLink {
 		this.projectId = projectId;
 	}
 
-	public String getResearcherRole() {
-		return researcherRole;
+	public String getResearcherRoleName() {
+		return researcherRoleName;
 	}
 
-	public void setResearcherRole(String researcherRole) {
-		this.researcherRole = researcherRole;
+	public void setResearcherRoleName(String researcherRoleName) {
+		this.researcherRoleName = researcherRoleName;
 	}
 
 	public String getNotes() {
@@ -46,6 +47,14 @@ public class RPLink {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public Researcher getResearcher() {
+		return researcher;
+	}
+
+	public void setResearcher(Researcher researcher) {
+		this.researcher = researcher;
 	}
 
 }

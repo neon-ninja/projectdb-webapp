@@ -2,10 +2,10 @@ package pm.controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -17,23 +17,28 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import pm.db.ProjectDao;
 import pm.pojo.Facility;
 import pm.pojo.ProjectFacility;
-import pm.util.Util;
+import pm.pojo.ProjectWrapper;
+import pm.temp.TempProjectManager;
 
 public class CreateProjectFacilityController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateProjectFacilityController.class.getName()); 
 	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		ProjectFacility pf = (ProjectFacility) o;
     	Integer projectId = pf.getProjectId(); 
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
-    	mav.addObject("id", projectId);
-    	mav.addObject("proxy", this.proxy);
-		this.projectDao.createProjectFacility(projectId, pf);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
+    	ModelAndView mav = new ModelAndView();
+    	ProjectWrapper pw = this.tempProjectManager.get(projectId);
+    	pf.setFacilityName(this.projectDao.getFacilityById(pf.getFacilityId()).getName());
+    	pw.getProjectFacilities().add(pf);
+    	this.tempProjectManager.update(projectId, pw);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#facilities");
+		mav.addObject("proxy", this.proxy);
 		return mav;
 	}
 
@@ -41,10 +46,15 @@ public class CreateProjectFacilityController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<Facility> fNotOnProjectTmp = this.projectDao.getAllFacilitiesNotOnProject(pid);
+    	ProjectWrapper pw = this.tempProjectManager.get(pid);
+    	List<Integer> l = new LinkedList<Integer>();
+    	for (ProjectFacility pf: pw.getProjectFacilities()) {
+    		l.add(pf.getFacilityId());
+    	}
+    	List<Facility> fs = this.projectDao.getFacilitiesNotOnList(l);
 		HashMap<Integer,String> facilitiesNotOnProject = new LinkedHashMap<Integer, String>();
-		if (fNotOnProjectTmp != null) {
-			for (Facility f: fNotOnProjectTmp) {
+		if (fs != null) {
+			for (Facility f: fs) {
 				facilitiesNotOnProject.put(f.getId(), f.getName());
 			}
 		}
@@ -59,6 +69,10 @@ public class CreateProjectFacilityController extends SimpleFormController {
 
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
+	}
+
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
 	}
 
 }

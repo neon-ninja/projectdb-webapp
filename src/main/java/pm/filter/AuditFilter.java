@@ -35,7 +35,6 @@ public class AuditFilter implements Filter {
 				return;
 			}
 		    
-		    
 		    // FIXME IN PROD
 		    // Set default remoteUser for local testing here;
 		    if (remoteUser == null || remoteUser.trim().equals("")) {

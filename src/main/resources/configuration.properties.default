@@ -7,6 +7,9 @@ jdbc.password=
 # Default profile picture
 profile.default.picture=http://cluster.ceres.auckland.ac.nz/project_management/pics/avatar.gif
 
+# duration how long a project that is being edited can sit idle
+session.duration.seconds=
+
 # Proxy configuration
 proxy=
 proxyIp=

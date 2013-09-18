@@ -1,11 +1,9 @@
 package pm.controller;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -14,117 +12,239 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
 import pm.pojo.APLink;
-import pm.pojo.Advisor;
-import pm.pojo.AdvisorAction;
-import pm.pojo.Attachment;
-import pm.pojo.Facility;
-import pm.pojo.FollowUp;
 import pm.pojo.Project;
-import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectType;
+import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
-import pm.pojo.ResearchOutput;
-import pm.pojo.Researcher;
-import pm.pojo.Review;
-import pm.pojo.Site;
-import pm.util.Util;
+import pm.temp.TempProjectManager;
 
 public class EditProjectController extends SimpleFormController {
 	
 	private Log log = LogFactory.getLog(EditProjectController.class.getName()); 
 	private ProjectDao projectDao;
+	private TempProjectManager tempProjectManager;
 	private String proxy;
+	private AuthzAspect authzAspect;	
 
+	private String FOLLOWUP_CONTROLLER = "createfollowup?";
+	private String REVIEW_CONTROLLER = "createreview?";
+	private String ADVISER_ACTION_CONTROLLER = "createadviseraction?";
+	private String CREATE_KPI_CONTROLLER = "createprojectkpi?";
+	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
-		Project p = (Project) o;
-		Integer projectId = p.getId();
-		ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("id", projectId);
-		mav.addObject("proxy", this.proxy);
-		this.projectDao.updateProject(projectId, p);
-		new Util().addProjectInfosToMav(mav, this.projectDao, projectId);
+		ProjectWrapper pw = (ProjectWrapper) o;
+		ModelAndView mav = new ModelAndView();
+		String op = pw.getOperation();
+		Integer pid = pw.getProject().getId();
+		this.authzAspect.verifyUserIsAdviserOnProject(pid);
+
+		if (op.equals("CANCEL")) {
+			this.handleCancel(pid, mav);
+		} else if (op.equals("RESET")) {
+			this.handleReset(pid, mav);
+		} else if (op.equals("UPDATE")) {
+			this.handleUpdate(pw, mav);
+		} else if (op.equals("SAVE_AND_CONTINUE_EDITING")) {
+			this.handleSaveAndContinue(pw, mav);
+		} else if (op.equals("SAVE_AND_FINISH_EDITING")) {
+			this.handleSaveAndFinish(pw, mav);
+		} else {
+			throw new Exception("Unknown operation: " + op);
+		}
+		
+		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
 		return mav;
 	}
 	
-	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		Project p = new Project();
-		Integer id = Integer.valueOf(request.getParameter("id"));
-		try {
-  		    p = this.projectDao.getProjectById(id);
-		} catch (Exception e) {
-			throw new ServletException(e);
+	protected void handleCancel(Integer pid, ModelAndView mav) throws Exception {
+		this.tempProjectManager.unregister(pid);
+		mav.setViewName("redirect");
+		mav.addObject("proxy", this.proxy);			
+		if (pid < 0) { // new project
+			mav.addObject("pathAndQuerystring", "viewprojects");
+		} else { // old project
+			mav.addObject("pathAndQuerystring", "viewproject?id=" + pid);
 		}
-		return p;
 	}
+
+	protected void handleReset(Integer pid, ModelAndView mav) throws Exception {
+		this.tempProjectManager.unregister(pid);
+		mav.setViewName("redirect");
+		mav.addObject("proxy", this.proxy);
+		mav.addObject("pathAndQuerystring", "editproject?id=" + pid);
+	}
+
+	protected void handleUpdate(ProjectWrapper pwCommand, ModelAndView mav) throws Exception{
+		Project p = pwCommand.getProject();
+		String redirect = pwCommand.getRedirect();
+		Integer pid = p.getId();
+		ProjectWrapper pwTemp = this.tempProjectManager.get(pid);
+		pwTemp.setProject(p);
+		pwTemp.setErrorMessage("");
+		if (!this.verifyAdvisorPresent(pwTemp, redirect)) {
+			pwTemp.setErrorMessage("This operation requires at least one adviser on the project");
+			redirect = "editproject?id=" + pid;
+		}
+        this.tempProjectManager.update(pid, pwTemp);
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", redirect);
+		mav.addObject("proxy", this.proxy);
+	}
+	
+	protected void handleSaveAndFinish(ProjectWrapper pw, ModelAndView mav) throws Exception {
+		Integer pid = pw.getProject().getId();
+		if (this.isProjectValid(pw)) {
+			Project p = pw.getProject();
+			pw = this.tempProjectManager.get(pid);
+			pw.setProject(p);
+			if (pid < 0) {
+				pid = this.projectDao.createProjectWrapper(pw);
+			} else {
+				this.projectDao.updateProjectWrapper(pid, pw);
+			}
+			this.tempProjectManager.unregister(pid);
+			mav.addObject("pathAndQuerystring", "viewproject?id=" + pid);
+		} else {
+			this.tempProjectManager.update(pid, pw);
+			mav.addObject("pathAndQuerystring", "editproject?id=" + pid);
+		}
+		mav.setViewName("redirect");
+		mav.addObject("proxy", this.proxy);
+	}
+	
+	protected void handleSaveAndContinue(ProjectWrapper pw, ModelAndView mav) throws Exception{
+		Project p = pw.getProject();
+		Integer pidOld = p.getId();
+		Integer pid = pidOld;
+		ProjectWrapper pwNew = this.tempProjectManager.get(pidOld);
+		pwNew.setProject(p);
+		if (this.isProjectValid(pwNew)) {
+			pwNew.setErrorMessage("");
+			if (pidOld < 0) {
+				pid = this.projectDao.createProjectWrapper(pwNew);
+				pwNew.getProject().setId(pid);
+				this.tempProjectManager.register(pwNew);
+				this.tempProjectManager.unregister(pidOld);
+			} else {
+				this.tempProjectManager.update(pidOld, pwNew);
+				this.projectDao.updateProjectWrapper(pidOld,pwNew);
+			}
+		} else {
+			// save error message
+			this.tempProjectManager.update(pid, pwNew);
+		}
+		mav.setViewName("redirect");
+		mav.addObject("pathAndQuerystring", "editproject?id=" + pid);
+		mav.addObject("proxy", this.proxy);
+	}
+	
+	protected boolean verifyAdvisorPresent(ProjectWrapper pw, String redirect) {
+		if (redirect.startsWith(ADVISER_ACTION_CONTROLLER) || redirect.startsWith(REVIEW_CONTROLLER) ||
+			redirect.startsWith(CREATE_KPI_CONTROLLER) || redirect.startsWith(FOLLOWUP_CONTROLLER)) {
+			if (pw.getApLinks() == null || pw.getApLinks().size() < 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	protected Object formBackingObject(HttpServletRequest request) throws Exception {
+		Integer pid = null;
+		if (request.getParameterMap().containsKey("id")) {
+		    pid = Integer.valueOf(request.getParameter("id"));
+		}
+		ProjectWrapper pw = null;
+		if (pid == null) {
+			pw = new ProjectWrapper();
+	  	    this.tempProjectManager.register(pw);
+		} else {
+			if (pid < 0) {
+				if (this.tempProjectManager.isRegistered(pid)) {
+					pw = tempProjectManager.get(pid);
+				} else {
+					pw = new ProjectWrapper();
+					pw.getProject().setId(pid);
+					this.tempProjectManager.register(pid, pw);
+				}
+			} else {
+				this.authzAspect.verifyUserIsAdviserOnProject(pid);
+				if (this.tempProjectManager.isRegistered(pid)) {
+					pw = tempProjectManager.get(pid);
+				} else {
+					pw = this.projectDao.getProjectWrapperById(pid);
+				}
+		  	    this.tempProjectManager.register(pid, pw);
+			}
+		}	
+		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
+		return pw;
+	}	
 	
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
-		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<Site> sitesTmp = this.projectDao.getAllSites();
-		List<ProjectType> pTypesTmp = this.projectDao.getAllProjectTypes();
-		
-        List<RPLink> rplList = projectDao.getAllRPLinksForProjectId(pid);
-        List<APLink> aplList = projectDao.getAllAPLinksForProjectId(pid);
-		
-		List<Review> reviews = this.projectDao.getAllReviewsForProjectId(pid);
-		List<FollowUp> followUps = this.projectDao.getAllFollowUpsForProjectId(pid);
-		List<ResearchOutput> researchOutputs = this.projectDao.getAllResearchOutputsForProjectId(pid);
-		List<Attachment> attachments = this.projectDao.getAllAttachmentsForProjectId(pid);
-		List<AdvisorAction> advisorActions = this.projectDao.getAllAdvisorActionsForProjectId(pid);
-		List<ProjectKpi> projectKpis = this.projectDao.getAllKpisForProjectId(pid);
-		List<Facility> facilitiesOnProject = this.projectDao.getAllFacilitiesOnProject(pid);
-		List<Facility> facilitiesNotOnProject = this.projectDao.getAllFacilitiesNotOnProject(pid);
-		Map<Integer,String> sites = new LinkedHashMap<Integer,String>();
+		List<ProjectType> projectTypes = projectDao.getProjectTypes();
 		Map<Integer,String> pTypes = new LinkedHashMap<Integer,String>();
-		List<Researcher> researcherList = new LinkedList<Researcher>();
-		List<Advisor> advisorList = new LinkedList<Advisor>();
-		
-        for (APLink apl: aplList) {
-        	advisorList.add(projectDao.getAdvisorById(apl.getAdvisorId()));
+        if (projectTypes != null) {
+            for (ProjectType pt : projectTypes) {
+                    pTypes.put(pt.getId(), pt.getName());
+            }    
         }
-        for (RPLink rpl: rplList) {
-        	researcherList.add(projectDao.getResearcherById(rpl.getResearcherId()));
-        }
-
-		if (sitesTmp != null) {
-			for (Site s : sitesTmp) {
-				sites.put(s.getId(), s.getName());
-			}
-		}
-		if (pTypesTmp != null) {
-			for (ProjectType pt : pTypesTmp) {
-				pTypes.put(pt.getId(), pt.getName());
-			}
-		}
-		
-        modelMap.put("sites", sites);
-        modelMap.put("projectTypes", pTypes);
-        modelMap.put("researchers", researcherList);
-        modelMap.put("advisors", advisorList);
-		modelMap.put("apls", aplList);
-		modelMap.put("rpls", rplList);
-        modelMap.put("reviews", reviews);
-        modelMap.put("followUps", followUps);
-        modelMap.put("researchOutputs", researchOutputs);
-        modelMap.put("attachments", attachments);
-        modelMap.put("advisorActions", advisorActions);
-        modelMap.put("projectKpis", projectKpis);
-        modelMap.put("facilitiesOnProject", facilitiesOnProject);
-        modelMap.put("facilitiesNotOnProject", facilitiesNotOnProject);
+		modelMap.put("projectTypes", pTypes);
         return modelMap;
     }
 
+	private boolean isProjectValid(ProjectWrapper pw) {
+		if (pw.getProject().getName().trim().equals("")) {
+			pw.setErrorMessage("A project must have a title");
+			return false;				
+		}		
+
+		// Exactly one PI?
+		int count = 0;
+		for (RPLink rp: pw.getRpLinks()) {
+			if (rp.getResearcherRoleId() == 1) {
+				count += 1;
+			}
+		}
+		if (count == 0 || count > 1) {
+			pw.setErrorMessage("There must be exactly 1 PI on a project");
+			return false;	
+		}
+		
+		// Exactly one primary advisor?
+		count = 0;
+		for (APLink ap: pw.getApLinks()) {
+			if (ap.getAdviserRoleId() == 1) {
+				count += 1;
+			}
+		}
+		if (count == 0 || count > 1) {
+			pw.setErrorMessage("There must be exactly 1 primary advisor on a project");
+			return false;
+		}
+		return true;
+	}
+	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
 	}
 
+	public void setTempProjectManager(TempProjectManager tempProjectManager) {
+		this.tempProjectManager = tempProjectManager;
+	}
+
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
+	}
+	
+	public void setAuthzAspect(AuthzAspect authzAspect) {
+		this.authzAspect = authzAspect;
 	}
 
 }

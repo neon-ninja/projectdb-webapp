@@ -23,7 +23,7 @@ public class ViewResearcherController extends AbstractController {
 		HttpServletResponse response) throws Exception {
     	ModelAndView mav = new ModelAndView("viewresearcher");
     	Researcher r = projectDao.getResearcherById(Integer.valueOf(request.getParameter("id")));
-    	List<Project> ps = projectDao.getAllProjectsForResearcherId(r.getId());
+    	List<Project> ps = projectDao.getProjectsForResearcherId(r.getId());
     	mav.addObject("researcher", r);
     	mav.addObject("projects", ps);
 		return mav;

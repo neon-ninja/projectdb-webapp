@@ -2,26 +2,27 @@ package pm.pojo;
 
 public class APLink {
 
-	private Integer advisorId;
+	private Integer adviserId;
 	private Integer projectId;
-	private String advisorRole;
-	private Integer advisorRoleId;
+	private Integer adviserRoleId;
 	private String notes;
+	private String adviserRoleName;
+	private Adviser adviser;
 
-	public Integer getAdvisorRoleId() {
-		return advisorRoleId;
+	public Integer getAdviserRoleId() {
+		return adviserRoleId;
 	}
 
-	public void setAdvisorRoleId(Integer advisorRoleId) {
-		this.advisorRoleId = advisorRoleId;
+	public void setAdviserRoleId(Integer adviserRoleId) {
+		this.adviserRoleId = adviserRoleId;
 	}
 
-	public Integer getAdvisorId() {
-		return advisorId;
+	public Integer getAdviserId() {
+		return adviserId;
 	}
 
-	public void setAdvisorId(Integer advisorId) {
-		this.advisorId = advisorId;
+	public void setAdviserId(Integer adviserId) {
+		this.adviserId = adviserId;
 	}
 
 	public Integer getProjectId() {
@@ -32,12 +33,12 @@ public class APLink {
 		this.projectId = projectId;
 	}
 
-	public String getAdvisorRole() {
-		return advisorRole;
+	public String getAdviserRoleName() {
+		return adviserRoleName;
 	}
 
-	public void setAdvisorRole(String advisorRole) {
-		this.advisorRole = advisorRole;
+	public void setAdviserRoleName(String adviserRoleName) {
+		this.adviserRoleName = adviserRoleName;
 	}
 
 	public String getNotes() {
@@ -46,6 +47,14 @@ public class APLink {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public Adviser getAdviser() {
+		return adviser;
+	}
+
+	public void setAdviser(Adviser adviser) {
+		this.adviser = adviser;
 	}
 
 }

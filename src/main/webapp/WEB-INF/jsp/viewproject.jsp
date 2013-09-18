@@ -14,13 +14,13 @@
   <script>
     $(document).ready(function() {
       $("#researcherTable").tablesorter();
-      $("#advisorTable").tablesorter();
+      $("#adviserTable").tablesorter();
       $("#kpiTable").tablesorter();
       $("#researchOutputTable").tablesorter();
       $("#attachmentTable").tablesorter();
       $("#reviewTable").tablesorter();
       $("#followUpTable").tablesorter();
-      $("#advisorActionTable").tablesorter();
+      $("#adviserActionTable").tablesorter();
     });
   </script>
 </head>
@@ -30,10 +30,10 @@
 
   <div id="body">
 
-  <a href="<%=request.getContextPath()%>/html/editproject?id=${project.id}">Edit</a> | 
-  <a href="<%=request.getContextPath()%>/html/deleteproject?id=${project.id}">Delete</a>
+  <a href="<%=request.getContextPath()%>/html/editproject?id=${pw.project.id}">Edit</a> | 
+  <a href="<%=request.getContextPath()%>/html/deleteproject?id=${pw.project.id}">Delete</a>
   
-  <h3>Project: ${project.name}</h3>
+  <h3>Project: ${pw.project.name}</h3>
 
   <br>
   <h4>Project Details</h4>
@@ -41,59 +41,59 @@
   <table border="0" cellspacing="0" cellpadding="5">
     <tr>
       <td><nobr>Name:</nobr></td>
-      <td>${project.name}</td>
+      <td>${pw.project.name}</td>
     </tr>
     <tr>
       <td valign="top"><nobr>Description:</nobr></td>
-      <td>${project.description}</td>
+      <td>${pw.project.description}</td>
     </tr>
     <tr>
       <td><nobr>Host Institution:</nobr></td>
-      <td>${project.hostInstitution}</td>
+      <td>${pw.project.hostInstitution}</td>
     </tr>
     <tr>
       <td valign="top"><nobr>HPC Facilities:</nobr></td>
       <td>
-        <c:forEach items="${facilities}" var="facility">
-          ${facility.name}<br>
+        <c:forEach items="${pw.projectFacilities}" var="facility">
+          ${facility.facilityName}<br>
         </c:forEach>
       </td>
     </tr>
     <tr>
       <td><nobr>Type:</nobr></td>
-      <td>${project.projectType}</td>
+      <td>${pw.project.projectTypeName}</td>
     </tr>
     <tr>
       <td><nobr>Start:</nobr></td>
-      <td>${project.startDate}</td>
+      <td>${pw.project.startDate}</td>
     </tr>
     <tr>
       <td><nobr>Next review:</nobr></td>
-      <td>${project.nextReviewDate}</td>
+      <td>${pw.project.nextReviewDate}</td>
     </tr>
     <tr>
       <td><nobr>Next follow-up:</nobr></td>
-      <td>${project.nextFollowUpDate}</td>
+      <td>${pw.project.nextFollowUpDate}</td>
     </tr>
     <tr>
       <td><nobr>End:</nobr></td>
-      <td>${project.endDate}</td>
+      <td>${pw.project.endDate}</td>
     </tr>
     <tr>
       <td><nobr>Project Code:</nobr></td>
-      <td>${project.projectCode}</td>
+      <td>${pw.project.projectCode}</td>
     </tr>
     <tr>
       <td valign="top">Requirements:</td>
-      <td valign="top">${project.requirements}</td>
+      <td valign="top">${pw.project.requirements}</td>
     </tr>
     <tr>
       <td valign="top"><nobr>Notes:</nobr></td>
-      <td>${project.notes}</td>
+      <td>${pw.project.notes}</td>
     </tr>
     <tr>
       <td valign="top"><nobr>Todo:</nobr></td>
-      <td>${project.todo}</td>
+      <td>${pw.project.todo}</td>
     </tr>
   </table>
 
@@ -112,23 +112,23 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${researchers}" var="researcher" varStatus="loop">
+      <c:forEach items="${pw.rpLinks}" var="rpLink">
         <tr>
-          <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researchers[loop.index].id}"><img src="${researchers[loop.index].pictureUrl}" width="60px"/></a></td>
-          <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researchers[loop.index].id}">${researchers[loop.index].fullName}</a></td>
-          <td>${rpls[loop.index].researcherRole}</td>
-          <td>${researchers[loop.index].institution}</td>
-          <td>${researchers[loop.index].institutionalRole}</td>
-          <td>${rpls[loop.index].notes}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${rpLink.researcherId}"><img src="${rpLink.researcher.pictureUrl}" width="60px"/></a></td>
+          <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${rpLink.researcherId}">${rpLink.researcher.fullName}</a></td>
+          <td>${rpLink.researcherRoleName}</td>
+          <td>${rpLink.researcher.institution}</td>
+          <td>${rpLink.researcher.institutionalRoleName}</td>
+          <td>${rpLink.notes}</td>
         </tr>
       </c:forEach>
     </tbody>
   </table>
   
   <br>
-  <h4>Advisors on project</h4>
+  <h4>Advisers on project</h4>
 
-  <table id="advisorTable" class="tablesorter">
+  <table id="adviserTable" class="tablesorter">
     <thead>
       <tr>
 	    <th>Picture</th>
@@ -138,12 +138,12 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${advisors}" var="advisor" varStatus="loop">
+      <c:forEach items="${pw.apLinks}" var="apLink">
         <tr>
-          <td><a href="<%=request.getContextPath()%>/html/viewadvisor?id=${advisors[loop.index].id}"><img src="${advisors[loop.index].pictureUrl}" width="60px"/></a></td>
-          <td><a href="<%=request.getContextPath()%>/html/viewadvisor?id=${advisors[loop.index].id}">${advisors[loop.index].fullName}</a></td>
-          <td>${apls[loop.index].advisorRole}</td>
-          <td>${apls[loop.index].notes}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${apLink.adviserId}"><img src="${apLink.adviser.pictureUrl}" width="60px"/></a></td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${apLink.adviserId}">${apLink.adviser.fullName}</a></td>
+          <td>${apLink.adviserRoleName}</td>
+          <td>${apLink.notes}</td>
         </tr>
       </c:forEach>
     </tbody>
@@ -163,11 +163,11 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${projectKpis}" var="projectKpi">
+      <c:forEach items="${pw.projectKpis}" var="projectKpi">
         <tr>
           <td>${projectKpi.date}</td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
-          <td>${projectKpi.advisor}</td>
+          <td>${projectKpi.adviser}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
         </tr>
@@ -188,7 +188,7 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${researchOutputs}" var="researchOutput">
+      <c:forEach items="${pw.researchOutputs}" var="researchOutput">
         <tr>
           <td>${researchOutput.date}</td>
           <td>${researchOutput.type}</td>
@@ -199,31 +199,6 @@
     </tbody>
   </table>
 
-<!-- 
-  <br>
-  <h4>Attachments</h4>
-
-  <table id="attachmentTable" class="tablesorter">
-    <thead>
-      <tr>
-	    <th>Date</th>
-	    <th>Description</th>
-	    <th>Link</th>
-      </tr>
-    </thead>
-    <tbody>
-      <c:forEach items="${attachments}" var="attachment">
-        <c:if test="${empty attachment.followUpId}">
-          <tr>
-            <td>${attachment.date}</td>
-            <td>${attachment.description}</td>
-            <td><a target="new" href="${attachment.link}">${attachment.link}</a></td>
-          </tr>
-        </c:if>
-      </c:forEach>
-    </tbody>
-  </table>
--->
  
   <br>
   <h4>Reviews</h4>
@@ -238,13 +213,13 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${reviews}" var="review">
+      <c:forEach items="${pw.reviews}" var="review">
         <tr>
           <td>${review.date}</td>
-          <td>${review.advisor}</td>
+          <td>${review.adviserName}</td>
           <td>${review.notes}</td>
           <td>
-          <c:forEach items="${attachments}" var="attachment">
+          <c:forEach items="${review.attachments}" var="attachment">
             <c:if test="${attachment.reviewId eq review.id}">
               <b>Link</b>:<br>
               <a href="${attachment.link}">${attachment.link}</a><br>
@@ -272,13 +247,13 @@
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${followUps}" var="followUp">
+      <c:forEach items="${pw.followUps}" var="followUp">
         <tr>
           <td>${followUp.date}</td>
-          <td>${followUp.advisor}</td>
+          <td>${followUp.adviserName}</td>
           <td>${followUp.notes}</td>
           <td>
-          <c:forEach items="${attachments}" var="attachment">
+          <c:forEach items="${followUp.attachments}" var="attachment">
             <c:if test="${attachment.followUpId eq followUp.id}">
               <b>Link</b>:<br>
               <a href="${attachment.link}">${attachment.link}</a><br>
@@ -294,26 +269,26 @@
   </table>
 
   <br>
-  <h4>Advisor Actions</h4>
+  <h4>Adviser Actions</h4>
 
-  <table id="advisorActionTable" class="tablesorter">
+  <table id="adviserActionTable" class="tablesorter">
     <thead>
       <tr>
 	    <th>Date</th>
-	    <th>Advisor</th>
+	    <th>Adviser</th>
    	    <th>Action</th>
    	    <th>Attachments</th>
       </tr>
     </thead>
     <tbody>
-      <c:forEach items="${advisorActions}" var="advisorAction">
+      <c:forEach items="${pw.adviserActions}" var="adviserAction">
         <tr>
-          <td>${advisorAction.date}</td>
-          <td>${advisorAction.advisor}</td>
-          <td>${advisorAction.action}</td>
+          <td>${adviserAction.date}</td>
+          <td>${adviserAction.adviserName}</td>
+          <td>${adviserAction.action}</td>
           <td>
-          <c:forEach items="${attachments}" var="attachment">
-            <c:if test="${attachment.advisorActionId eq advisorAction.id}">
+          <c:forEach items="${adviserAction.attachments}" var="attachment">
+            <c:if test="${attachment.adviserActionId eq adviserAction.id}">
               <b>Link</b>:<br>
               <a href="${attachment.link}">${attachment.link}</a><br>
               <b>Description</b>:<br>

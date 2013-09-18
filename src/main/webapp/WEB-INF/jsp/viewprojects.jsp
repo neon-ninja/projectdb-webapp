@@ -30,24 +30,19 @@
 
   <div id="body">
   
-  <a href="<%=request.getContextPath()%>/html/createproject">Create new project</a><br>
+  <a href="<%=request.getContextPath()%>/html/editproject">Create new project</a><br>
   <!--
   <a href="http://cluster.ceres.auckland.ac.nz/project_management/ResearcherQuestionnaire.txt">Researcher Questionnaire</a>
   -->
    
-  <h3>Projects</h3>
-  Total number of projects: ${f:length(projects)}<br>
+  <h3>Projects (${f:length(projects)})</h3>
+
   <table id="myTable" class="tablesorter">
     <thead>
       <tr>
         <th>#</th>
 	    <th>Name</th>
 	    <th>Code</th>
-<!--
-   	    <th><img src="<%=request.getContextPath()%>/pics/attachment.png"/></th>
-   	    <th><img src="<%=request.getContextPath()%>/pics/kpi.jpg"/></th>
-   	    <th><img src="<%=request.getContextPath()%>/pics/output.jpg"/></th>
--->
    	    <th>Start</th>
    	    <th>Next review</th>
    	    <th>Next follow-up</th>
@@ -62,35 +57,26 @@
         <td>&nbsp;</td>
         <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${project.id}">${project.name}</a></td>
         <td>${project.projectCode}</td>
-<!--
-        <td>
-          <c:if test="${empty project.projectId}">
-            y   
-          </c:if>
-        </td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
--->
         <td>${project.startDate}</td>
         <c:choose>
           <c:when test="${f:contains(project.nextReviewDate, 'due')}">
-            <td><font color="red">${project.nextReviewDate}</font></td>   
+            <td><font color="red"><nobr>${project.nextReviewDate}</nobr></font></td>   
           </c:when>
           <c:otherwise>
-            <td>${project.nextReviewDate}</td>
+            <td><nobr>${project.nextReviewDate}</nobr></td>
           </c:otherwise>
         </c:choose>
         <c:choose>
           <c:when test="${f:contains(project.nextFollowUpDate, 'due')}">
-            <td><font color="red">${project.nextFollowUpDate}</font></td>   
+            <td><font color="red"><nobr>${project.nextFollowUpDate}</nobr></font></td>   
           </c:when>
           <c:otherwise>
-            <td>${project.nextFollowUpDate}</td>
+            <td><nobr>${project.nextFollowUpDate}</nobr></td>
           </c:otherwise>
         </c:choose>
         <td>${project.endDate}</td>
         <td>${project.hostInstitution}</td>
-        <td>${project.projectType}</td>
+        <td>${project.projectTypeName}</td>
       </tr>
     </c:forEach>
     </tbody>

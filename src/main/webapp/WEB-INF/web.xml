@@ -18,7 +18,7 @@
 		<param-value>/WEB-INF/root-context.xml, /WEB-INF/pm-servlet.xml</param-value>
 	</context-param>
 
-    <!-- Spring-enabled servlet filter -->
+	<!-- Spring-enabled servlet filter -->
 	<filter>
 		<filter-name>AuditFilter</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -49,10 +49,10 @@
 		</taglib>
 	</jsp-config>
 
-  <error-page>
-	<exception-type>java.lang.Exception</exception-type>
-	<location>/WEB-INF/jsp/exception.jsp</location>
-  </error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/WEB-INF/jsp/exception.jsp</location>
+	</error-page>
 
 </web-app>
 

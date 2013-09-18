@@ -19,7 +19,7 @@ public class ViewResearchersController extends AbstractController {
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
     	ModelAndView mav = new ModelAndView("viewresearchers");
-    	List<Researcher> rl = projectDao.getAllResearchers();
+    	List<Researcher> rl = projectDao.getResearchers();
     	mav.addObject("researchers", rl);
 		return mav;
 	}
