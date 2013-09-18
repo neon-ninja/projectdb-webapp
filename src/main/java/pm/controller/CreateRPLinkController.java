@@ -49,10 +49,8 @@ public class CreateRPLinkController extends SimpleFormController {
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
-		log.error("preparing create rp link view 1...");
 		Integer pid = Integer.valueOf(request.getParameter("id"));
     	ProjectWrapper pw = this.tempProjectManager.get(pid);
-		log.error("preparing create rp link view 2...");
     	List<Integer> l = new LinkedList<Integer>();
     	for (RPLink r: pw.getRpLinks()) {
     		l.add(r.getResearcherId());
