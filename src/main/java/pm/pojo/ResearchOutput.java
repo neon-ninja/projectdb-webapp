@@ -2,13 +2,31 @@ package pm.pojo;
 
 public class ResearchOutput {
 
-	Integer id;
-	Integer projectId;
-	String type;
-	Integer typeId;
-	String description;
-	String link;
-	String date;
+	private Integer id;
+	private Integer projectId;
+	private String type;
+	private Integer typeId;
+	private String description;
+	private String link;
+	private String date;
+	private String adviserName;
+	private Integer adviserId;
+
+	public String getAdviserName() {
+		return adviserName;
+	}
+
+	public void setAdviserName(String adviserName) {
+		this.adviserName = adviserName;
+	}
+
+	public Integer getAdviserId() {
+		return adviserId;
+	}
+
+	public void setAdviserId(Integer adviserId) {
+		this.adviserId = adviserId;
+	}
 
 	public String getDate() {
 		return date;
