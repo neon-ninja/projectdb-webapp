@@ -16,7 +16,7 @@
         $("#datepicker1").datepicker({ dateFormat: "yy-mm-dd" });
         $("#datepicker2").datepicker({ dateFormat: "yy-mm-dd" });
 
-        $("#aplink_notes").watermark("Notes on the advisor on this particular project");
+        $("#aplink_notes").watermark("Notes on the adviser on this particular project");
     });
   </script>
 </head>
