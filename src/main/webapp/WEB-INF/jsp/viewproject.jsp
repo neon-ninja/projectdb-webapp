@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="c-rt" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="f" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <html>
 <head>
@@ -156,8 +156,8 @@
     <thead>
       <tr>
         <th>Date</th>
-	    <th>KPI</th>
 	    <th>Reported By</th>
+	    <th>KPI</th>
 	    <th>Value</th>
 	    <th>Notes</th>
       </tr>
@@ -166,8 +166,8 @@
       <c:forEach items="${pw.projectKpis}" var="projectKpi">
         <tr>
           <td>${projectKpi.date}</td>
+          <td>${projectKpi.adviserName}</td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
-          <td>${projectKpi.adviser}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
         </tr>
@@ -182,6 +182,7 @@
     <thead>
       <tr>
 	    <th>Date</th>
+	    <th>Reported By</th>
 	    <th>Type</th>
 	    <th>Citation</th>
 	    <th>Link</th>
@@ -191,6 +192,7 @@
       <c:forEach items="${pw.researchOutputs}" var="researchOutput">
         <tr>
           <td>${researchOutput.date}</td>
+          <td>${researchOutput.adviserName}</td>
           <td>${researchOutput.type}</td>
           <td>${researchOutput.description}</td>
           <td><a target="new" href="${researchOutput.link}">${researchOutput.link}</a></td>
@@ -275,7 +277,7 @@
     <thead>
       <tr>
 	    <th>Date</th>
-	    <th>Adviser</th>
+	    <th>Reported By</th>
    	    <th>Action</th>
    	    <th>Attachments</th>
       </tr>
