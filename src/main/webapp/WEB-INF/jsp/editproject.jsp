@@ -198,7 +198,7 @@
   <br>
   <a id="advisers"></a>
   <h4>Advisers on project</h4>
-  <b><font color="orange">Note: If you are not an advisor on a project you may not be able to edit it after it has been saved.</font></b>
+  <b><font color="orange">Note: If you are not an adviser on a project you may not be able to edit it after it has been saved.</font></b>
   <table id="adviserTable" class="tablesorter">
     <thead>
       <tr>
@@ -234,8 +234,8 @@
     <thead>
       <tr>
         <th>Date</th>
-	    <th>KPI</th>
 	    <th>Reported By</th>
+	    <th>KPI</th>
 	    <th>Value</th>
 	    <th>Notes</th>
 	    <th>Action</th>
@@ -245,8 +245,8 @@
       <c:forEach items="${projectWrapper.projectKpis}" var="projectKpi">
         <tr>
           <td>${projectKpi.date}</td>
+          <td>${projectKpi.adviserName}</td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
-          <td>${projectKpi.adviser}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
           <td>
@@ -267,6 +267,7 @@
     <thead>
       <tr>
         <th>Date</th>
+	    <th>Reported By</th>
 	    <th>Type</th>
 	    <th>Citation</th>
 	    <th>Link</th>
@@ -277,6 +278,7 @@
       <c:forEach items="${projectWrapper.researchOutputs}" var="researchOutput">
         <tr>
           <td>${researchOutput.date}</td>
+          <td>${researchOutput.adviserName}</td>
           <td>${researchOutput.type}</td>
           <td>${researchOutput.description}</td>
           <td><a target="new" href="${researchOutput.link}">${researchOutput.link}</a></td>
@@ -298,7 +300,7 @@
     <thead>
       <tr>
 	    <th>Date</th>
-	    <th>Adviser</th>
+	    <th>Reported By</th>
    	    <th>Notes</th>
    	    <th>Attachments</th>
    	    <th>Action</th>
@@ -341,7 +343,7 @@
     <thead>
       <tr>
 	    <th>Date</th>
-	    <th>Adviser</th>
+	    <th>Reported By</th>
    	    <th>Notes</th>
    	    <th>Attachments</th>
    	    <th>Action</th>
@@ -384,7 +386,7 @@
     <thead>
       <tr>
 	    <th>Date</th>
-	    <th>Adviser</th>
+	    <th>Reported By</th>
    	    <th>Adviser Action</th>
    	    <th>Attachments</th>
    	    <th>Action</th>
