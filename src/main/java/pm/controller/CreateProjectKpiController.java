@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
-import pm.pojo.APLink;
 import pm.pojo.Adviser;
 import pm.pojo.Kpi;
 import pm.pojo.ProjectKpi;
@@ -32,6 +32,7 @@ public class CreateProjectKpiController extends SimpleFormController {
 	private ProjectDao projectDao;
 	private TempProjectManager tempProjectManager;
 	private String proxy;
+	private String remoteUserHeader;
 	private Random random = new Random();
 	
 	@Override
@@ -43,7 +44,7 @@ public class CreateProjectKpiController extends SimpleFormController {
     	pk.setId(random.nextInt());
     	pk.setKpiTitle(this.projectDao.getKpiById(pk.getKpiId()).getTitle());
     	pk.setKpiType(this.projectDao.getKpiById(pk.getKpiId()).getType());
-    	pk.setAdviser(this.projectDao.getAdviserById(pk.getAdviserId()).getFullName());
+    	pk.setAdviserName(this.projectDao.getAdviserById(pk.getAdviserId()).getFullName());
     	pw.getProjectKpis().add(pk);
     	this.tempProjectManager.update(projectId, pw);
 		mav.setViewName("redirect");
@@ -64,7 +65,6 @@ public class CreateProjectKpiController extends SimpleFormController {
 	@Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
-		Integer pid = Integer.valueOf(request.getParameter("id"));
 		
 		List<Kpi> kpis = new LinkedList<Kpi>();
 		kpis = this.projectDao.getKpis();
@@ -74,14 +74,8 @@ public class CreateProjectKpiController extends SimpleFormController {
 			tmpkpis.put(kpi.getId(), kpi.getType() + "-" + kpi.getId() + ": " + kpi.getTitle());
 		}
 		
-		List<APLink> apLinks =  this.tempProjectManager.get(pid).getApLinks();
-		Map<Integer,String> advisers = new LinkedHashMap<Integer,String>();
-		if (apLinks != null) {
-			for (APLink ap : apLinks) {
-				advisers.put(ap.getAdviserId(),ap.getAdviser().getFullName());
-			}
-		}
-        modelMap.put("advisers", advisers);
+		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
+        modelMap.put("adviserId", a.getId());
 		modelMap.put("kpis", tmpkpis);
 		modelMap.put("projectId", request.getParameter("id"));
         return modelMap;
@@ -97,6 +91,19 @@ public class CreateProjectKpiController extends SimpleFormController {
 
 	public void setTempProjectManager(TempProjectManager tempProjectManager) {
 		this.tempProjectManager = tempProjectManager;
+	}
+
+	public void setRemoteUserHeader(String remoteUserHeader) {
+		this.remoteUserHeader = remoteUserHeader;
+	}
+
+	private String getTuakiriUniqueIdFromRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String user = (String) request.getAttribute(this.remoteUserHeader);
+		if (user == null) {
+			user = "NULL";
+		}
+		return user;
 	}
 
 }
