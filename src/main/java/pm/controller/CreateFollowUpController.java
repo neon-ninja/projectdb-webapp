@@ -3,8 +3,6 @@ package pm.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -13,11 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
-import pm.pojo.APLink;
 import pm.pojo.Adviser;
 import pm.pojo.Attachment;
 import pm.pojo.FollowUp;
@@ -30,6 +29,7 @@ public class CreateFollowUpController extends SimpleFormController {
 	private ProjectDao projectDao;
 	private TempProjectManager tempProjectManager;
 	private String proxy;
+	private String remoteUserHeader;
 	private Random random = new Random();
 	
 	@Override
@@ -64,15 +64,9 @@ public class CreateFollowUpController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		Integer pid = Integer.valueOf(request.getParameter("id"));
-		List<APLink> apLinks =  this.tempProjectManager.get(pid).getApLinks();
-		Map<Integer,String> advisers = new LinkedHashMap<Integer,String>();
-		if (apLinks != null) {
-			for (APLink ap : apLinks) {
-				advisers.put(ap.getAdviserId(),ap.getAdviser().getFullName());
-			}
-		}
+		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
 		modelMap.put("pid", pid);
-        modelMap.put("advisers", advisers);
+        modelMap.put("adviserId", a.getId());
         return modelMap;
     }
 	
@@ -94,5 +88,18 @@ public class CreateFollowUpController extends SimpleFormController {
 
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
+	}
+	
+    public void setRemoteUserHeader(String remoteUserHeader) {
+		this.remoteUserHeader = remoteUserHeader;
+	}
+
+	private String getTuakiriUniqueIdFromRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String user = (String) request.getAttribute(this.remoteUserHeader);
+		if (user == null) {
+			user = "NULL";
+		}
+		return user;
 	}
 }
