@@ -14,15 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
+import pm.pojo.Adviser;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.temp.TempProjectManager;
-import pm.util.Util;
 
 public class CreateResearchOutputController extends SimpleFormController {
 
@@ -30,6 +32,7 @@ public class CreateResearchOutputController extends SimpleFormController {
 	private ProjectDao projectDao;
 	private TempProjectManager tempProjectManager;
 	private String proxy;
+	private String remoteUserHeader;
 	private Random random = new Random();
 	
 	@Override
@@ -39,6 +42,7 @@ public class CreateResearchOutputController extends SimpleFormController {
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
     	r.setId(random.nextInt());
+    	r.setAdviserName(this.projectDao.getAdviserById(r.getAdviserId()).getFullName());
     	r.setType(this.projectDao.getResearchOutputTypeById(r.getTypeId()).getName());
     	pw.getResearchOutputs().add(r);
     	this.tempProjectManager.update(projectId, pw);
@@ -66,6 +70,8 @@ public class CreateResearchOutputController extends SimpleFormController {
 				researchOutputTypes.put(rot.getId(), rot.getName());
 			}
 		}
+		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
+		modelMap.put("adviserId", a.getId());		
 		modelMap.put("pid", Integer.valueOf(request.getParameter("id")));
 		modelMap.put("researchOutputTypes", researchOutputTypes);
         return modelMap;
@@ -82,5 +88,17 @@ public class CreateResearchOutputController extends SimpleFormController {
 	public void setTempProjectManager(TempProjectManager tempProjectManager) {
 		this.tempProjectManager = tempProjectManager;
 	}
-	
+
+    public void setRemoteUserHeader(String remoteUserHeader) {
+		this.remoteUserHeader = remoteUserHeader;
+	}
+
+	private String getTuakiriUniqueIdFromRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String user = (String) request.getAttribute(this.remoteUserHeader);
+		if (user == null) {
+			user = "NULL";
+		}
+		return user;
+	}
 }
