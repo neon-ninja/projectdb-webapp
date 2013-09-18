@@ -107,6 +107,7 @@
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 	</bean>
 
 	<bean id="deleteProjectKpiController" class="pm.controller.DeleteProjectKpiController">
@@ -122,6 +123,7 @@
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 	</bean>
 
 	<bean id="createReviewController" class="pm.controller.CreateReviewController">
@@ -132,6 +134,7 @@
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 	</bean>
 
 	<bean id="deleteReviewController" class="pm.controller.DeleteReviewController">
@@ -147,6 +150,7 @@
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 	</bean>
 
 	<bean id="deleteFollowUpController" class="pm.controller.DeleteFollowUpController">
@@ -162,6 +166,7 @@
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
+		<property name="remoteUserHeader" value="${remoteUserHeader}" />
 	</bean>
 
 	<bean id="deleteAdviserActionController" class="pm.controller.DeleteAdviserActionController">
