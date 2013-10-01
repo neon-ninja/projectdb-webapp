@@ -56,8 +56,8 @@
         <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviser.id}">${adviser.fullName}</a></td>        
         <td>${adviser.numProjects}</td>
         <td>${adviser.institution}</td>
-        <td>${adviser.department1}</td>
-        <td>${adviser.department2}</td>
+        <td>${adviser.division}</td>
+        <td>${adviser.department}</td>
         <td>${adviser.startDate}</td>
         <td>${adviser.endDate}</td>
       </tr>

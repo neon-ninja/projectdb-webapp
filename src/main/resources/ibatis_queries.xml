@@ -342,8 +342,8 @@
         email,
         phone,
         institution,
-        department1,
-        department2,
+        division,
+        department,
         institutionalRoleId,
         startDate,
         endDate,
@@ -354,8 +354,8 @@
         #email#, 
         #phone#, 
         #institution#, 
-        #department1#,
-        #department2#,
+        #division#,
+        #department#,
         #institutionalRoleId#,
         #startDate#,
         #endDate#, 
@@ -373,8 +373,8 @@
         email,
         phone,
         institution,
-        department1,
-        department2,
+        division,
+        department,
         startDate,
         endDate,
         notes
@@ -384,8 +384,8 @@
         #email#, 
         #phone#, 
         #institution#, 
-        #department1#,
-        #department2#,
+        #division#,
+        #department#,
         #startDate#,
         #endDate#, 
         #notes# 
@@ -536,8 +536,8 @@
         email = #email#,
         phone = #phone#,
         institution = #institution#,
-        department1 = #department1#,
-        department2 = #department2#,
+        division = #division#,
+        department = #department#,
         institutionalRoleId = #institutionalRoleId#,
         startDate = #startDate#,
         endDate = #endDate#,
@@ -552,8 +552,8 @@
         email = #email#,
         phone = #phone#,
         institution = #institution#,
-        department1 = #department1#,
-        department2 = #department2#,
+        division = #division#,
+        department = #department#,
         startDate = #startDate#,
         endDate = #endDate#,
         notes = #notes#
@@ -679,7 +679,6 @@
       FROM researchoutputtype
       ORDER BY name
   </select>   
-
 
   <!-- Temp projects -->
 

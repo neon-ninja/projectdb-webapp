@@ -56,12 +56,12 @@
     <tr>
       <td>Division/Faculty</td>
       <td>&nbsp;</td>
-      <td><form:input path="department1" size="120"/></td>
+      <td><form:input path="division" size="120"/></td>
     </tr>
     <tr>
       <td>Department</td>
       <td>&nbsp;</td>
-      <td><form:input path="department2" size="120"/></td>
+      <td><form:input path="department" size="120"/></td>
     </tr>
     <tr>
       <td>Institutional role</td>
