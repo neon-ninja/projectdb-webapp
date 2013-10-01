@@ -14,6 +14,7 @@ import pm.pojo.APLink;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserAction;
 import pm.pojo.AdviserRole;
+import pm.pojo.Affiliation;
 import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
@@ -233,6 +234,10 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 
 	public List<Site> getSites() throws Exception {
 		return (List<Site>) getSqlMapClientTemplate().queryForList("getSites");
+	}
+
+	public List<Affiliation> getAffiliations() throws Exception {
+		return (List<Affiliation>) getSqlMapClientTemplate().queryForList("getAffiliations");		
 	}
 
 	public List<Kpi> getKpis() throws Exception {
