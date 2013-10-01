@@ -288,6 +288,14 @@
 		<property name="projectDao" ref="projectDao" />
 	</bean>
 
+	<bean id="viewProjectKpisController" class="pm.controller.ViewProjectKpisController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
+	<bean id="viewResearchOutputController" class="pm.controller.ViewResearchOutputController">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
@@ -387,6 +395,12 @@
 				</entry>
 				<entry key="/viewadvisers">
 					<ref bean="viewAdvisersController" />
+				</entry>
+				<entry key="/viewprojectkpis">
+					<ref bean="viewProjectKpisController" />
+				</entry>
+				<entry key="/viewresearchoutput">
+					<ref bean="viewResearchOutputController" />
 				</entry>
 			</map>
 		</property>
