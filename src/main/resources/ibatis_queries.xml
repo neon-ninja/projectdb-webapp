@@ -251,6 +251,16 @@
        WHERE projectId = #id#
    </select>   
 
+   <select id="getProjectKpis" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectKpi">
+       SELECT *
+       FROM project_kpi
+   </select>   
+
+   <select id="getResearchOutput" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearchOutput">
+       SELECT *
+       FROM researchoutput
+   </select>   
+
    <select id="getKpisForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectKpi">
        SELECT *
        FROM project_kpi
