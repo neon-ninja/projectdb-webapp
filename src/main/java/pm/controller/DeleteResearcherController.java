@@ -18,7 +18,7 @@ public class DeleteResearcherController extends AbstractController {
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
-		Integer id = Integer.getInteger(request.getParameter("id"));
+		Integer id = Integer.valueOf(request.getParameter("id"));
     	ModelAndView mav = new ModelAndView();
     	this.projectDao.deleteResearcher(id);
 		mav.setViewName("redirect");

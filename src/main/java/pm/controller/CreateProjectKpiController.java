@@ -56,7 +56,7 @@ public class CreateProjectKpiController extends SimpleFormController {
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		ProjectKpi k = new ProjectKpi();
-		k.setProjectId(Integer.getInteger(request.getParameter("id")));
+		k.setProjectId(Integer.valueOf(request.getParameter("id")));
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		k.setDate(df.format(new Date()));
 		return k;

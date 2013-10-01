@@ -69,7 +69,7 @@ public class CreateAttachmentController extends SimpleFormController {
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		Attachment a = new Attachment();
-		a.setProjectId(Integer.getInteger(request.getParameter("id")));
+		a.setProjectId(Integer.valueOf(request.getParameter("id")));
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		a.setDate(df.format(new Date()));
 		return a;
