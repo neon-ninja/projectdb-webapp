@@ -110,7 +110,7 @@
     <tr>
       <td>Host Institution:</td>
       <td>&nbsp;</td>
-      <td><form:input id="project_hostInstitution" path="project.hostInstitution" size="120"/></td>
+      <td><form:select path="project.hostInstitution" items="${institutions}"/></td>
     </tr>
     <tr>
       <td>Type:</td>

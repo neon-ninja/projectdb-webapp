@@ -700,6 +700,12 @@
       ORDER BY institution, division, department
   </select>
   
+  <select id="getInstitutions" resultClass="java.lang.String">
+      SELECT DISTINCT name
+      FROM institution
+      ORDER BY name
+  </select>
+
   <!-- Temp projects -->
 
   <insert id="createTempProject" parameterClass="pm.pojo.TempProject">

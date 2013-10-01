@@ -240,6 +240,10 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		return (List<Affiliation>) getSqlMapClientTemplate().queryForList("getAffiliations");		
 	}
 
+	public List<String> getInstitutions() throws Exception {
+		return (List<String>) getSqlMapClientTemplate().queryForList("getInstitutions");		
+	}
+
 	public List<Kpi> getKpis() throws Exception {
 		return (List<Kpi>) getSqlMapClientTemplate().queryForList("getKpis");
 	}

@@ -26,6 +26,7 @@ public interface ProjectDao {
 	public List<Researcher> getResearchers() throws Exception;
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception;
 	public List<Affiliation> getAffiliations() throws Exception;
+	public List<String> getInstitutions() throws Exception;
 	public List<Site> getSites() throws Exception;
 	public List<Kpi> getKpis() throws Exception;
 	public List<ProjectType> getProjectTypes() throws Exception;

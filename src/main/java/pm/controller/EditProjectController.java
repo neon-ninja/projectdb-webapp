@@ -190,6 +190,7 @@ public class EditProjectController extends SimpleFormController {
             }    
         }
 		modelMap.put("projectTypes", pTypes);
+		modelMap.put("institutions", this.projectDao.getInstitutions());
         return modelMap;
     }
 

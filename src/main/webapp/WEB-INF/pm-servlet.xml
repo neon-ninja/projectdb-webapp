@@ -48,6 +48,10 @@
 		<property name="sessionDuration" value="${session.duration.seconds}" />
 	</bean>
 
+	<bean id="affiliationUtil" class="pm.util.AffiliationUtil">
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
 	<!-- Controllers -->
 	<bean id="createResearcherController" class="pm.controller.CreateResearcherController">
 		<property name="sessionForm" value="true" />
@@ -56,6 +60,7 @@
 		<property name="formView" value="createresearcher" />
 		<property name="successView" value="viewresearcher" />
 		<property name="projectDao" ref="projectDao" />
+		<property name="affiliationUtil" ref="affiliationUtil" />
 		<property name="profileDefaultPicture" value="${profile.default.picture}" />
 	</bean>
 
@@ -66,6 +71,7 @@
 		<property name="formView" value="createadviser" />
 		<property name="successView" value="viewadviser" />
 		<property name="projectDao" ref="projectDao" />
+		<property name="affiliationUtil" ref="affiliationUtil" />
 		<property name="profileDefaultPicture" value="${profile.default.picture}" />
 	</bean>
 
@@ -239,6 +245,7 @@
 		<property name="commandClass" value="pm.pojo.Researcher" />
 		<property name="formView" value="editresearcher" />
 		<property name="projectDao" ref="projectDao" />
+		<property name="affiliationUtil" ref="affiliationUtil" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
 
@@ -249,6 +256,7 @@
 		<property name="formView" value="editadviser" />
 		<property name="successView" value="viewadviser" />
 		<property name="projectDao" ref="projectDao" />
+		<property name="affiliationUtil" ref="affiliationUtil" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
 
