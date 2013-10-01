@@ -680,6 +680,26 @@
       ORDER BY name
   </select>   
 
+  <select id="getAffiliations" resultClass="pm.pojo.Affiliation">
+      SELECT DISTINCT IFNULL(i.name,'') as institution, '' as division, '' as department 
+      FROM institution i
+
+      UNION
+      
+      SELECT IFNULL(i.name,'') as institution, IFNULL(d.name,'') as division, '' as department
+      FROM institution i
+      LEFT JOIN division d on i.id = d.institutionId 
+
+      UNION
+
+      SELECT IFNULL(i.name,'') AS institution, IFNULL(di.name,'') AS division, IFNULL(de.name,'') AS department
+      FROM institution i
+      LEFT JOIN division di ON i.id = di.institutionId
+      LEFT JOIN department de on di.id = de.divisionId
+      
+      ORDER BY institution, division, department
+  </select>
+  
   <!-- Temp projects -->
 
   <insert id="createTempProject" parameterClass="pm.pojo.TempProject">
