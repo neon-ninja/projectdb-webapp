@@ -44,11 +44,11 @@
     </tr>
     <tr>
       <td>Division/Faculty:</td>
-      <td>${adviser.department1}</td>
+      <td>${adviser.division}</td>
     </tr>
     <tr>
       <td>Department:</td>
-      <td>${adviser.department2}</td>
+      <td>${adviser.department}</td>
     </tr>
     <tr>
       <td>Start date:</td>

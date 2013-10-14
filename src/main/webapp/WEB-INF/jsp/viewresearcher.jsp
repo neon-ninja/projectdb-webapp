@@ -44,11 +44,11 @@
     </tr>
     <tr>
       <td>Division/Faculty:</td>
-      <td>${researcher.department1}</td>
+      <td>${researcher.division}</td>
     </tr>
     <tr>
       <td>Department:</td>
-      <td>${researcher.department2}</td>
+      <td>${researcher.department}</td>
     </tr>
     <tr>
       <td>Institutional role:</td>

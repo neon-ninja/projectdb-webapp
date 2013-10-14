@@ -36,8 +36,13 @@
         <property name="sqlMapClient" ref="ibatisSqlMapClient"/>
     </bean>
     
-    
     <bean id="AuditFilter" class="pm.filter.AuditFilter">
+        <property name="proxyIp" value="${proxyIp}"/>
+        <property name="remoteUserHeader" value="${remoteUserHeader}"/>
+        <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>
+    </bean>
+
+    <bean id="TestFilter" class="pm.filter.TestFilter">
         <property name="proxyIp" value="${proxyIp}"/>
         <property name="remoteUserHeader" value="${remoteUserHeader}"/>
         <property name="remoteAddrHeader" value="${remoteAddrHeader}"/>

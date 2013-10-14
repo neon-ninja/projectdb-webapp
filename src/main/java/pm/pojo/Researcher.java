@@ -7,8 +7,8 @@ public class Researcher {
 	private String email;
 	private String phone;
 	private String institution;
-	private String department1;
-	private String department2;
+	private String division;
+	private String department;
 	private Integer institutionalRoleId;
 	private String institutionalRoleName;
 	private String pictureUrl;
@@ -64,20 +64,20 @@ public class Researcher {
 		this.institution = institution;
 	}
 
-	public String getDepartment1() {
-		return department1;
+	public String getDivision() {
+		return division;
 	}
 
-	public void setDepartment1(String department1) {
-		this.department1 = department1;
+	public void setDivision(String division) {
+		this.division = division;
 	}
 
-	public String getDepartment2() {
-		return department2;
+	public String getDepartment() {
+		return department;
 	}
 
-	public void setDepartment2(String department2) {
-		this.department2 = department2;
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 	public String getPictureUrl() {

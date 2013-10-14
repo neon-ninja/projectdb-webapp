@@ -251,6 +251,16 @@
        WHERE projectId = #id#
    </select>   
 
+   <select id="getProjectKpis" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectKpi">
+       SELECT *
+       FROM project_kpi
+   </select>   
+
+   <select id="getResearchOutput" parameterClass="java.lang.Integer" resultClass="pm.pojo.ResearchOutput">
+       SELECT *
+       FROM researchoutput
+   </select>   
+
    <select id="getKpisForProjectId" parameterClass="java.lang.Integer" resultClass="pm.pojo.ProjectKpi">
        SELECT *
        FROM project_kpi
@@ -342,8 +352,8 @@
         email,
         phone,
         institution,
-        department1,
-        department2,
+        division,
+        department,
         institutionalRoleId,
         startDate,
         endDate,
@@ -354,8 +364,8 @@
         #email#, 
         #phone#, 
         #institution#, 
-        #department1#,
-        #department2#,
+        #division#,
+        #department#,
         #institutionalRoleId#,
         #startDate#,
         #endDate#, 
@@ -373,8 +383,8 @@
         email,
         phone,
         institution,
-        department1,
-        department2,
+        division,
+        department,
         startDate,
         endDate,
         notes
@@ -384,8 +394,8 @@
         #email#, 
         #phone#, 
         #institution#, 
-        #department1#,
-        #department2#,
+        #division#,
+        #department#,
         #startDate#,
         #endDate#, 
         #notes# 
@@ -536,8 +546,8 @@
         email = #email#,
         phone = #phone#,
         institution = #institution#,
-        department1 = #department1#,
-        department2 = #department2#,
+        division = #division#,
+        department = #department#,
         institutionalRoleId = #institutionalRoleId#,
         startDate = #startDate#,
         endDate = #endDate#,
@@ -552,8 +562,8 @@
         email = #email#,
         phone = #phone#,
         institution = #institution#,
-        department1 = #department1#,
-        department2 = #department2#,
+        division = #division#,
+        department = #department#,
         startDate = #startDate#,
         endDate = #endDate#,
         notes = #notes#
@@ -680,6 +690,31 @@
       ORDER BY name
   </select>   
 
+  <select id="getAffiliations" resultClass="pm.pojo.Affiliation">
+      SELECT DISTINCT IFNULL(i.name,'') as institution, '' as division, '' as department 
+      FROM institution i
+
+      UNION
+      
+      SELECT IFNULL(i.name,'') as institution, IFNULL(d.name,'') as division, '' as department
+      FROM institution i
+      LEFT JOIN division d on i.id = d.institutionId 
+
+      UNION
+
+      SELECT IFNULL(i.name,'') AS institution, IFNULL(di.name,'') AS division, IFNULL(de.name,'') AS department
+      FROM institution i
+      LEFT JOIN division di ON i.id = di.institutionId
+      LEFT JOIN department de on di.id = de.divisionId
+      
+      ORDER BY institution, division, department
+  </select>
+  
+  <select id="getInstitutions" resultClass="java.lang.String">
+      SELECT DISTINCT name
+      FROM institution
+      ORDER BY name
+  </select>
 
   <!-- Temp projects -->
 

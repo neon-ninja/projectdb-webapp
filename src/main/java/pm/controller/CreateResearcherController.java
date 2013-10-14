@@ -19,19 +19,25 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import pm.db.ProjectDao;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Researcher;
+import pm.util.AffiliationUtil;
 
 public class CreateResearcherController extends SimpleFormController {
 
 	private Log log = LogFactory.getLog(CreateResearcherController.class.getName()); 
 	private ProjectDao projectDao;
 	private String profileDefaultPicture;
+	private AffiliationUtil affiliationUtil;
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		Researcher r = (Researcher) o;
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
+		String affiliationString = r.getInstitution();
+		r.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
+		r.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
+		r.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
 		Integer id = this.projectDao.createResearcher(r);
 		r = this.projectDao.getResearcherById(id);
+    	ModelAndView mav = new ModelAndView(super.getSuccessView());
 		mav.addObject("researcher", r);
 		return mav;
 	}
@@ -47,6 +53,7 @@ public class CreateResearcherController extends SimpleFormController {
 			}
 		}
         modelMap.put("institutionalRoles", iRoles);
+		modelMap.put("affiliations", this.affiliationUtil.getAffiliationStrings());
         return modelMap;
 	}
 	
@@ -65,6 +72,10 @@ public class CreateResearcherController extends SimpleFormController {
 
 	public void setProfileDefaultPicture(String profileDefaultPicture) {
 		this.profileDefaultPicture = profileDefaultPicture;
+	}
+	
+	public void setAffiliationUtil(AffiliationUtil affiliationUtil) {
+		this.affiliationUtil = affiliationUtil;
 	}
 	
 }

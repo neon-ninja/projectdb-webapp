@@ -14,6 +14,7 @@ import pm.pojo.APLink;
 import pm.pojo.Adviser;
 import pm.pojo.AdviserAction;
 import pm.pojo.AdviserRole;
+import pm.pojo.Affiliation;
 import pm.pojo.Attachment;
 import pm.pojo.Facility;
 import pm.pojo.FollowUp;
@@ -235,8 +236,41 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 		return (List<Site>) getSqlMapClientTemplate().queryForList("getSites");
 	}
 
+	public List<Affiliation> getAffiliations() throws Exception {
+		return (List<Affiliation>) getSqlMapClientTemplate().queryForList("getAffiliations");		
+	}
+
+	public List<String> getInstitutions() throws Exception {
+		return (List<String>) getSqlMapClientTemplate().queryForList("getInstitutions");		
+	}
+
 	public List<Kpi> getKpis() throws Exception {
 		return (List<Kpi>) getSqlMapClientTemplate().queryForList("getKpis");
+	}
+	
+	public List<ProjectKpi> getProjectKpis() throws Exception {
+		List<ProjectKpi> l = getSqlMapClientTemplate().queryForList("getProjectKpis");
+		for (ProjectKpi pk: l) {
+			Kpi kpi = (Kpi) getSqlMapClientTemplate().queryForObject("getKpiById", pk.getKpiId());
+			Adviser tmp = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", pk.getAdviserId());
+			if (tmp != null) {
+				pk.setAdviserName(tmp.getFullName());				
+			}
+			pk.setKpiType(kpi.getType());
+			pk.setKpiTitle(kpi.getTitle());
+		}
+		return l;
+	}
+	
+	public List<ResearchOutput> getResearchOutput() throws Exception {
+		List<ResearchOutput> l = (List<ResearchOutput>) getSqlMapClientTemplate().queryForList("getResearchOutput");
+		for (ResearchOutput ro: l) {
+			Adviser a = (Adviser) getSqlMapClientTemplate().queryForObject("getAdviserById", ro.getAdviserId());
+			ResearchOutputType tmp = (ResearchOutputType) getSqlMapClientTemplate().queryForObject("getResearchOutputTypeById", ro.getTypeId());
+			ro.setType(tmp.getName());
+			ro.setAdviserName(a.getFullName());
+		}
+		return l;
 	}
 
 	public List<ProjectType> getProjectTypes() throws Exception {

@@ -48,12 +48,12 @@ if (!isset($_GET['inst'])) {
       if (in_array($i,$blacklist)) continue;
       echo "<div class='instBlock'><div style='margin:15px'><a href='?inst=$i'><h2 style='display:inline'>$i</h2></a></div>";
       // Then print departments under that institution
-      if ($departments = $db->query("SELECT DISTINCT r.department1 FROM project
+      if ($departments = $db->query("SELECT DISTINCT r.division FROM project
                                      INNER JOIN researcher_project rp ON rp.projectId=project.id
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
-                                     AND institution='$i' ORDER BY department1")) {
+                                     AND institution='$i' ORDER BY division")) {
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {
           $d = $row[0];
@@ -78,7 +78,7 @@ if (!isset($_GET['inst'])) {
   // Specifying a department is optional
   if (isset($_GET['dept'])) {
     $d = $db->real_escape_string($_GET['dept']);
-    $deptCondition = " AND r.department1='$d'";
+    $deptCondition = " AND r.division='$d'";
   }
   
   print "<div class='header'>

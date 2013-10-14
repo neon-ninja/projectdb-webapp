@@ -10,29 +10,20 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import pm.db.ProjectDao;
 
-public class DeleteResearcherController extends AbstractController {
+public class ViewResearchOutputController extends AbstractController {
 	
-	private Log log = LogFactory.getLog(DeleteResearcherController.class.getName()); 
+	private Log log = LogFactory.getLog(ViewResearchOutputController.class.getName()); 
 	private ProjectDao projectDao;
-	private String proxy;
 
 	public ModelAndView handleRequestInternal(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
-		Integer id = Integer.valueOf(request.getParameter("id"));
-    	ModelAndView mav = new ModelAndView();
-    	this.projectDao.deleteResearcher(id);
-		mav.setViewName("redirect");
-		mav.addObject("pathAndQuerystring", "viewresearchers");
-		mav.addObject("proxy", this.proxy);
-		return mav;    	
+    	ModelAndView mav = new ModelAndView("viewresearchoutput");
+    	mav.addObject("researchOutputs", projectDao.getResearchOutput());
+		return mav;
 	}
 	
 	public void setProjectDao(ProjectDao projectDao) {
 		this.projectDao = projectDao;
-	}
-
-	public void setProxy(String proxy) {
-		this.proxy = proxy;
 	}
 
 }

@@ -12,15 +12,15 @@
   <link rel="stylesheet" href="<%=request.getContextPath()%>/style/tablesorter/blue/style.css" type="text/css"/>
   <script>
     $(document).ready(function() {
-      $("#myTable").tablesorter({sortList: [[2,0]], headers: {0: {sorter:false}, 1: {sorter:false}}});
-      var table = $("#myTable"); 
+      $("#kpis").tablesorter({sortList: [[1,1]], headers: {0: {sorter:false}}});
+      var table = $("#kpis");
       table.bind("sortEnd",function() { 
           var i = 1;
           table.find("tr:gt(0)").each(function(){
               $(this).find("td:eq(0)").text(i);
               i++;
           });
-      });      
+      }); 
     });
   </script>
 </head>
@@ -29,42 +29,36 @@
 <%@include file="includes/header.jsp" %>
 
   <div id="body">
-
-  <a href="<%=request.getContextPath()%>/html/createadviser">Create new adviser</a>
   
-  <h3>Advisers (${f:length(advisers)})</h3>
+  <h3>Project KPIs (${f:length(projectKpis)})</h3>
 
-  <table id="myTable" class="tablesorter">
+  <table id="kpis" class="tablesorter">
     <thead>
       <tr>
-        <th>#</th>
-	    <th>Picture</th>
-	    <th>Full Name</th>
-	    <th># Projects</th>
-	    <th>Institution</th>
-	    <th>Division/Faculty</th>
-	    <th>Department</th>
-	    <th>Start Date</th>
-	    <th>End Date</th>
+	    <th>#</th>
+	    <th>Date</th>
+	    <th>KPI</th>
+	    <th>Value</th>
+	    <th><nobr>Reported By</nobr></th>
+	    <th><nobr>Project</nobr></th>
+	    <th>Notes</th>
       </tr>
     </thead>
     <tbody>
-    <c:forEach items="${advisers}" var="adviser">
+    <c:forEach items="${projectKpis}" var="projectKpi">
       <tr>
         <td>&nbsp;</td>
-        <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviser.id}"><img src="${adviser.pictureUrl}" width="60px"/></a></td>
-        <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviser.id}">${adviser.fullName}</a></td>        
-        <td>${adviser.numProjects}</td>
-        <td>${adviser.institution}</td>
-        <td>${adviser.division}</td>
-        <td>${adviser.department}</td>
-        <td>${adviser.startDate}</td>
-        <td>${adviser.endDate}</td>
+        <td>${projectKpi.date}</td>
+        <td><nobr>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</nobr></td>
+        <td><nobr>${projectKpi.value}</nobr></td>
+        <td><nobr>${projectKpi.adviserName}</nobr></td>
+        <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${projectKpi.projectId}"><nobr>Go to project</nobr></a></td>
+        <td>${projectKpi.notes}</td>
       </tr>
     </c:forEach>
     </tbody>
   </table>
-              
+
   </div>
 </body>
 </html>

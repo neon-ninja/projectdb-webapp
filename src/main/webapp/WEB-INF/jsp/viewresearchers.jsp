@@ -55,8 +55,8 @@
         <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}"><img src="${researcher.pictureUrl}" width="60px"/></a></td>
         <td><a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}">${researcher.fullName}</a></td>        
         <td>${researcher.institution}</td>
-        <td>${researcher.department1}</td>
-        <td>${researcher.department2}</td>
+        <td>${researcher.division}</td>
+        <td>${researcher.department}</td>
         <td>${researcher.institutionalRoleName}</td>
         <td>${researcher.startDate}</td>
         <td>${researcher.endDate}</td>

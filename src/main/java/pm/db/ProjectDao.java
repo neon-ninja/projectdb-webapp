@@ -4,17 +4,19 @@ import java.util.List;
 
 import pm.pojo.Adviser;
 import pm.pojo.AdviserRole;
+import pm.pojo.Affiliation;
 import pm.pojo.Facility;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
 import pm.pojo.Project;
+import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectType;
 import pm.pojo.ProjectWrapper;
+import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
 import pm.pojo.Site;
-import pm.pojo.TempProject;
 
 public interface ProjectDao {
 
@@ -24,8 +26,12 @@ public interface ProjectDao {
 	public Adviser getAdviserByTuakiriUniqueId(String id) throws Exception;
 	public List<Researcher> getResearchers() throws Exception;
 	public List<ResearchOutputType> getResearchOutputTypes() throws Exception;
+	public List<Affiliation> getAffiliations() throws Exception;
+	public List<String> getInstitutions() throws Exception;
 	public List<Site> getSites() throws Exception;
 	public List<Kpi> getKpis() throws Exception;
+	public List<ProjectKpi> getProjectKpis() throws Exception;
+	public List<ResearchOutput> getResearchOutput() throws Exception;
 	public List<ProjectType> getProjectTypes() throws Exception;
 	public List<Project> getProjects() throws Exception;
 	public List<Adviser> getAdvisers() throws Exception;

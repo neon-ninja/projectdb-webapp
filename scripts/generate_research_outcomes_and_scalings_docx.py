@@ -104,7 +104,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
   projects_with_research_outcome = query('SELECT DISTINCT project.id FROM project \
                  INNER JOIN researcher_project rp ON rp.projectId=project.id \
                  INNER JOIN researcher r ON r.id=rp.researcherId \
-                   AND r.institution=\'%s\' AND r.department1=\'%s\' AND r.department2=\'%s\' \
+                   AND r.institution=\'%s\' AND r.division=\'%s\' AND r.department=\'%s\' \
                  INNER JOIN researchoutput ro ON project.id=ro.projectId \
                  INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5);' % (inst, dep1, dep2))
   # Get all project ids of projects that
@@ -114,7 +114,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
   projects_with_kpis = query('SELECT DISTINCT project.id FROM project \
                  INNER JOIN researcher_project rp ON rp.projectId=project.id \
                  INNER JOIN researcher r ON r.id=rp.researcherId \
-                   AND r.institution=\'%s\' AND r.department1=\'%s\' AND r.department2=\'%s\' \
+                   AND r.institution=\'%s\' AND r.division=\'%s\' AND r.department=\'%s\' \
                  INNER JOIN project_kpi pk ON project.id=pk.projectId \
                  INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5);' % (inst, dep1, dep2))
   # get unique 'list' of project ids that have either research output or kpis
@@ -135,7 +135,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
       body.append(heading('%s\n' % str,1))
       body.append(paragraph(''))
       instPrinted = 1
-    # print department1 if not already printed
+    # print division if not already printed
     if dep1Printed == 0 and dep1 != '':
       dep1Count = dep1Count + 1
       if skip_formatting:
@@ -146,7 +146,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
       body.append(heading('%s\n' % str,2))
       body.append(paragraph(''))
       dep1Printed = 1
-    # print department2 if not already printed
+    # print department if not already printed
     if dep2Printed == 0 and dep2 != '':
       dep2Count = dep2Count + 1
       if skip_formatting:
@@ -212,14 +212,14 @@ def printOutput(inst, dep1, dep2, body, relationships):
     researchers = researcherString.strip('|').replace('||', ', ').replace('|', ', ')
 
     # check if the PI of the project is affiliated with the currently processed department
-    affil = query('SELECT fullName, institution, department1, department2 from researcher \
+    affil = query('SELECT fullName, institution, division, department from researcher \
                      INNER JOIN researcher_project rp ON researcher.id = rp.researcherId AND rp.projectId=%s \
                      INNER JOIN researcherrole rr ON rr.id = rp.researcherRoleId AND rr.name=\'PI\'' % pid)[0]
     
     outputs=[]
     kpis = ''
     
-    if affil['institution'] == inst and affil['department1'] == dep1 and affil['department2'] == dep2:
+    if affil['institution'] == inst and affil['division'] == dep1 and affil['department'] == dep2:
       #print 'Description:\n%s\n' % description
       # get ids of research output ordered by output type
       outputIds = query('SELECT id FROM researchoutput WHERE projectId=%s ORDER BY typeId' % pid)
@@ -243,7 +243,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
           notes = res['notes']
           kpis+='%s\n' % notes
     else:
-      tmp = '%s, %s, %s' % (affil['institution'], affil['department1'], affil['department2'])
+      tmp = '%s, %s, %s' % (affil['institution'], affil['division'], affil['department'])
       #print '(Project description, Research Output and/or KPI information is listed under the PIs (%s) institution (%s))' % (affil['fullName'], tmp.strip().strip(','))
       description = '(Project description, Research Output and/or KPI information is listed under the PIs (%s) institution (%s))' % (affil['fullName'], tmp.strip().strip(','))
    
@@ -299,18 +299,18 @@ try:
   # This xpath location is where most interesting content lives
   body = document.xpath('/w:document/w:body', namespaces=nsprefixes)[0]
 
-  # Loop over all institutions, department1 and department2
+  # Loop over all institutions, division and department
   for inst in [tmp['institution'] for tmp in institutions]:
     instPrinted = 0
     if inst in blacklist['institutions'] or (len(whitelist['institutions']) > 0 and inst not in whitelist['institutions']):
       continue
-    deps1 = query('SELECT DISTINCT department1 FROM researcher WHERE institution=\'%s\' ORDER BY department1' % inst)
-    for dep1 in [tmp['department1'] for tmp in deps1]:
+    deps1 = query('SELECT DISTINCT division FROM researcher WHERE institution=\'%s\' ORDER BY division' % inst)
+    for dep1 in [tmp['division'] for tmp in deps1]:
       if dep1 in blacklist['departments1'] or (len(whitelist['departments1']) > 0 and dep1 not in whitelist['departments1']):
         continue
       dep1Printed = 0
-      deps2 = query('SELECT DISTINCT department2 FROM researcher WHERE institution=\'%s\' AND department1=\'%s\' ORDER BY department2' % (inst, dep1))
-      for dep2 in [tmp['department2'] for tmp in deps2]:
+      deps2 = query('SELECT DISTINCT department FROM researcher WHERE institution=\'%s\' AND division=\'%s\' ORDER BY department' % (inst, dep1))
+      for dep2 in [tmp['department'] for tmp in deps2]:
         if dep2 in blacklist['departments2'] or (len(whitelist['departments2']) > 0 and dep2 not in whitelist['departments2']):
           continue
         dep2Printed = 0

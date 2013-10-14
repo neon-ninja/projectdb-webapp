@@ -16,20 +16,26 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import pm.db.ProjectDao;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Researcher;
+import pm.util.AffiliationUtil;
 
 public class EditResearcherController extends SimpleFormController {
 	
 	private Log log = LogFactory.getLog(EditResearcherController.class.getName()); 
 	private ProjectDao projectDao;
 	private String proxy;
+	private AffiliationUtil affiliationUtil;
 
 	@Override
-	public ModelAndView onSubmit(Object r) throws Exception {
-		Researcher researcher = (Researcher) r;
+	public ModelAndView onSubmit(Object o) throws Exception {
+		Researcher r = (Researcher) o;
+		String affiliationString = r.getInstitution();
+		r.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
+		r.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
+		r.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
+        this.projectDao.updateResearcher(r);
     	ModelAndView mav = new ModelAndView(super.getSuccessView());
-        this.projectDao.updateResearcher(researcher);
 		mav.setViewName("redirect");
-		mav.addObject("pathAndQuerystring", "viewresearcher?id=" + researcher.getId());
+		mav.addObject("pathAndQuerystring", "viewresearcher?id=" + r.getId());
 		mav.addObject("proxy", this.proxy);
 		return mav;
 	}
@@ -44,15 +50,18 @@ public class EditResearcherController extends SimpleFormController {
 				iRoles.put(ir.getId(), ir.getName());
 			}
 		}
-        modelMap.put("institutionalRoles", iRoles);
+		modelMap.put("affiliations", this.affiliationUtil.getAffiliationStrings());
+		modelMap.put("institutionalRoles", iRoles);
         return modelMap;
 	}
 
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
-		Researcher r = null;
 		Integer id = Integer.valueOf(request.getParameter("id"));
-  		return this.projectDao.getResearcherById(id);
+  		Researcher r = this.projectDao.getResearcherById(id);
+		r.setInstitution(affiliationUtil.createAffiliationString(
+	        r.getInstitution(), r.getDivision(), r.getDepartment()));
+  		return r;
 	}
 	
 	public void setProjectDao(ProjectDao projectDao) {
@@ -61,6 +70,10 @@ public class EditResearcherController extends SimpleFormController {
 
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
+	}
+
+	public void setAffiliationUtil(AffiliationUtil affiliationUtil) {
+		this.affiliationUtil = affiliationUtil;
 	}
 	
 }
