@@ -1,7 +1,7 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
-<title>Center for E-research Projects</title>
+<title>Center for e-Research Projects</title>
 </head>
 <body>
 <?php
@@ -25,17 +25,7 @@ if ($db->connect_errno) {
 }
 
 if (!isset($_GET['inst'])) {
-  echo '<div class="header">
-  <a href="http://www.eresearch.auckland.ac.nz/"><img src="cer_logo.jpg"/></a>
-  <h1 style="display:inline-block;">Research projects and outcomes<br/>from the NeSI Pan cluster</h1><a href="https://www.nesi.org.nz">
-  <img src="nesi_logo.png"/></a>
-  </div>
-  <div class="header" style="color: blue;">The Centre for eResearch is a cross-faculty research centre, hosted within the Faculty of Science. We develop new ways to apply computer and information sciences to all research and science disciplines, both at The University of Auckland and within nationwide research programmes. We aim to enhance the understanding of research processes and the delivery of research computing services.
-  <br/><br/>';
-  echo "
-  NeSI is New Zealand's computing research infrastructure. We provide high performance computers and support systems to enable the country's researchers to tackle the world's largest problems.
-  NeSI's strengths surround high performance computing. We place strong emphasis both on the technical aspects, such as providing excellent hardware and software, and the human aspects, such as support and training.
-  </div>";
+  include('header.php');
   // Print institutions (UOA, UOC etc)
   if ($institutions = $db->query("SELECT DISTINCT hostInstitution FROM project
                                   INNER JOIN researcher_project rp ON rp.projectId=project.id
@@ -79,10 +69,33 @@ if (!isset($_GET['inst'])) {
   if (isset($_GET['dept'])) {
     $d = $db->real_escape_string($_GET['dept']);
     $deptCondition = " AND r.division='$d'";
+  } else {
+    if ($departments = $db->query("SELECT DISTINCT r.division FROM project
+                                     INNER JOIN researcher_project rp ON rp.projectId=project.id
+                                     INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
+                                     INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
+                                     WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
+                                     AND institution='$i' ORDER BY division")) {
+      if ($departments->num_rows>1) {
+        include('header.php');
+        echo "<h1>$i</h1><div class='instBlock'>";
+        // If there's a result, enumerate through it
+        while ($row = $departments->fetch_row()) {
+          $d = $row[0];
+          if ($d!='') {
+            print "<a href='?inst=$i&dept=$d'>$d</a><br/>";
+          }
+        }
+        echo '</div>';
+        die;
+      }
+    } else {
+      error('db2');
+    }
   }
   
   print "<div class='header'>
-  <a href='./'><button class='backButton'>Back</button></a>
+  <button class='backButton' onclick='history.back()'>Back</button>
   <h1>$i $d</h1>
   </div>";
   // Select recent project ids where the PI is from this dept
