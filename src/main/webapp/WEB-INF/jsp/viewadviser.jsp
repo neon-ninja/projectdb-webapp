@@ -71,6 +71,7 @@
     <thead>
       <tr>
 	    <th>Name</th>
+	    <th>Adviser's Role</th>
 	    <th>Host Institution</th>
 	    <th>Next Review</th>
 	    <th>Next Follow-up</th>
@@ -85,6 +86,7 @@
           <font color="red">(todo)</font>
         </c:if>
         </td>
+        <td>${adviserRole.get(project.id)}</td>
         <td>${project.hostInstitution}</td>
         <c:choose>
           <c:when test="${f:contains(project.nextReviewDate, 'due')}">

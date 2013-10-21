@@ -279,8 +279,7 @@
        FROM project
        WHERE id IN
          ( SELECT projectId FROM adviser_project WHERE 
-             adviserId=#id# AND
-             adviserRoleId=1
+             adviserId=#id#
          )
    </select>   
    
