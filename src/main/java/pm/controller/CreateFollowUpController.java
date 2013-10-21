@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,6 +54,11 @@ public class CreateFollowUpController extends SimpleFormController {
             f.getAttachments().add(a);
     	}
         pw.getFollowUps().add(f);
+        // Set next FollowUp to 3 months from now
+        Date now = new Date();
+        Date nextFollowUp = new Date(now.getTime() + TimeUnit.DAYS.toMillis(30*3));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        pw.getProject().setNextFollowUpDate(format.format(nextFollowUp));
     	this.tempProjectManager.update(projectId, pw);
 		mav.setViewName("redirect");
 		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#followups");
