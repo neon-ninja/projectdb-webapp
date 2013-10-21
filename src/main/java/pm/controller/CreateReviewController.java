@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,6 +54,11 @@ public class CreateReviewController extends SimpleFormController {
             r.getAttachments().add(a);
     	}
         pw.getReviews().add(r);
+        // Set next Review to a year from now
+        Date now = new Date();
+        Date nextReview = new Date(now.getTime() + TimeUnit.DAYS.toMillis(365));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        pw.getProject().setNextReviewDate(format.format(nextReview));
     	this.tempProjectManager.update(projectId, pw);
 		mav.setViewName("redirect");
 		mav.addObject("pathAndQuerystring", "editproject?id=" + projectId + "#reviews");
