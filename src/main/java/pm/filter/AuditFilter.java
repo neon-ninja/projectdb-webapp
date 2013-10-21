@@ -35,7 +35,7 @@ public class AuditFilter implements Filter {
 				return;
 			}
 
-		    // Set remoteUser to tuakiri uniqe id for testing
+		    // Set remoteUser to Tuakiri unique id for testing
 		    if (remoteUser == null || remoteUser.trim().equals("")) {
 				log.error("Denying access for anonymous user");
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);

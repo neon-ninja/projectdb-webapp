@@ -166,7 +166,7 @@
       <c:forEach items="${pw.projectKpis}" var="projectKpi">
         <tr>
           <td>${projectKpi.date}</td>
-          <td>${projectKpi.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${projectKpi.adviserId}">${projectKpi.adviserName}</a></td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
@@ -192,7 +192,7 @@
       <c:forEach items="${pw.researchOutputs}" var="researchOutput">
         <tr>
           <td>${researchOutput.date}</td>
-          <td>${researchOutput.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${researchOutput.adviserId}">${researchOutput.adviserName}</a></td>
           <td>${researchOutput.type}</td>
           <td>${researchOutput.description}</td>
           <td><a target="new" href="${researchOutput.link}">${researchOutput.link}</a></td>
@@ -218,7 +218,7 @@
       <c:forEach items="${pw.reviews}" var="review">
         <tr>
           <td>${review.date}</td>
-          <td>${review.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${review.adviserId}">${review.adviserName}</a></td>
           <td>${review.notes}</td>
           <td>
           <c:forEach items="${review.attachments}" var="attachment">
@@ -252,7 +252,7 @@
       <c:forEach items="${pw.followUps}" var="followUp">
         <tr>
           <td>${followUp.date}</td>
-          <td>${followUp.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${followUp.adviserId}">${followUp.adviserName}</a></td>
           <td>${followUp.notes}</td>
           <td>
           <c:forEach items="${followUp.attachments}" var="attachment">
@@ -286,7 +286,7 @@
       <c:forEach items="${pw.adviserActions}" var="adviserAction">
         <tr>
           <td>${adviserAction.date}</td>
-          <td>${adviserAction.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviserAction.adviserId}">${adviserAction.adviserName}</a></td>
           <td>${adviserAction.action}</td>
           <td>
           <c:forEach items="${adviserAction.attachments}" var="attachment">

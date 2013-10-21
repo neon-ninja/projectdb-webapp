@@ -245,11 +245,12 @@
       <c:forEach items="${projectWrapper.projectKpis}" var="projectKpi">
         <tr>
           <td>${projectKpi.date}</td>
-          <td>${projectKpi.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${projectKpi.adviserId}">${projectKpi.adviserName}</a></td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
           <td>
+          	<button class="update" value="editprojectkpi?id=${projectKpi.id}&projectId=${projectWrapper.project.id}">Edit</button>
             <button class="update" value="deleteprojectkpi?id=${projectKpi.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
@@ -278,11 +279,12 @@
       <c:forEach items="${projectWrapper.researchOutputs}" var="researchOutput">
         <tr>
           <td>${researchOutput.date}</td>
-          <td>${researchOutput.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${researchOutput.adviserId}">${researchOutput.adviserName}</a></td>
           <td>${researchOutput.type}</td>
           <td>${researchOutput.description}</td>
           <td><a target="new" href="${researchOutput.link}">${researchOutput.link}</a></td>
           <td>
+          	<button class="update" value="editresearchoutput?researchOutputId=${researchOutput.id}&projectId=${projectWrapper.project.id}">Edit</button>
             <button class="update" value="deleteresearchoutput?researchOutputId=${researchOutput.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
@@ -310,7 +312,7 @@
       <c:forEach items="${projectWrapper.reviews}" var="review">
         <tr>
           <td>${review.date}</td>
-          <td>${review.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${review.adviserId}">${review.adviserName}</a></td>
           <td>${review.notes}</td>
           <td>
           <c:forEach items="${review.attachments}" var="attachment">
@@ -326,6 +328,7 @@
           <button class="update" value="createattachment?id=${projectWrapper.project.id}&reviewId=${review.id}">Add attachment</button>
           </td>
           <td>
+          	<button class="update" value="editreview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Edit</button>
             <button class="update" value="deletereview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
@@ -353,7 +356,7 @@
       <c:forEach items="${projectWrapper.followUps}" var="followUp">
         <tr>
           <td>${followUp.date}</td>
-          <td>${followUp.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${followUp.adviserId}">${followUp.adviserName}</a></td>
           <td>${followUp.notes}</td>
           <td>
           <c:forEach items="${followUp.attachments}" var="attachment">
@@ -369,6 +372,7 @@
           <button class="update" value="createattachment?id=${projectWrapper.project.id}&followUpId=${followUp.id}">Add attachment</button>
           </td>
           <td>
+          	<button class="update" value="editfollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Edit</button>
             <button class="update" value="deletefollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
@@ -396,7 +400,7 @@
       <c:forEach items="${projectWrapper.adviserActions}" var="adviserAction">
         <tr>
           <td>${adviserAction.date}</td>
-          <td>${adviserAction.adviserName}</td>
+          <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviserAction.adviserId}">${adviserAction.adviserName}</a></td>
           <td>${adviserAction.action}</td>
           <td>
           <c:forEach items="${adviserAction.attachments}" var="attachment">
@@ -412,6 +416,7 @@
           <button class="update" value="createattachment?id=${projectWrapper.project.id}&adviserActionId=${adviserAction.id}">Add attachment</button>
           </td>
           <td>
+          	<button class="update" value="editadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Edit</button>
             <button class="update" value="deleteadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
