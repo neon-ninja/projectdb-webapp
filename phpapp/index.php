@@ -25,7 +25,7 @@ if ($db->connect_errno) {
 }
 
 if (!isset($_GET['inst'])) {
-  include('header.php');
+  //include('header.php');
   // Print institutions (UOA, UOC etc)
   if ($institutions = $db->query("SELECT DISTINCT hostInstitution FROM project
                                   INNER JOIN researcher_project rp ON rp.projectId=project.id
@@ -70,6 +70,7 @@ if (!isset($_GET['inst'])) {
     $d = $db->real_escape_string($_GET['dept']);
     $deptCondition = " AND r.division='$d'";
   } else {
+    echo "<button class='backButton' onclick='history.back()'>Back</button>";
     if ($departments = $db->query("SELECT DISTINCT r.division FROM project
                                      INNER JOIN researcher_project rp ON rp.projectId=project.id
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
@@ -77,7 +78,7 @@ if (!isset($_GET['inst'])) {
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
                                      AND institution='$i' ORDER BY division")) {
       if ($departments->num_rows>1) {
-        include('header.php');
+        //include('header.php');
         echo "<h1>$i</h1><div class='instBlock'>";
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {

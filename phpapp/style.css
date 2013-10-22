@@ -1,3 +1,7 @@
+body {
+  margin: 0px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -24,8 +28,9 @@ a {
 
 h1,h2 {
   color: #4F81DD;
-  margin: 15px;
+  margin: auto;
   text-align:center;
+  width: 500px;
 }
 
 .outputs {
@@ -33,7 +38,7 @@ h1,h2 {
 }
 
 .header {
-  width: 900px;
+  width: 820px;
   text-align:center;
   padding-bottom: 50px;
   margin-left:auto;
