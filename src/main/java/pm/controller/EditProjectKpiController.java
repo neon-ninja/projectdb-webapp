@@ -1,9 +1,5 @@
 package pm.controller;
 
-import java.util.Random;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,14 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
-import pm.pojo.Adviser;
 import pm.pojo.Kpi;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
@@ -33,8 +25,6 @@ public class EditProjectKpiController extends SimpleFormController {
 	private ProjectDao projectDao;
 	private TempProjectManager tempProjectManager;
 	private String proxy;
-	private Random random = new Random();
-	private AuthzAspect authzAspect;
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
@@ -90,10 +80,6 @@ public class EditProjectKpiController extends SimpleFormController {
 
 	public void setTempProjectManager(TempProjectManager tempProjectManager) {
 		this.tempProjectManager = tempProjectManager;
-	}
-
-	public void setAuthzAspect(AuthzAspect authzAspect) {
-		this.authzAspect = authzAspect;
 	}
 
 }

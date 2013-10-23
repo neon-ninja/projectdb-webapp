@@ -240,7 +240,6 @@
 	</bean>
 	
 	<bean id="editProjectKpiController" class="pm.controller.EditProjectKpiController">
-	    <property name="authzAspect" ref="authzAspect"/>
 		<property name="sessionForm" value="true" />
 		<property name="commandName" value="projectkpi" />
 		<property name="commandClass" value="pm.pojo.ProjectKpi" />
@@ -252,7 +251,6 @@
 	</bean>
 
 	<bean id="editResearchOutputController" class="pm.controller.EditResearchOutputController">
-	    <property name="authzAspect" ref="authzAspect"/>
 		<property name="sessionForm" value="true" />
 		<property name="commandName" value="researchOutput" />
 		<property name="commandClass" value="pm.pojo.ResearchOutput" />
@@ -264,37 +262,31 @@
 	</bean>
 
 	<bean id="editReviewController" class="pm.controller.EditReviewController">
-	    <property name="authzAspect" ref="authzAspect"/>
 		<property name="sessionForm" value="true" />
 		<property name="commandName" value="review" />
 		<property name="commandClass" value="pm.pojo.Review" />
 		<property name="formView" value="editreview" />
 		<property name="successView" value="viewprojects" />
-		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
 
 	<bean id="editFollowUpController" class="pm.controller.EditFollowUpController">
-	    <property name="authzAspect" ref="authzAspect"/>
 		<property name="sessionForm" value="true" />
 		<property name="commandName" value="followUp" />
 		<property name="commandClass" value="pm.pojo.FollowUp" />
 		<property name="formView" value="editfollowup" />
 		<property name="successView" value="viewprojects" />
-		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
 	
 	<bean id="editAdviserActionController" class="pm.controller.EditAdviserActionController">
-	    <property name="authzAspect" ref="authzAspect"/>
 		<property name="sessionForm" value="true" />
 		<property name="commandName" value="adviserAction" />
 		<property name="commandClass" value="pm.pojo.AdviserAction" />
 		<property name="formView" value="editadviseraction" />
 		<property name="successView" value="viewprojects" />
-		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
