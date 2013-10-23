@@ -86,7 +86,7 @@
           <font color="red">(todo)</font>
         </c:if>
         </td>
-        <td>${adviserRole.get(project.id)}</td>
+        <td>${adviserRole[project.id]}</td>
         <td>${project.hostInstitution}</td>
         <c:choose>
           <c:when test="${f:contains(project.nextReviewDate, 'due')}">
