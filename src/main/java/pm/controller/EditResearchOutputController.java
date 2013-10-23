@@ -1,28 +1,19 @@
 package pm.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import pm.authz.AuthzAspect;
 import pm.db.ProjectDao;
-import pm.pojo.Adviser;
-import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.ResearchOutput;
 import pm.pojo.ResearchOutputType;
@@ -34,9 +25,6 @@ public class EditResearchOutputController extends SimpleFormController {
 	private ProjectDao projectDao;
 	private TempProjectManager tempProjectManager;
 	private String proxy;
-	private String remoteUserHeader;
-	private Random random = new Random();
-	private AuthzAspect authzAspect;
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
@@ -93,14 +81,6 @@ public class EditResearchOutputController extends SimpleFormController {
 
 	public void setTempProjectManager(TempProjectManager tempProjectManager) {
 		this.tempProjectManager = tempProjectManager;
-	}
-
-    public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
-    
-	public void setAuthzAspect(AuthzAspect authzAspect) {
-		this.authzAspect = authzAspect;
 	}
 
 }

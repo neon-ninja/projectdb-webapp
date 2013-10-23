@@ -1,39 +1,24 @@
 package pm.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import pm.authz.AuthzAspect;
-import pm.db.ProjectDao;
-import pm.pojo.Adviser;
 import pm.pojo.AdviserAction;
-import pm.pojo.Attachment;
-import pm.pojo.FollowUp;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
 public class EditAdviserActionController extends SimpleFormController {
 
-	private Log log = LogFactory.getLog(EditAdviserActionController.class.getName()); 
-	private ProjectDao projectDao;
+	private Log log = LogFactory.getLog(EditAdviserActionController.class.getName());
 	private TempProjectManager tempProjectManager;
 	private String proxy;
-	private String remoteUserHeader;
-	private Random random = new Random();
-	private AuthzAspect authzAspect;
 	
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
@@ -72,10 +57,6 @@ public class EditAdviserActionController extends SimpleFormController {
 		return null;
 	}
 
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
-
 	public void setTempProjectManager(TempProjectManager tempProjectManager) {
 		this.tempProjectManager = tempProjectManager;
 	}
@@ -84,20 +65,4 @@ public class EditAdviserActionController extends SimpleFormController {
 		this.proxy = proxy;
 	}
 	
-    public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
-
-	private String getTuakiriUniqueIdFromRequest() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = (String) request.getAttribute(this.remoteUserHeader);
-		if (user == null) {
-			user = "NULL";
-		}
-		return user;
-	}
-	
-	public void setAuthzAspect(AuthzAspect authzAspect) {
-		this.authzAspect = authzAspect;
-	}
 }
