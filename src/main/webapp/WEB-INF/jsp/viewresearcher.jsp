@@ -75,18 +75,24 @@
     <thead>
       <tr>
 	    <th>Name</th>
+	    <th>Code</th>
+	    <th>Type</th>
+	    <th>Start Date</th>
 	    <th>Next review</th>
 	    <th>Next follow-up</th>
-	    <th>Type</th>
+	    <th>End Date</th>
       </tr>
     </thead>
     <tbody>
     <c:forEach items="${projects}" var="project">
       <tr>
         <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${project.id}">${project.name}</a></td>
+        <td>${project.projectCode}</td>
+        <td>${project.projectTypeName}</td>
+        <td>${project.startDate}</td>        
         <td>${project.nextReviewDate}</td>
         <td>${project.nextFollowUpDate}</td>
-        <td>${project.projectTypeName}</td>
+        <td>${project.endDate}</td>
       </tr>
     </c:forEach>
     </tbody>

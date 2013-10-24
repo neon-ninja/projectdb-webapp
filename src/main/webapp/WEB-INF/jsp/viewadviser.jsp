@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="<%=request.getContextPath()%>/style/tablesorter/blue/style.css" type="text/css"/>
   <script>
     $(document).ready(function() {
-      $("#myTable").tablesorter({sortList: [[2,0]]});
+      $("#myTable").tablesorter({sortList: [[3,0]]});
     });
   </script>
 </head>
@@ -71,11 +71,14 @@
     <thead>
       <tr>
 	    <th>Name</th>
+	    <th>Code</th>
+	    <th>Type</th>
 	    <th>Adviser's Role</th>
 	    <th>Host Institution</th>
+	    <th>Start Date</th>
 	    <th>Next Review</th>
 	    <th>Next Follow-up</th>
-	    <th>Type</th>
+	    <th>End Date</th>
       </tr>
     </thead>
     <tbody>
@@ -86,8 +89,11 @@
           <font color="red">(todo)</font>
         </c:if>
         </td>
-        <td>${adviserRole[project.id]}</td>
-        <td>${project.hostInstitution}</td>
+        <td>${project.projectCode}</td>
+        <td><nobr>${project.projectTypeName}</nobr></td>
+        <td><nobr>${adviserRole[project.id]}</nobr></td>
+        <td><nobr>${project.hostInstitution}</nobr></td>
+        <td>${project.startDate}</td>
         <c:choose>
           <c:when test="${f:contains(project.nextReviewDate, 'due')}">
             <td><font color="red">${project.nextReviewDate}</font></td>   
@@ -104,7 +110,7 @@
             <td>${project.nextFollowUpDate}</td>
           </c:otherwise>
         </c:choose>
-        <td>${project.projectTypeName}</td>
+        <td>${project.endDate}</td>
       </tr>
     </c:forEach>
     </tbody>
