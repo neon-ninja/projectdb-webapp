@@ -25,16 +25,32 @@ public class EditAdviserController extends SimpleFormController {
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		Adviser a = (Adviser) o;
-		String affiliationString = a.getInstitution();
-		a.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
-		a.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
-		a.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
-        this.projectDao.updateAdviser(a);
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.setViewName("redirect");
-		mav.addObject("pathAndQuerystring", "viewadviser?id=" + a.getId());
-		mav.addObject("proxy", this.proxy);
-		return mav;
+		String valid = isAdviserValid(a);
+		if (valid.equals("true")) {
+			String affiliationString = a.getInstitution();
+			a.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
+			a.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
+			a.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
+	        this.projectDao.updateAdviser(a);
+	    	ModelAndView mav = new ModelAndView(super.getSuccessView());
+			mav.setViewName("redirect");
+			mav.addObject("pathAndQuerystring", "viewadviser?id=" + a.getId());
+			mav.addObject("proxy", this.proxy);
+			return mav;
+		} else {
+			ModelAndView mav = new ModelAndView();
+			mav.addObject("adviser",a);
+			mav.addObject("error",valid);
+			mav.getModelMap().put("affiliations", this.affiliationUtil.getAffiliationStrings());
+			return mav;
+		}
+	}
+	
+	private String isAdviserValid(Adviser a) throws Exception {
+		if (a.getFullName().trim().equals("")) {
+			return "Adviser name cannot be empty";
+		}
+		return "true";
 	}
 	
 	@Override
