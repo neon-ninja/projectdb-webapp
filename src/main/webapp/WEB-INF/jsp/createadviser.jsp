@@ -23,6 +23,10 @@
   <div id="body">
   <h3>Create Adviser</h3>
 
+  <c:if test="${not empty error}">
+    <font color="red"><b>${error}</b></font>
+  </c:if>
+
   <br>
   
   <form:form method="post" commandName="adviser">

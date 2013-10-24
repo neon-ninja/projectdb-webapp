@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
+import pm.pojo.ProjectWrapper;
 import pm.util.AffiliationUtil;
 
 public class CreateAdviserController extends SimpleFormController {
@@ -24,17 +25,39 @@ public class CreateAdviserController extends SimpleFormController {
 	private String profileDefaultPicture;
 	private AffiliationUtil affiliationUtil;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		Adviser a = (Adviser) o;
+		String valid = isAdviserValid(a);
+		if (valid.equals("true")) {
 		String affiliationString = a.getInstitution();
-		a.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
-		a.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
-		a.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
-        a.setId(this.projectDao.createAdviser(a));
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
-		mav.addObject("adviser", a);
-		return mav;
+			a.setInstitution(this.affiliationUtil.getInstitutionFromAffiliationString(affiliationString));
+			a.setDivision(this.affiliationUtil.getDivisionFromAffiliationString(affiliationString));
+			a.setDepartment(this.affiliationUtil.getDepartmentFromAffiliationString(affiliationString));
+	        a.setId(this.projectDao.createAdviser(a));
+	    	ModelAndView mav = new ModelAndView(super.getSuccessView());
+			mav.addObject("adviser", a);
+			return mav;
+		} else {
+			ModelAndView mav = new ModelAndView();
+			mav.addObject("adviser",a);
+			mav.addObject("error", valid);
+			mav.getModelMap().put("affiliations", this.affiliationUtil.getAffiliationStrings());
+			return mav;
+		}
+	}
+	
+	private String isAdviserValid(Adviser a) throws Exception {
+		if (a.getFullName().trim().equals("")) {
+			return "Adviser name cannot be empty";
+		}
+		for (Adviser other:projectDao.getAdvisers()) {
+			if (a.getFullName().equals(other.getFullName())) {
+				return a.getFullName() + " already exists in the database";
+			}
+		}
+		return "true";
 	}
 	
 	@Override

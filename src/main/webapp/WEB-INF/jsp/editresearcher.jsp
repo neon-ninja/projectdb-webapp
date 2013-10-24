@@ -25,6 +25,10 @@
   <a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}">Back to view</a><br>
   
   <h3>Edit Researcher</h3>
+  
+  <c:if test="${not empty error}">
+    <font color="red"><b>${error}</b></font>
+  </c:if>
 
   <br>
   

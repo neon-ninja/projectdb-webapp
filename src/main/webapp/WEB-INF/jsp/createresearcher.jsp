@@ -24,6 +24,10 @@
   
   <h3>Create Researcher</h3>
 
+  <c:if test="${not empty error}">
+    <font color="red"><b>${error}</b></font>
+  </c:if>
+
   <br>
   
   <form:form method="post" commandName="researcher">
