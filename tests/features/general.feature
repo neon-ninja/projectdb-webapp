@@ -2,7 +2,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
   In order to create a meaningful project
   I need to link it to an Adviser and a Researcher etc
   
-  @nojs @researcher
+  @nojs @researcher @create
   Scenario: Create a researcher
     When I go to "/viewresearchers"
     And I follow "Create new researcher"
@@ -19,7 +19,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I press "Create researcher"
     Then I wait until I see "Edit"
     
-  @nojs @adviser
+  @nojs @adviser @create
   Scenario: Create an adviser
     When I go to "/viewadvisers"
     And I follow "Create new adviser"
@@ -35,7 +35,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I press "Create adviser"
     Then I wait until I see "Edit"
   
-  @javascript @project
+  @javascript @project @create
   Scenario: Create a project
     When I go to "/viewprojects"
     And I follow "Create new project"
