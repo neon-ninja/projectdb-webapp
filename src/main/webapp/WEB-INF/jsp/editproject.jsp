@@ -185,6 +185,7 @@
           <td>${rpLink.researcher.institutionalRoleName}</td>
           <td>${rpLink.notes}</td>
           <td>
+          	<button class="update" value="editrplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Edit role/notes</button>
              <button class="update" value="deleterplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Delete researcher from project</button>
           </td>
         </tr>
@@ -217,6 +218,7 @@
           <td>${apLink.adviserRoleName}</td>
           <td>${apLink.notes}</td>
           <td>
+          	 <button class="update" value="editaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Edit role/notes</button>
              <button class="update" value="deleteaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Delete adviser from project</button>
           </td>
         </tr>

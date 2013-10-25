@@ -84,6 +84,16 @@
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
 	</bean>
+	
+	<bean id="editAPLinkController" class="pm.controller.EditAPLinkController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="apLink" />
+		<property name="commandClass" value="pm.pojo.APLink" />
+		<property name="formView" value="editAPLink" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
 
 	<bean id="deleteAPLinkController" class="pm.controller.DeleteAPLinkController">
 		<property name="tempProjectManager" ref="tempProjectManager" />
@@ -95,6 +105,16 @@
 		<property name="commandName" value="rpLink" />
 		<property name="commandClass" value="pm.pojo.RPLink" />
 		<property name="formView" value="createRPLink" />
+		<property name="projectDao" ref="projectDao" />
+		<property name="tempProjectManager" ref="tempProjectManager" />
+		<property name="proxy" value="${proxy}" />
+	</bean>
+	
+	<bean id="editRPLinkController" class="pm.controller.EditRPLinkController">
+		<property name="sessionForm" value="true" />
+		<property name="commandName" value="rpLink" />
+		<property name="commandClass" value="pm.pojo.RPLink" />
+		<property name="formView" value="editRPLink" />
 		<property name="projectDao" ref="projectDao" />
 		<property name="tempProjectManager" ref="tempProjectManager" />
 		<property name="proxy" value="${proxy}" />
@@ -361,11 +381,17 @@
 				<entry key="/createaplink">
 					<ref bean="createAPLinkController" />
 				</entry>
+				<entry key="/editaplink">
+					<ref bean="editAPLinkController" />
+				</entry>
 				<entry key="/deleteaplink">
 					<ref bean="deleteAPLinkController" />
 				</entry>
 				<entry key="/createrplink">
 					<ref bean="createRPLinkController" />
+				</entry>
+				<entry key="/editrplink">
+					<ref bean="editRPLinkController" />
 				</entry>
 				<entry key="/deleterplink">
 					<ref bean="deleteRPLinkController" />
