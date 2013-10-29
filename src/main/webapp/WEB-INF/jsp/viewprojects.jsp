@@ -34,8 +34,18 @@
   <!--
   <a href="http://cluster.ceres.auckland.ac.nz/project_management/ResearcherQuestionnaire.txt">Researcher Questionnaire</a>
   -->
+  
+  <form method="get">
+  
+  <p>Filter where:</p>
+  
+  Any project text contains: <input type="text" id="query" name="query" size="20"/>
+  
+  <input type="submit"/>
+  
+  </form>
    
-  <h3>Projects (${f:length(projects)})</h3>
+  <h3>Projects <c:if test="${not empty query}">containing the phrase ${query} </c:if>(${f:length(projects)})</h3>
 
   <table id="myTable" class="tablesorter">
     <thead>
