@@ -1,5 +1,9 @@
 package pm.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,6 +26,12 @@ public class ViewProjectController extends AbstractController {
     	ModelAndView mav = new ModelAndView("viewproject");
 		ProjectWrapper pw = projectDao.getProjectWrapperById(projectId);
 		mav.addObject("pw", pw);
+		if (!pw.getProject().getEndDate().trim().equals("")) {
+			Date now = new Date();
+	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			boolean expired = now.after(df.parse(pw.getProject().getEndDate()));
+			mav.addObject("expired",expired);
+		}
 		return mav;
 	}
 	
