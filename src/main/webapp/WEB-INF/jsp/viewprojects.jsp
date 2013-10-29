@@ -37,11 +37,9 @@
   
   <form method="get">
   
-  <p>Filter where:</p>
-  
-  Any project text contains: <input type="text" id="query" name="query" size="20"/>
-  
+  <p>Filter where any project text contains: <input type="text" id="query" name="query" size="20"/>
   <input type="submit"/>
+  </p>
   
   </form>
    
