@@ -30,7 +30,7 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:CeR $name's projects
 X-WR-TIMEZONE:Pacific/Auckland
-X-WR-CALDESC:Start Dates, Follow Up Dates, Review Dates, End Dates
+X-WR-CALDESC:Follow Up dates and Review dates
 ";
 
 $projects = $db->query("SELECT * FROM project p INNER JOIN adviser_project ap ON p.id=ap.projectId WHERE ap.adviserId=$id");
