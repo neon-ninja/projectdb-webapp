@@ -40,6 +40,10 @@ Custom steps can be placed in features/bootstrap/FeatureContext.php
 
 ## Usage
 
+Prerequisites:
+  The default adviser in the TestFilter (currently mfel395@auckland.ac.nz) must be configured as admin.
+  (isAdmin column in adviser table must have value 1 for adviser with fullName 'Martin Feller')
+
 From the tests directory,
 
 Start selenium server running with the command
