@@ -34,7 +34,7 @@
     <tr>
       <td>Researcher:</td>
       <td>&nbsp;</td>
-      <td>${rpLink.getResearcher().getFullName()}</td>
+      <td>${rpLink.researcher.fullName}</td>
     </tr>
     <tr>
       <td>Role on project:</td>
