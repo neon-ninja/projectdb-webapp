@@ -73,7 +73,7 @@ public class CreateResearcherController extends SimpleFormController {
 	}
 	
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		List<InstitutionalRole> iRolesTmp = this.projectDao.getInstitutionalRoles();
 		HashMap<Integer,String> iRoles = new LinkedHashMap<Integer, String>();

@@ -61,7 +61,7 @@ public class CreateResearchOutputController extends SimpleFormController {
 	}
 
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		List<ResearchOutputType> researchOutputTypesTmp = this.projectDao.getResearchOutputTypes();
 		HashMap<Integer,String> researchOutputTypes = new LinkedHashMap<Integer, String>();

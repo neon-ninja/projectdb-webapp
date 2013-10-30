@@ -66,7 +66,12 @@
       
   <br><br>   
   <b>Projects:</b><br>
-  Total number of projects: ${f:length(projects)}<br>
+  Total number of projects: ${f:length(projects)}
+  <p style="float:right;margin:0">Get these dates as
+  <a href="http://cluster.ceres.auckland.ac.nz/projects/adviser_cal.php?id=${adviser.id}">an ics file</a>,
+  or import them via a <a href="webcal://cluster.ceres.auckland.ac.nz/projects/adviser_cal.php?id=${adviser.id}&nocache">webcal</a> link (Google Calendar etc)
+  </p>
+  <br>
   <table id="myTable" class="tablesorter">
     <thead>
       <tr>

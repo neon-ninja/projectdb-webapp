@@ -56,7 +56,7 @@ public class EditProjectKpiController extends SimpleFormController {
 	}
 	
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		
 		List<Kpi> kpis = new LinkedList<Kpi>();

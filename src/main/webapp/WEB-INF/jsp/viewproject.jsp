@@ -34,6 +34,10 @@
   <a href="<%=request.getContextPath()%>/html/deleteproject?id=${pw.project.id}">Delete</a>
   
   <h3>Project: ${pw.project.name}</h3>
+  
+  <c:if test="${expired}">
+  	<h1 style="text-align:center;color:red;">EXPIRED</h1>
+  </c:if>
 
   <br>
   <h4>Project Details</h4>

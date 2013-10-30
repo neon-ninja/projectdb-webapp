@@ -180,7 +180,7 @@ public class EditProjectController extends SimpleFormController {
 	}	
 	
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		List<ProjectType> projectTypes = projectDao.getProjectTypes();
 		Map<Integer,String> pTypes = new LinkedHashMap<Integer,String>();

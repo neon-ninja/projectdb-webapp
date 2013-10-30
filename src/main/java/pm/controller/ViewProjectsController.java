@@ -3,7 +3,9 @@ package pm.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,12 @@ public class ViewProjectsController extends AbstractController {
 		HttpServletResponse response) throws Exception {
     	ModelAndView mav = new ModelAndView("viewprojects");
     	List<Project> ps = projectDao.getProjects();
+    	List<Project> filtered = new LinkedList<Project>();
+    	
+    	String q = null;
+    	if (request.getParameter("query")!=null) {
+    		q = request.getParameter("query").toLowerCase();
+    	}
     	
     	// mark projects as due if a review or follow-up is due
     	Date now = new Date();
@@ -38,9 +46,22 @@ public class ViewProjectsController extends AbstractController {
         	if (!nextReviewDate.equals("") && now.after(df.parse(p.getNextReviewDate()))) {
         		p.setNextReviewDate(p.getNextReviewDate() + " (due)");
         	}
+        	
+        	if (q!=null) {
+        		if (p.getName().toLowerCase().contains(q) || p.getDescription().toLowerCase().contains(q) || 
+        				p.getHostInstitution().toLowerCase().contains(q) || p.getNotes().toLowerCase().contains(q) ||
+        				p.getProjectCode().toLowerCase().contains(q) || p.getProjectTypeName().toLowerCase().contains(q) ||
+        				p.getRequirements().toLowerCase().contains(q) || p.getTodo()!=null && p.getTodo().toLowerCase().contains(q))
+        			filtered.add(p);
+        	}
     	}
-
-    	mav.addObject("projects", ps);
+    	
+    	if (q==null) {
+    		mav.addObject("projects", ps);
+    	} else {
+    		mav.addObject("projects", filtered);
+    		mav.addObject("query", q);
+    	}
 		return mav;
 	}
 	
