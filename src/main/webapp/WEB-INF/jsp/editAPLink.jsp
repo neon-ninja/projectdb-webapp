@@ -34,7 +34,7 @@
     <tr>
       <td>Adviser:</td>
       <td>&nbsp;</td>
-      <td>${apLink.getAdviser().getFullName()}</td>
+      <td>${apLink.adviser.fullName}</td>
     </tr>
     <tr>
       <td>Role on project:</td>
