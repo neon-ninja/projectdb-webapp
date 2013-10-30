@@ -61,7 +61,7 @@ public class CreateAdviserActionController extends SimpleFormController {
 	}
 
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		Integer pid = Integer.valueOf(request.getParameter("id"));
 		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());

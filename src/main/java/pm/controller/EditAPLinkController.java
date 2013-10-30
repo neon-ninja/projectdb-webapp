@@ -50,7 +50,7 @@ public class EditAPLinkController extends SimpleFormController {
 	}
 
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		List<AdviserRole> aRolesTmp = this.projectDao.getAdviserRoles();
 		HashMap<Integer,String> adviserRoles = new LinkedHashMap<Integer, String>();

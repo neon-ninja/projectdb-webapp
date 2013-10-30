@@ -70,7 +70,7 @@ public class CreateAdviserController extends SimpleFormController {
 	}
 
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
 		ModelMap modelMap = new ModelMap();
 		modelMap.put("affiliations", this.affiliationUtil.getAffiliationStrings());
 		return modelMap;
