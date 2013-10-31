@@ -182,13 +182,13 @@
    <select id="getResearcherRoles" resultClass="pm.pojo.ResearcherRole">
        SELECT *
        FROM researcherrole
-       ORDER BY name
+       ORDER BY id
    </select>   
 
    <select id="getAdviserRoles" resultClass="pm.pojo.AdviserRole">
        SELECT *
        FROM adviserrole
-       ORDER BY name
+       ORDER BY id
    </select>   
 
    <select id="getInstitutionalRoles" resultClass="pm.pojo.InstitutionalRole">
