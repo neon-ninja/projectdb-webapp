@@ -65,4 +65,6 @@ public interface ProjectDao {
 	public void deleteResearcher(Integer id) throws Exception;
 	public void deleteAdviser(Integer id) throws Exception;
 	
+	public String getNextProjectCode(String hostInstitution);
+	
 }

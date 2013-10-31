@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import pm.authz.annotation.RequireAdmin;
@@ -671,5 +672,12 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
         params.put("facilityId", facilityId);
 		getSqlMapClientTemplate().update("deleteFacilityFromProject", params);		
 	}
-	
+
+	public String getNextProjectCode(String name) {
+		String instCode = (String)getSqlMapClientTemplate().queryForObject("getInstitutionCodeFromName", name);
+		String last = (String)getSqlMapClientTemplate().queryForObject("getLastProjectCode", instCode);
+		if (last==null) return instCode + StringUtils.leftPad("1",5,"0"); // First ever for this inst
+		Integer lastNum = Integer.valueOf(last.replace(instCode, ""));
+		return instCode + StringUtils.leftPad(lastNum+1+"",5,"0");
+	}
 }

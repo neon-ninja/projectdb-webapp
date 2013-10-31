@@ -777,5 +777,16 @@
       SELECT MIN(id) from tempproject
   </select>
   
+  <select id="getLastProjectCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+  	  SELECT MAX( projectCode ) 
+	  FROM `project`
+	  WHERE `projectCode` LIKE CONCAT(#code#, '%')
+  </select>
+  
+  <select id="getInstitutionCodeFromName" parameterClass="java.lang.String" resultClass="java.lang.String">
+  	  SELECT code
+  	  FROM `institution`
+  	  WHERE name = #name#
+  </select>
   
 </sqlMap>

@@ -96,6 +96,8 @@ public class EditProjectController extends SimpleFormController {
 			pw = this.tempProjectManager.get(pid);
 			pw.setProject(p);
 			if (pid < 0) {
+				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
+				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pw);
 			} else {
 				this.projectDao.updateProjectWrapper(pid, pw);
@@ -119,6 +121,8 @@ public class EditProjectController extends SimpleFormController {
 		if (this.isProjectValid(pwNew)) {
 			pwNew.setErrorMessage("");
 			if (pidOld < 0) {
+				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
+				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pwNew);
 				pwNew.getProject().setId(pid);
 				this.tempProjectManager.register(pwNew);
