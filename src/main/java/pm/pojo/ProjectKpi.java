@@ -4,6 +4,8 @@ public class ProjectKpi {
 
 	private Integer id;
 	private Integer kpiId;
+	private Integer code;
+	private String codeName;
 	private String kpiType;
 	private String kpiTitle;
 	private Integer projectId;
@@ -23,6 +25,22 @@ public class ProjectKpi {
 
 	public void setKpiType(String kpiType) {
 		this.kpiType = kpiType;
+	}
+
+	public Integer getCode() {
+		return code;
+	}
+
+	public void setCode(Integer code) {
+		this.code = code;
+	}
+
+	public String getCodeName() {
+		return codeName;
+	}
+
+	public void setCodeName(String codeName) {
+		this.codeName = codeName;
 	}
 
 	public String getAdviserName() {
@@ -68,7 +86,7 @@ public class ProjectKpi {
 	public void setKpiId(Integer kpiId) {
 		this.kpiId = kpiId;
 	}
-
+	
 	public String getDate() {
 		return date;
 	}

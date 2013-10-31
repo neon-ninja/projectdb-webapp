@@ -237,6 +237,7 @@
         <th>Date</th>
 	    <th>Reported By</th>
 	    <th>KPI</th>
+	    <th>Code</th>
 	    <th>Value</th>
 	    <th>Notes</th>
 	    <th>Action</th>
@@ -248,6 +249,7 @@
           <td>${projectKpi.date}</td>
           <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${projectKpi.adviserId}">${projectKpi.adviserName}</a></td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
+          <td>${projectKpi.code}:${projectKpi.codeName}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
           <td>

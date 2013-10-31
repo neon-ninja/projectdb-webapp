@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
 import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
@@ -44,6 +45,11 @@ public class CreateProjectKpiController extends SimpleFormController {
     	pk.setId(random.nextInt());
     	pk.setKpiTitle(this.projectDao.getKpiById(pk.getKpiId()).getTitle());
     	pk.setKpiType(this.projectDao.getKpiById(pk.getKpiId()).getType());
+    	if (pk.getKpiId().equals(9)) {
+    		pk.setCodeName(this.projectDao.getKpiCodeNameById(pk.getCode()));
+    	} else {
+    		pk.setCode(0);
+    	}
     	pk.setAdviserName(this.projectDao.getAdviserById(pk.getAdviserId()).getFullName());
     	pw.getProjectKpis().add(pk);
     	this.tempProjectManager.update(projectId, pw);
@@ -74,9 +80,17 @@ public class CreateProjectKpiController extends SimpleFormController {
 			tmpkpis.put(kpi.getId(), kpi.getType() + "-" + kpi.getId() + ": " + kpi.getTitle());
 		}
 		
+		List<KpiCode> codes = this.projectDao.getKpiCodes();
+
+		Map<Integer,String> tmpcodes = new HashMap<Integer,String>();
+		for (KpiCode c: codes) {
+			tmpcodes.put(c.getId(), c.getCode());
+		}
+		
 		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
         modelMap.put("adviserId", a.getId());
 		modelMap.put("kpis", tmpkpis);
+		modelMap.put("codes", tmpcodes);
 		modelMap.put("projectId", request.getParameter("id"));
         return modelMap;
     }

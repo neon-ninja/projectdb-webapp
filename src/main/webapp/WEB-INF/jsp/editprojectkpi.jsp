@@ -17,7 +17,17 @@
 
         // form field watermarks
         $("#value").watermark("!!! base 10 scaling factor from now on !!!");
-        $("#notes").watermark("Describe the KPI, e.g. in case of NeSI-9: What factor (memory, CPU, level of concurrency) was scaled");
+        $("#notes").watermark("Describe the KPI");
+        if ($("#kpiId").val()!="9") {
+        	$("#code-row").hide(); // Hide by default
+        }
+        $("#kpiId").change(function() {
+        	if ($(this).val()=="9") {
+        		$("#code-row").show();
+        	} else {
+        		$("#code-row").hide();
+        	}
+        });
     });
   </script>
 </head>
@@ -31,7 +41,7 @@
   <br>
   
   <form:form method="post" commandName="projectkpi">
- 
+  
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Date</td>
@@ -42,6 +52,11 @@
       <td>KPI</td>
       <td>&nbsp;</td>
       <td><form:select path="kpiId" items="${kpis}"/></td>
+    </tr>
+    <tr id="code-row">
+      <td>Code</td>
+      <td>&nbsp;</td>
+      <td><form:select path="code" items="${codes}"/></td>
     </tr>
     <tr>
       <td>Value</td>

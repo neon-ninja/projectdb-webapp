@@ -145,7 +145,19 @@
        SELECT *
        FROM kpi
        ORDER BY id
-   </select>   
+   </select>
+   
+   <select id="getKpiCodes" resultClass="pm.pojo.KpiCode">
+	   SELECT *
+	   FROM kpicode
+	   ORDER BY id
+   </select>
+   
+   <select id="getKpiCodeNameById" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	   SELECT code
+	   FROM kpicode
+	   WHERE id=#id#
+   </select>
    
    <select id="getFacilitiesOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Facility">
        SELECT *
@@ -510,14 +522,16 @@
         date,
         adviserId,
         value,
-        notes
+        notes,
+        code
       ) values (
         #kpiId#,
         #projectId#,
         #date#,
         #adviserId#,
         #value#,
-        #notes#      
+        #notes#,
+        #code#      
       )
    </insert>
 
