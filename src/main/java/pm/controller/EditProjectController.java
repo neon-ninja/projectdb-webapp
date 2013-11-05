@@ -198,6 +198,15 @@ public class EditProjectController extends SimpleFormController {
         return modelMap;
     }
 
+    protected String getFormSessionAttributeName(HttpServletRequest request) {
+        String pid = request.getParameter("id");
+        if(pid == null) {
+            return super.getFormSessionAttributeName(request);
+        } else {
+            return super.getFormSessionAttributeName(request) + pid;
+        }
+    }
+
 	private boolean isProjectValid(ProjectWrapper pw) {
 		if (pw.getProject().getName().trim().equals("")) {
 			pw.setErrorMessage("A project must have a title");
