@@ -31,7 +31,7 @@
   <div id="body">
 
   <a href="<%=request.getContextPath()%>/html/editproject?id=${pw.project.id}">Edit</a> | 
-  <a href="<%=request.getContextPath()%>/html/deleteproject?id=${pw.project.id}">Delete</a>
+  <a onclick="return (confirm('Are you sure you want to delete this project?'))" href="<%=request.getContextPath()%>/html/deleteproject?id=${pw.project.id}">Delete</a>
   
   <h3>Project: ${pw.project.name}</h3>
   
@@ -162,6 +162,7 @@
         <th>Date</th>
 	    <th>Reported By</th>
 	    <th>KPI</th>
+	    <th>Code</th>
 	    <th>Value</th>
 	    <th>Notes</th>
       </tr>
@@ -172,6 +173,7 @@
           <td>${projectKpi.date}</td>
           <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${projectKpi.adviserId}">${projectKpi.adviserName}</a></td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
+          <td>${projectKpi.code}:${projectKpi.codeName}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
         </tr>

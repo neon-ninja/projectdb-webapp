@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
@@ -29,6 +30,11 @@ public class EditProjectKpiController extends SimpleFormController {
 	@Override
 	public ModelAndView onSubmit(Object o) throws Exception {
 		ProjectKpi pk = (ProjectKpi) o;
+		if (pk.getKpiId().equals(9)) {
+			pk.setCodeName(this.projectDao.getKpiCodeNameById(pk.getCode()));
+		} else {
+			pk.setCode(0);
+		}
 		Integer projectId = pk.getProjectId();
     	ModelAndView mav = new ModelAndView();
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
@@ -66,7 +72,14 @@ public class EditProjectKpiController extends SimpleFormController {
 		for (Kpi kpi: kpis) {
 			tmpkpis.put(kpi.getId(), kpi.getType() + "-" + kpi.getId() + ": " + kpi.getTitle());
 		}
+		
+		List<KpiCode> codes = this.projectDao.getKpiCodes();
+		Map<Integer,String> tmpcodes = new HashMap<Integer,String>();
+		for (KpiCode c: codes) {
+			tmpcodes.put(c.getId(), c.getCode());
+		}
 		modelMap.put("kpis", tmpkpis);
+		modelMap.put("codes", tmpcodes);
         return modelMap;
     }
 

@@ -8,6 +8,7 @@ import pm.pojo.Affiliation;
 import pm.pojo.Facility;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectType;
@@ -64,5 +65,9 @@ public interface ProjectDao {
 	public void deleteProjectWrapper(Integer projectId) throws Exception;
 	public void deleteResearcher(Integer id) throws Exception;
 	public void deleteAdviser(Integer id) throws Exception;
+	
+	public String getNextProjectCode(String hostInstitution);
+	public List<KpiCode> getKpiCodes();
+	public String getKpiCodeNameById(Integer codeId);
 	
 }

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import pm.authz.annotation.RequireAdmin;
@@ -20,6 +21,7 @@ import pm.pojo.Facility;
 import pm.pojo.FollowUp;
 import pm.pojo.InstitutionalRole;
 import pm.pojo.Kpi;
+import pm.pojo.KpiCode;
 import pm.pojo.Project;
 import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectKpi;
@@ -258,6 +260,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 			}
 			pk.setKpiType(kpi.getType());
 			pk.setKpiTitle(kpi.getTitle());
+			pk.setCodeName(getKpiCodeNameById(pk.getCode()));
 		}
 		return l;
 	}
@@ -483,6 +486,7 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
 			pk.setAdviserName(tmp.getFullName());
 			pk.setKpiType(kpi.getType());
 			pk.setKpiTitle(kpi.getTitle());
+			pk.setCodeName(getKpiCodeNameById(pk.getCode()));
 		}
 		return l;
 	}
@@ -671,5 +675,20 @@ public class IBatisProjectDao extends SqlMapClientDaoSupport implements ProjectD
         params.put("facilityId", facilityId);
 		getSqlMapClientTemplate().update("deleteFacilityFromProject", params);		
 	}
-	
+
+	public String getNextProjectCode(String name) {
+		String instCode = (String)getSqlMapClientTemplate().queryForObject("getInstitutionCodeFromName", name);
+		String last = (String)getSqlMapClientTemplate().queryForObject("getLastProjectCode", instCode);
+		if (last==null) return instCode + StringUtils.leftPad("1",5,"0"); // First ever for this inst
+		Integer lastNum = Integer.valueOf(last.replace(instCode, ""));
+		return instCode + StringUtils.leftPad(lastNum+1+"",5,"0");
+	}
+
+	public List<KpiCode> getKpiCodes() {
+		return (List<KpiCode>) getSqlMapClientTemplate().queryForList("getKpiCodes");
+	}
+
+	public String getKpiCodeNameById(Integer codeId) {
+		return (String) getSqlMapClientTemplate().queryForObject("getKpiCodeNameById", codeId);
+	}
 }

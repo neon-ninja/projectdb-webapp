@@ -23,7 +23,7 @@
   <div id="body">
 
   <a href="<%=request.getContextPath()%>/html/editresearcher?id=${researcher.id}">Edit</a> | 
-  <a href="<%=request.getContextPath()%>/html/deleteresearcher?id=${researcher.id}">Delete</a>
+  <a onclick="return (confirm('Are you sure you want to delete this researcher?'))" href="<%=request.getContextPath()%>/html/deleteresearcher?id=${researcher.id}">Delete</a>
   
   <h3>${researcher.fullName}</h3>
 

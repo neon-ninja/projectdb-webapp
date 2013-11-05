@@ -89,13 +89,15 @@ public class EditProjectController extends SimpleFormController {
 		mav.addObject("proxy", this.proxy);
 	}
 	
-	protected void handleSaveAndFinish(ProjectWrapper pw, ModelAndView mav) throws Exception {
+	protected synchronized void handleSaveAndFinish(ProjectWrapper pw, ModelAndView mav) throws Exception {
 		Integer pid = pw.getProject().getId();
 		if (this.isProjectValid(pw)) {
 			Project p = pw.getProject();
 			pw = this.tempProjectManager.get(pid);
 			pw.setProject(p);
 			if (pid < 0) {
+				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
+				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pw);
 			} else {
 				this.projectDao.updateProjectWrapper(pid, pw);
@@ -110,7 +112,7 @@ public class EditProjectController extends SimpleFormController {
 		mav.addObject("proxy", this.proxy);
 	}
 	
-	protected void handleSaveAndContinue(ProjectWrapper pw, ModelAndView mav) throws Exception{
+	protected synchronized void handleSaveAndContinue(ProjectWrapper pw, ModelAndView mav) throws Exception{
 		Project p = pw.getProject();
 		Integer pidOld = p.getId();
 		Integer pid = pidOld;
@@ -119,6 +121,8 @@ public class EditProjectController extends SimpleFormController {
 		if (this.isProjectValid(pwNew)) {
 			pwNew.setErrorMessage("");
 			if (pidOld < 0) {
+				String projectCode = this.projectDao.getNextProjectCode(p.getHostInstitution());
+				pw.getProject().setProjectCode(projectCode);
 				pid = this.projectDao.createProjectWrapper(pwNew);
 				pwNew.getProject().setId(pid);
 				this.tempProjectManager.register(pwNew);

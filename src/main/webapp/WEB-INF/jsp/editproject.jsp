@@ -30,11 +30,15 @@
         $("#project_description").watermark("Description of the scientific background and goals of the project. Please also add a paragraph how the use of HPC facilities are beneficial to the project");
         $("#project_requirements").watermark("Potential things to add here are required disk space, help with scripting, help with code parallelization, etc");
         $("#project_notes").watermark("Other notes on the project");
-        $("#project_code").watermark("E.g. nesi00042");
         $("#project_hostInstitution").watermark("Institution that administers the research project. If in doubt, this is the institution where the PI is working.");
         $("#project_todo").watermark("Things that need to be done on this project");
 
         $('.update').click(function() {
+        	if ($(this).hasClass("delete")) {
+				if (!confirm('Are you sure you want to delete?')) {
+					return false;
+				}
+        	}
         	$('#operation').val('UPDATE');
         	$('#redirect').val($(this).val());
             $('#form').submit();
@@ -138,11 +142,6 @@
       <td><form:input id="datepicker4" path="project.endDate" size="20"/></td>
     </tr>
     <tr>
-      <td>Project Code:</td>
-      <td>&nbsp;</td>
-      <td><form:input id="project_code" path="project.projectCode" size="20"/></td>
-    </tr>
-    <tr>
       <td valign="top">Requirements:</td>
       <td valign="top">&nbsp;</td>
       <td><form:textarea id="project_requirements" path="project.requirements" rows="5" cols="104"/></td>
@@ -186,7 +185,7 @@
           <td>${rpLink.notes}</td>
           <td>
           	<button class="update" value="editrplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Edit role/notes</button>
-             <button class="update" value="deleterplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Delete researcher from project</button>
+             <button class="update delete" value="deleterplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Delete researcher from project</button>
           </td>
         </tr>
       </c:forEach>
@@ -219,7 +218,7 @@
           <td>${apLink.notes}</td>
           <td>
           	 <button class="update" value="editaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Edit role/notes</button>
-             <button class="update" value="deleteaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Delete adviser from project</button>
+             <button class="update delete" value="deleteaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Delete adviser from project</button>
           </td>
         </tr>
       </c:forEach>
@@ -238,6 +237,7 @@
         <th>Date</th>
 	    <th>Reported By</th>
 	    <th>KPI</th>
+	    <th>Code</th>
 	    <th>Value</th>
 	    <th>Notes</th>
 	    <th>Action</th>
@@ -249,11 +249,12 @@
           <td>${projectKpi.date}</td>
           <td><a href="<%=request.getContextPath()%>/html/viewadviser?id=${projectKpi.adviserId}">${projectKpi.adviserName}</a></td>
           <td>${projectKpi.kpiType}-${projectKpi.kpiId}: ${projectKpi.kpiTitle}</td>
+          <td>${projectKpi.code}:${projectKpi.codeName}</td>
           <td>${projectKpi.value}</td>
           <td>${projectKpi.notes}</td>
           <td>
           	<button class="update" value="editprojectkpi?id=${projectKpi.id}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update" value="deleteprojectkpi?id=${projectKpi.id}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deleteprojectkpi?id=${projectKpi.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>
@@ -287,7 +288,7 @@
           <td><a target="new" href="${researchOutput.link}">${researchOutput.link}</a></td>
           <td>
           	<button class="update" value="editresearchoutput?researchOutputId=${researchOutput.id}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update" value="deleteresearchoutput?researchOutputId=${researchOutput.id}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deleteresearchoutput?researchOutputId=${researchOutput.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>
@@ -323,7 +324,7 @@
               <a href="${attachment.link}">${attachment.link}</a><br>
               <b>Description</b>:<br>
               ${attachment.description}<br>
-              <button class="update" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
+              <button class="update delete" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
               <hr/>
             </c:if>
           </c:forEach>
@@ -331,7 +332,7 @@
           </td>
           <td>
           	<button class="update" value="editreview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update" value="deletereview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deletereview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>
@@ -367,7 +368,7 @@
               <a href="${attachment.link}">${attachment.link}</a><br>
               <b>Description</b>:<br>
               ${attachment.description}<br>
-              <button class="update" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
+              <button class="update delete" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
               <hr/>
             </c:if>
           </c:forEach>
@@ -375,7 +376,7 @@
           </td>
           <td>
           	<button class="update" value="editfollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update" value="deletefollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deletefollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>
@@ -411,7 +412,7 @@
               <a href="${attachment.link}">${attachment.link}</a><br>
               <b>Description</b>:<br>
               ${attachment.description}<br>
-              <button class="update" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
+              <button class="update delete" value="deleteattachment?attachmentId=${attachment.id}&projectId=${projectWrapper.project.id}">Delete attachment</button>
               <hr/>
             </c:if>
           </c:forEach>
@@ -419,7 +420,7 @@
           </td>
           <td>
           	<button class="update" value="editadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Edit</button>
-            <button class="update" value="deleteadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deleteadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>
@@ -444,7 +445,7 @@
         <tr>
           <td>${projectFacility.facilityName}</td>
           <td>
-            <button class="update" value="deleteprojectfacility?facilityId=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Delete</button>
+            <button class="update delete" value="deleteprojectfacility?facilityId=${projectFacility.facilityId}&projectId=${projectWrapper.project.id}">Delete</button>
           </td>
         </tr>
       </c:forEach>

@@ -145,7 +145,19 @@
        SELECT *
        FROM kpi
        ORDER BY id
-   </select>   
+   </select>
+   
+   <select id="getKpiCodes" resultClass="pm.pojo.KpiCode">
+	   SELECT *
+	   FROM kpicode
+	   ORDER BY id
+   </select>
+   
+   <select id="getKpiCodeNameById" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	   SELECT code
+	   FROM kpicode
+	   WHERE id=#id#
+   </select>
    
    <select id="getFacilitiesOnProject" parameterClass="java.lang.Integer" resultClass="pm.pojo.Facility">
        SELECT *
@@ -182,13 +194,13 @@
    <select id="getResearcherRoles" resultClass="pm.pojo.ResearcherRole">
        SELECT *
        FROM researcherrole
-       ORDER BY name
+       ORDER BY id
    </select>   
 
    <select id="getAdviserRoles" resultClass="pm.pojo.AdviserRole">
        SELECT *
        FROM adviserrole
-       ORDER BY name
+       ORDER BY id
    </select>   
 
    <select id="getInstitutionalRoles" resultClass="pm.pojo.InstitutionalRole">
@@ -510,14 +522,16 @@
         date,
         adviserId,
         value,
-        notes
+        notes,
+        code
       ) values (
         #kpiId#,
         #projectId#,
         #date#,
         #adviserId#,
         #value#,
-        #notes#      
+        #notes#,
+        #code#      
       )
    </insert>
 
@@ -777,5 +791,16 @@
       SELECT MIN(id) from tempproject
   </select>
   
+  <select id="getLastProjectCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+  	  SELECT MAX( projectCode ) 
+	  FROM `project`
+	  WHERE `projectCode` LIKE CONCAT(#code#, '%')
+  </select>
+  
+  <select id="getInstitutionCodeFromName" parameterClass="java.lang.String" resultClass="java.lang.String">
+  	  SELECT code
+  	  FROM `institution`
+  	  WHERE name = #name#
+  </select>
   
 </sqlMap>
