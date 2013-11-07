@@ -15,7 +15,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
@@ -24,7 +23,7 @@ import pm.pojo.FollowUp;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class CreateFollowUpController extends SimpleFormController {
+public class CreateFollowUpController extends GlobalController {
 
 	private Log log = LogFactory.getLog(CreateFollowUpController.class.getName()); 
 	private ProjectDao projectDao;
@@ -82,30 +81,5 @@ public class CreateFollowUpController extends SimpleFormController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		f.setDate(df.format(new Date()));
 		return f;
-	}
-
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
-
-	public void setTempProjectManager(TempProjectManager tempProjectManager) {
-		this.tempProjectManager = tempProjectManager;
-	}
-
-	public void setProxy(String proxy) {
-		this.proxy = proxy;
-	}
-	
-    public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
-
-	private String getTuakiriUniqueIdFromRequest() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = (String) request.getAttribute(this.remoteUserHeader);
-		if (user == null) {
-			user = "NULL";
-		}
-		return user;
 	}
 }

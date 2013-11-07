@@ -8,13 +8,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.pojo.AdviserAction;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class EditAdviserActionController extends SimpleFormController {
+public class EditAdviserActionController extends GlobalController {
 
 	private Log log = LogFactory.getLog(EditAdviserActionController.class.getName());
 	private TempProjectManager tempProjectManager;

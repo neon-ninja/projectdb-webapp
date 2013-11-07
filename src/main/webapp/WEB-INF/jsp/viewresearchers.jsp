@@ -30,7 +30,7 @@
 
   <div id="body">
 
-  <a href="<%=request.getContextPath()%>/html/createresearcher">Create new researcher</a>
+  <a href="<%=request.getContextPath()%>/html/editresearcher">Create new researcher</a>
   
   <h3>Researchers (${f:length(researchers)})</h3>
 

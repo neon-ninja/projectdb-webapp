@@ -8,13 +8,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.pojo.FollowUp;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class EditFollowUpController extends SimpleFormController {
+public class EditFollowUpController extends GlobalController {
 
 	private Log log = LogFactory.getLog(EditFollowUpController.class.getName()); 
 	private TempProjectManager tempProjectManager;

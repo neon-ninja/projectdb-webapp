@@ -9,15 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.GlobalController;
 
-import pm.db.ProjectDao;
 import pm.pojo.ProjectWrapper;
-import pm.pojo.ResearchOutput;
 import pm.pojo.Review;
 import pm.temp.TempProjectManager;
 
-public class DeleteReviewController extends AbstractController {
+public class DeleteReviewController extends GlobalController {
 	
 	private Log log = LogFactory.getLog(DeleteReviewController.class.getName()); 
 	private TempProjectManager tempProjectManager;

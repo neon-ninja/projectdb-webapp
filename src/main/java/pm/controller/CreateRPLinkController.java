@@ -12,18 +12,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
-import pm.pojo.APLink;
-import pm.pojo.Adviser;
+import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.Researcher;
 import pm.pojo.ResearcherRole;
-import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class CreateRPLinkController extends SimpleFormController {
+public class CreateRPLinkController extends GlobalController {
 
 	private Log log = LogFactory.getLog(CreateRPLinkController.class.getName()); 
 	private ProjectDao projectDao;

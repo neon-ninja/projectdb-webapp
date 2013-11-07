@@ -49,7 +49,6 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | text       | project.startDate           | 2009-01-01                                           |
       | text       | project.nextReviewDate      | 2010-01-01                                           |
       | text       | project.nextFollowUpDate    | 2010-01-01                                           |
-      | text       | project.projectCode         | test0001                                             |
       | text       | project.requirements        | 30GB RAM, 5TB Disk Space                             |
       | text       | project.notes               | It goes ding when there's stuff                      |
       | text       | project.todo                | Write a better test suite                            |

@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Kpi;
@@ -20,7 +19,7 @@ import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class EditProjectKpiController extends SimpleFormController {
+public class EditProjectKpiController extends GlobalController {
 
 	private Log log = LogFactory.getLog(EditProjectKpiController.class.getName()); 
 	private ProjectDao projectDao;

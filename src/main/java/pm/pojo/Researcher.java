@@ -4,6 +4,7 @@ public class Researcher {
 
 	private Integer id;
 	private String fullName;
+	private String preferredName;
 	private String email;
 	private String phone;
 	private String institution;
@@ -38,6 +39,14 @@ public class Researcher {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public String getPreferredName() {
+		return preferredName;
+	}
+
+	public void setPreferredName(String preferredName) {
+		this.preferredName = preferredName;
 	}
 
 	public String getEmail() {

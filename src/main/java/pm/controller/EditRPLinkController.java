@@ -2,7 +2,6 @@ package pm.controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,18 +11,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
-import pm.pojo.APLink;
-import pm.pojo.Adviser;
-import pm.pojo.RPLink;
-import pm.pojo.Researcher;
-import pm.pojo.ResearcherRole;
 import pm.pojo.ProjectWrapper;
+import pm.pojo.RPLink;
+import pm.pojo.ResearcherRole;
 import pm.temp.TempProjectManager;
 
-public class EditRPLinkController extends SimpleFormController {
+public class EditRPLinkController extends GlobalController {
 
 	private Log log = LogFactory.getLog(EditRPLinkController.class.getName()); 
 	private ProjectDao projectDao;

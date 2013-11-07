@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Facility;
@@ -20,7 +19,7 @@ import pm.pojo.ProjectFacility;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class CreateProjectFacilityController extends SimpleFormController {
+public class CreateProjectFacilityController extends GlobalController {
 
 	private Log log = LogFactory.getLog(CreateProjectFacilityController.class.getName()); 
 	private ProjectDao projectDao;

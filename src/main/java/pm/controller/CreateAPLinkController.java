@@ -10,9 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.APLink;
@@ -21,17 +25,19 @@ import pm.pojo.AdviserRole;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class CreateAPLinkController extends SimpleFormController {
+public class CreateAPLinkController extends GlobalController {
 
 	private Log log = LogFactory.getLog(CreateAPLinkController.class.getName()); 
+	@Autowired
 	private ProjectDao projectDao;
+	@Autowired
 	private TempProjectManager tempProjectManager;
+	@Autowired
 	private String proxy;
 	
-	@Override
-	public ModelAndView onSubmit(Object o) throws Exception {
-		APLink apLink = (APLink) o;
-    	ModelAndView mav = new ModelAndView(super.getSuccessView());
+	@RequestMapping(value = "/createaplink", method = RequestMethod.POST)
+	public ModelAndView onSubmit(@ModelAttribute("aplink") APLink apLink) throws Exception {
+    	ModelAndView mav = new ModelAndView();
     	Integer projectId = apLink.getProjectId();
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
     	apLink.setAdviser(this.projectDao.getAdviserById(apLink.getAdviserId()));
@@ -44,10 +50,9 @@ public class CreateAPLinkController extends SimpleFormController {
 		return mav;
 	}
 
-	@Override
-    protected Map<String,Object> referenceData(HttpServletRequest request) throws Exception {
-		ModelMap modelMap = new ModelMap();
-		Integer pid = Integer.valueOf(request.getParameter("id"));
+	@RequestMapping(value = "/createaplink", method = RequestMethod.GET)
+    protected ModelAndView referenceData(@RequestParam(value = "id", required = true) Integer pid) throws Exception {
+		ModelAndView mav = new ModelAndView();
     	ProjectWrapper pw = this.tempProjectManager.get(pid);
     	List<Integer> l = new LinkedList<Integer>();
     	for (APLink a: pw.getApLinks()) {
@@ -67,21 +72,9 @@ public class CreateAPLinkController extends SimpleFormController {
 				aNotOnProject.put(a.getId(), a.getFullName());
 			}
 		}
-		modelMap.put("pid", pid);
-        modelMap.put("aNotOnProject", aNotOnProject);
-        modelMap.put("adviserRoles", adviserRoles);
-        return modelMap;
+		mav.addObject("pid", pid);
+		mav.addObject("aNotOnProject", aNotOnProject);
+		mav.addObject("adviserRoles", adviserRoles);
+        return mav;
     }
-	
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
-
-	public void setTempProjectManager(TempProjectManager tempProjectManager) {
-		this.tempProjectManager = tempProjectManager;
-	}
-
-	public void setProxy(String proxy) {
-		this.proxy = proxy;
-	}
 }

@@ -96,6 +96,7 @@
 
   <form:hidden id="operation" path="operation"/>
   <form:hidden id="redirect" path="redirect"/>
+  <form:hidden id="project.id" path="project.id"/>
   
   <br>
   <h4>Details</h4>
@@ -122,7 +123,7 @@
       <td><form:select path="project.projectTypeId" items="${projectTypes}"/></td>
     </tr>
     <tr>
-      <td>Start date:</td>
+      <td>First Day:</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker1" path="project.startDate" size="20"/></td>
     </tr>
@@ -137,7 +138,7 @@
       <td><form:input id="datepicker3" path="project.nextFollowUpDate" size="20"/></td>
     </tr>
     <tr>
-      <td>End date:</td>
+      <td>Last Day:</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker4" path="project.endDate" size="20"/></td>
     </tr>
@@ -295,7 +296,7 @@
     </tbody>
   </table>
 
-  <button class="update" value="createresearchoutput?id=${projectWrapper.project.id}">Add research output</button><br>
+  <button class="update" value="editresearchoutput?projectId=${projectWrapper.project.id}">Add research output</button><br>
  
   <br>
   <a id="reviews"></a>

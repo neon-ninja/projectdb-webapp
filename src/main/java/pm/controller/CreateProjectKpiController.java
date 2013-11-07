@@ -1,6 +1,5 @@
 package pm.controller;
 
-import java.util.Random;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +17,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import pm.db.ProjectDao;
 import pm.pojo.Adviser;
@@ -27,7 +26,7 @@ import pm.pojo.ProjectKpi;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class CreateProjectKpiController extends SimpleFormController {
+public class CreateProjectKpiController extends GlobalController {
 
 	private Log log = LogFactory.getLog(CreateProjectKpiController.class.getName()); 
 	private ProjectDao projectDao;
@@ -94,30 +93,5 @@ public class CreateProjectKpiController extends SimpleFormController {
 		modelMap.put("projectId", request.getParameter("id"));
         return modelMap;
     }
-
-	public void setProjectDao(ProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
-
-	public void setProxy(String proxy) {
-		this.proxy = proxy;
-	}
-
-	public void setTempProjectManager(TempProjectManager tempProjectManager) {
-		this.tempProjectManager = tempProjectManager;
-	}
-
-	public void setRemoteUserHeader(String remoteUserHeader) {
-		this.remoteUserHeader = remoteUserHeader;
-	}
-
-	private String getTuakiriUniqueIdFromRequest() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String user = (String) request.getAttribute(this.remoteUserHeader);
-		if (user == null) {
-			user = "NULL";
-		}
-		return user;
-	}
 
 }

@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.GlobalController;
 
 import pm.pojo.AdviserAction;
 import pm.pojo.ProjectWrapper;
 import pm.temp.TempProjectManager;
 
-public class DeleteAdviserActionController extends AbstractController {
+public class DeleteAdviserActionController extends GlobalController {
 	
 	private Log log = LogFactory.getLog(DeleteAdviserActionController.class.getName());
 	private TempProjectManager tempProjectManager;

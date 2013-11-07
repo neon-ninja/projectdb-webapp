@@ -68,7 +68,7 @@
       <td>${pw.project.projectTypeName}</td>
     </tr>
     <tr>
-      <td><nobr>Start:</nobr></td>
+      <td><nobr>First Day:</nobr></td>
       <td>${pw.project.startDate}</td>
     </tr>
     <tr>
@@ -80,7 +80,7 @@
       <td>${pw.project.nextFollowUpDate}</td>
     </tr>
     <tr>
-      <td><nobr>End:</nobr></td>
+      <td><nobr>First Day:</nobr></td>
       <td>${pw.project.endDate}</td>
     </tr>
     <tr>

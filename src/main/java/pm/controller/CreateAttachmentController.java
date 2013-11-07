@@ -12,9 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import pm.db.ProjectDao;
 import pm.pojo.AdviserAction;
 import pm.pojo.Attachment;
 import pm.pojo.FollowUp;
@@ -22,7 +20,7 @@ import pm.pojo.ProjectWrapper;
 import pm.pojo.Review;
 import pm.temp.TempProjectManager;
 
-public class CreateAttachmentController extends SimpleFormController {
+public class CreateAttachmentController {
 
 	private Log log = LogFactory.getLog(CreateAttachmentController.class.getName()); 
 	private TempProjectManager tempProjectManager;
