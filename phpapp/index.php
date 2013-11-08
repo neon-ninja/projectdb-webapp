@@ -1,7 +1,12 @@
+<?php
+header('Content-type: text/html; charset=UTF-8');
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>Center for e-Research Projects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 </head>
 <body>
 <?php
@@ -23,6 +28,7 @@ if ($db->connect_errno) {
     //echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
     error('db1');
 }
+$db->set_charset("utf8");
 
 if (!isset($_GET['inst'])) {
   //include('header.php');
@@ -159,9 +165,9 @@ if (!isset($_GET['inst'])) {
         $kpiString.='</i>';
         // Output results as a table
         
-        print "<table cellspacing=0 cellpadding=10>
+        print "<table cellspacing=0 cellpadding=10 id='$title'>
                <tr>
-               <th style='width:80%'><h2>$title</h2></th>
+               <th style='width:80%'><a href='#$title'><h2>$title</h2></a></th>
                <th style='width:20%'>$researcherNames</th>
                </tr>
                <tr>
