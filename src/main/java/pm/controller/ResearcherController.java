@@ -21,6 +21,7 @@ import pm.pojo.Researcher;
 public class ResearcherController extends GlobalController {
 	@RequestMapping(value = "viewresearcher", method = RequestMethod.GET)
 	public ModelAndView viewresearcher(Integer id) throws Exception {
+		if (id==null) return new ModelAndView(new RedirectView("viewresearchers"));
     	ModelAndView mav = new ModelAndView();
     	Researcher r = projectDao.getResearcherById(id);
     	List<Project> ps = projectDao.getProjectsForResearcherId(r.getId());

@@ -25,7 +25,8 @@ public class AdviserController extends GlobalController {
 	// See one adviser
 	@RequestMapping(value = "viewadviser", method = RequestMethod.GET)
 	public ModelAndView viewadviser(Integer id) throws Exception {
-    	ModelAndView mav = new ModelAndView();
+    	if (id==null) return new ModelAndView(new RedirectView("viewadvisers"));
+		ModelAndView mav = new ModelAndView();
     	Adviser a = projectDao.getAdviserById(id);
     	List<Project> ps = projectDao.getProjectsForAdviserId(a.getId());
     	Map<Integer,String> ar = new HashMap<Integer,String>();

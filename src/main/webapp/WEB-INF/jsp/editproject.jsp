@@ -185,15 +185,15 @@
           <td>${rpLink.researcher.institutionalRoleName}</td>
           <td>${rpLink.notes}</td>
           <td>
-          	<button class="update" value="editrplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Edit role/notes</button>
-             <button class="update delete" value="deleterplink?projectId=${projectWrapper.project.id}&researcherId=${rpLink.researcherId}">Delete researcher from project</button>
+          	<button class="update" value="editrplink?projectId=${projectWrapper.project.id}&rid=${rpLink.researcherId}">Edit</button>
+             <button class="update delete" value="deleterplink?projectId=${projectWrapper.project.id}&rid=${rpLink.researcherId}">Delete researcher from project</button>
           </td>
         </tr>
       </c:forEach>
     </tbody>
   </table>
   
-  <button class="update" value="createrplink?id=${projectWrapper.project.id}">Add researcher to project</button><br>
+  <button class="update" value="editrplink?projectId=${projectWrapper.project.id}">Add researcher to project</button><br>
 
 
   <br>
@@ -218,15 +218,15 @@
           <td>${apLink.adviserRoleName}</td>
           <td>${apLink.notes}</td>
           <td>
-          	 <button class="update" value="editaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Edit role/notes</button>
-             <button class="update delete" value="deleteaplink?projectId=${projectWrapper.project.id}&adviserId=${apLink.adviserId}">Delete adviser from project</button>
+          	 <button class="update" value="editaplink?projectId=${projectWrapper.project.id}&aid=${apLink.adviserId}">Edit</button>
+             <button class="update delete" value="deleteaplink?projectId=${projectWrapper.project.id}&aid=${apLink.adviserId}">Delete adviser from project</button>
           </td>
         </tr>
       </c:forEach>
     </tbody>
   </table>
  
-  <button class="update" value="createaplink?id=${projectWrapper.project.id}">Add adviser to project</button><br>  
+  <button class="update" value="editaplink?projectId=${projectWrapper.project.id}">Add adviser to project</button><br>  
  
   <br>
   <a id="kpis"></a>
@@ -262,7 +262,7 @@
     </tbody>
   </table>
   
-  <button class="update" value="createprojectkpi?id=${projectWrapper.project.id}">Create KPI for project</button><br>  
+  <button class="update" value="editprojectkpi?id=${projectWrapper.project.id}">Add KPI</button><br>  
   
   <br>
   <a id="outputs"></a>
@@ -329,7 +329,7 @@
               <hr/>
             </c:if>
           </c:forEach>
-          <button class="update" value="createattachment?id=${projectWrapper.project.id}&reviewId=${review.id}">Add attachment</button>
+          <button class="update" value="editattachment?id=${projectWrapper.project.id}&reviewId=${review.id}">Add attachment</button>
           </td>
           <td>
           	<button class="update" value="editreview?reviewId=${review.id}&projectId=${projectWrapper.project.id}">Edit</button>
@@ -340,7 +340,7 @@
     </tbody>
   </table>
 
-  <button class="update" value="createreview?id=${projectWrapper.project.id}">Add review</button><br>
+  <button class="update" value="editreview?id=${projectWrapper.project.id}">Add review</button><br>
 
   <br>
   <a id="followups"></a>
@@ -373,7 +373,7 @@
               <hr/>
             </c:if>
           </c:forEach>
-          <button class="update" value="createattachment?id=${projectWrapper.project.id}&followUpId=${followUp.id}">Add attachment</button>
+          <button class="update" value="editattachment?id=${projectWrapper.project.id}&followUpId=${followUp.id}">Add attachment</button>
           </td>
           <td>
           	<button class="update" value="editfollowup?followUpId=${followUp.id}&projectId=${projectWrapper.project.id}">Edit</button>
@@ -384,7 +384,7 @@
     </tbody>
   </table>
 
-  <button class="update" value="createfollowup?id=${projectWrapper.project.id}">Add follow-up</button><br>
+  <button class="update" value="editfollowup?id=${projectWrapper.project.id}">Add follow-up</button><br>
 
   <br>
   <a id="adviseractions"></a>
@@ -417,7 +417,7 @@
               <hr/>
             </c:if>
           </c:forEach>
-          <button class="update" value="createattachment?id=${projectWrapper.project.id}&adviserActionId=${adviserAction.id}">Add attachment</button>
+          <button class="update" value="editattachment?id=${projectWrapper.project.id}&adviserActionId=${adviserAction.id}">Add attachment</button>
           </td>
           <td>
           	<button class="update" value="editadviseraction?adviserActionId=${adviserAction.id}&projectId=${projectWrapper.project.id}">Edit</button>
@@ -428,7 +428,7 @@
     </tbody>
   </table>
 
-  <button class="update" value="createadviseraction?id=${projectWrapper.project.id}">Add adviser action</button><br>
+  <button class="update" value="editadviseraction?id=${projectWrapper.project.id}">Add adviser action</button><br>
 
   <br>
   <a id="facilities"></a>
@@ -453,7 +453,7 @@
     </tbody>
   </table>
 
-  <button class="update" value="createprojectfacility?id=${projectWrapper.project.id}">Add HPC facility</button><br>
+  <button class="update" value="editprojectfacility?id=${projectWrapper.project.id}">Add HPC facility</button><br>
   <br>
 
   <button class="saveAndFinishEditing" value="viewproject?id=${projectWrapper.project.id}">Save &amp; Finish Editing</button>

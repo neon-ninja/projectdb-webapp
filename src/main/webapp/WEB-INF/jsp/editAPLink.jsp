@@ -26,7 +26,7 @@
 
   <div id="body">
   
-  <h3>Edit adviser on project</h3>
+  <h3>${action} adviser on project</h3>
   <br>
   
   <form:form method="post" commandName="apLink">
@@ -34,7 +34,7 @@
     <tr>
       <td>Adviser:</td>
       <td>&nbsp;</td>
-      <td>${apLink.adviser.fullName}</td>
+      <td><form:select path="adviserId" items="${advisers}"/></td>
     </tr>
     <tr>
       <td>Role on project:</td>

@@ -26,7 +26,7 @@
 
   <div id="body">
   
-  <h3>Edit researcher on project</h3>
+  <h3>${action} researcher on project</h3>
   <br>
   
   <form:form method="post" commandName="rpLink">
@@ -34,7 +34,7 @@
     <tr>
       <td>Researcher:</td>
       <td>&nbsp;</td>
-      <td>${rpLink.researcher.fullName}</td>
+      <td><form:select path="researcherId" items="${researchers}"/></td>
     </tr>
     <tr>
       <td>Role on project:</td>
