@@ -262,7 +262,7 @@
     </tbody>
   </table>
   
-  <button class="update" value="editprojectkpi?id=${projectWrapper.project.id}">Add KPI</button><br>  
+  <button class="update" value="editprojectkpi?projectId=${projectWrapper.project.id}">Add KPI</button><br>  
   
   <br>
   <a id="outputs"></a>
