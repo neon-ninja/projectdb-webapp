@@ -35,13 +35,9 @@ public class ProjectKpisController extends GlobalController {
 		k.setProjectId(projectId);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		k.setDate(df.format(new Date()));
-		Adviser a =  this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
 		ModelAndView mav = new ModelAndView();
 		for (ProjectKpi pk:pw.getProjectKpis()) {
-			if (pk.getId().equals(id)) {
-				k = pk;
-				mav.addObject("adviserId", a.getId());
-			}
+			if (pk.getId().equals(id)) k = pk;
 		}
 		List<Kpi> kpis = new LinkedList<Kpi>();
 		// Types (NESI-8, NESI-9)
@@ -57,6 +53,7 @@ public class ProjectKpisController extends GlobalController {
 			tmpcodes.put(c.getId(), c.getCode());
 		}
 		mav.addObject("projectkpi", k);
+		mav.addObject("adviserId", k.getAdviserId());
 		mav.addObject("kpis", tmpkpis);
 		mav.addObject("codes", tmpcodes);
         return mav;
@@ -65,9 +62,7 @@ public class ProjectKpisController extends GlobalController {
 	@RequestMapping(value = "editprojectkpi", method = RequestMethod.POST)
 	public RedirectView editPost(ProjectKpi pk) throws Exception {
 		Integer projectId = pk.getProjectId();
-    	ModelAndView mav = new ModelAndView();
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
-    	pk.setId(random.nextInt());
     	pk.setKpiTitle(this.projectDao.getKpiById(pk.getKpiId()).getTitle());
     	pk.setKpiType(this.projectDao.getKpiById(pk.getKpiId()).getType());
     	if (pk.getKpiId().equals(9)) {
@@ -75,15 +70,20 @@ public class ProjectKpisController extends GlobalController {
     	} else {
     		pk.setCode(0);
     	}
-    	pk.setAdviserName(this.projectDao.getAdviserById(pk.getAdviserId()).getFullName());
-    	boolean found = false;
-    	for (int i=0;i<pw.getProjectKpis().size();i++) {
-    		if (pw.getProjectKpis().get(i).getId().equals(pk.getId())) {
-    			found = true;
-    			pw.getProjectKpis().set(i, pk);
-    		}
-    	}
-    	if (!found) pw.getProjectKpis().add(pk);
+    	if (pk.getId()==null) {
+			Adviser a = this.projectDao.getAdviserByTuakiriUniqueId(this.getTuakiriUniqueIdFromRequest());
+			pk.setAdviserId(a.getId());
+			pk.setAdviserName(a.getFullName());
+			pk.setId(random.nextInt());
+	    	pw.getProjectKpis().add(pk);
+		} else {
+			for (int i=0;i<pw.getProjectKpis().size();i++) {
+	    		if (pw.getProjectKpis().get(i).getId().equals(pk.getId())) {
+	    			pk.setAdviserName(this.projectDao.getAdviserById(pk.getAdviserId()).getFullName());
+	    			pw.getProjectKpis().set(i, pk);
+	    		}
+	    	}
+		}
     	this.tempProjectManager.update(projectId, pw);
 		return new RedirectView("editproject?id=" + projectId + "#kpis");
 	}

@@ -37,7 +37,14 @@
 
   <div id="body">
   
-  <h3>Edit project KPI</h3>
+  <c:choose>
+    <c:when test="${empty projectkpi.id}">
+      <h3>Create Project KPI</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Project KPI</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="projectkpi">

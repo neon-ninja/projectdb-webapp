@@ -32,11 +32,11 @@ public class ResearchOutputController extends GlobalController {
 		return mav;
 	}
 	@RequestMapping(value = "deleteresearchoutput", method = RequestMethod.GET)
-	public RedirectView delete(Integer researchOutputId, Integer projectId) throws Exception {
+	public RedirectView delete(Integer id, Integer projectId) throws Exception {
 		ProjectWrapper pw = this.tempProjectManager.get(projectId);
     	List<ResearchOutput> tmp = new LinkedList<ResearchOutput>();
         for (ResearchOutput ro: pw.getResearchOutputs()) {
-        	if (!ro.getId().equals(researchOutputId)) {
+        	if (!ro.getId().equals(id)) {
         		tmp.add(ro);
         	}
         }
@@ -45,12 +45,12 @@ public class ResearchOutputController extends GlobalController {
     	return new RedirectView("editproject?id=" + projectId + "#outputs");
 	}
 	@RequestMapping(value = "editresearchoutput", method = RequestMethod.GET)
-	public ModelAndView edit(Integer researchOutputId, Integer projectId) throws Exception {
+	public ModelAndView edit(Integer id, Integer projectId) throws Exception {
 		ResearchOutput r = new ResearchOutput();
 		ProjectWrapper pw = this.tempProjectManager.get(projectId);
-		if (researchOutputId!=null) {
+		if (id!=null) {
 			for (ResearchOutput ro:pw.getResearchOutputs()) {
-				if (ro.getId().equals(projectId)) r = ro;
+				if (ro.getId().equals(id)) r = ro;
 			}
 		} else {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -65,8 +65,8 @@ public class ResearchOutputController extends GlobalController {
 		}
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("researchOutput", r);
+		mav.addObject("adviserId", r.getAdviserId());
 		mav.addObject("researchOutputTypes", researchOutputTypes);
-		mav.addObject("pid",projectId);
 		return mav;
 	}
 	@RequestMapping(value = "editresearchoutput", method = RequestMethod.POST)
@@ -83,6 +83,7 @@ public class ResearchOutputController extends GlobalController {
 		} else {
 			for (int i=0;i<pw.getResearchOutputs().size();i++) {
 	    		if (pw.getResearchOutputs().get(i).getId().equals(r.getId())) {
+	    			r.setAdviserName(this.projectDao.getAdviserById(r.getAdviserId()).getFullName());
 	    			pw.getResearchOutputs().set(i, r);
 	    		}
 	    	}

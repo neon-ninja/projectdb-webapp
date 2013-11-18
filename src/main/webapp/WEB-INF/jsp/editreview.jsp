@@ -27,10 +27,20 @@
 
   <div id="body">
   
-  <h3>Edit project review</h3>
+  <c:choose>
+    <c:when test="${empty review.id}">
+      <h3>Create Project Review</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Project Review</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="review">
+  <spring:bind path="review.adviserId">
+		<input type="hidden" name="adviserId" value="${adviserId}"/>
+  </spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Review date</td>
