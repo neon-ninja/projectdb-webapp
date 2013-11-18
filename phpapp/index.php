@@ -138,7 +138,6 @@ if (!isset($_GET['inst'])) {
               $size = 150;
               $img = "<img src='".$row['pictureUrl']."' title='".$row['fullName']."' alt='".$row['fullName']."' height='$size'>";
             }
-            print_r($row);
             if ($row['role']==1) {
               // PI's names and photos get printed first
               array_unshift($researcherNames,$row['fullName']);
