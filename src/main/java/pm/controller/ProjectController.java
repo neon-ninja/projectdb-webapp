@@ -251,7 +251,7 @@ public class ProjectController extends GlobalController {
 			}
 		}
 		if (count == 0 || count > 1) {
-			pw.setErrorMessage("There must be exactly 1 PI on a project");
+			pw.setErrorMessage("There must be exactly 1 project owner on a project");
 			return false;	
 		}
 		
