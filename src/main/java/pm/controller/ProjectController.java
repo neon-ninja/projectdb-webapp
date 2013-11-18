@@ -150,7 +150,7 @@ public class ProjectController extends GlobalController {
 			return handleCancel(pid);
 		} else if (op.equals("RESET")) {
 			this.tempProjectManager.unregister(pid);
-			return new RedirectView("editproject?id="+pid);
+			return new RedirectView("editproject");
 		} else if (op.equals("UPDATE")) {
 			return this.handleUpdate(pw);
 		} else if (op.equals("SAVE_AND_CONTINUE_EDITING")) {
