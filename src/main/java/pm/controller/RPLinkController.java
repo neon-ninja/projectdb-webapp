@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import pm.pojo.APLink;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.RPLink;
 import pm.pojo.Researcher;

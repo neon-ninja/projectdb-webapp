@@ -27,10 +27,20 @@
 
   <div id="body">
   
-  <h3>Edit project follow-up</h3>
+  <c:choose>
+    <c:when test="${empty followUp.id}">
+      <h3>Create Follow-up</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Follow-up</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="followUp">
+  	<spring:bind path="followUp.adviserId">
+		<input type="hidden" name="adviserId" value="${adviserId}"/>
+	</spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Date</td>

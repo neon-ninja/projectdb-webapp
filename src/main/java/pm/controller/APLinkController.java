@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ import pm.pojo.ProjectWrapper;
 @Controller
 public class APLinkController extends GlobalController {
 
-	@RequestMapping(value = "/editaplink", method = RequestMethod.GET)
+	@RequestMapping(value = "editaplink", method = RequestMethod.GET)
     protected ModelAndView edit(Integer projectId, Integer aid) throws Exception {
 		ModelAndView mav = new ModelAndView("editAPLink");
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
@@ -54,7 +53,7 @@ public class APLinkController extends GlobalController {
         return mav;
     }
 	
-	@RequestMapping(value = "/editaplink", method = RequestMethod.POST)
+	@RequestMapping(value = "editaplink", method = RequestMethod.POST)
 	public RedirectView editPost(APLink apLink, Integer aid) throws Exception {
     	Integer projectId = apLink.getProjectId();
     	ProjectWrapper pw = this.tempProjectManager.get(projectId);
@@ -74,7 +73,7 @@ public class APLinkController extends GlobalController {
 		return new RedirectView("editproject?id=" + projectId + "#advisers");
 	}
 	
-	@RequestMapping(value = "/deleteaplink", method = RequestMethod.GET)
+	@RequestMapping(value = "deleteaplink", method = RequestMethod.GET)
     protected RedirectView delete(Integer projectId, Integer aid) throws Exception {
 		ProjectWrapper pw = this.tempProjectManager.get(projectId);
 		List<APLink> tmp = new LinkedList<APLink>();

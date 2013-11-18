@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import pm.pojo.Adviser;
-import pm.pojo.Attachment;
 import pm.pojo.ProjectWrapper;
 import pm.pojo.Review;
 
@@ -68,6 +67,7 @@ public class ReviewController extends GlobalController {
     	} else {
         	for (int i=0;i<pw.getReviews().size();i++) {
         		if (pw.getReviews().get(i).getId().equals(r.getId())) {
+        			r.setAttachments(pw.getReviews().get(i).getAttachments());
         			pw.getReviews().set(i, r);
         		}
         	}

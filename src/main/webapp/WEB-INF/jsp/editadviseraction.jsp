@@ -22,10 +22,20 @@
 
   <div id="body">
   
-  <h3>Edit adviser action</h3>
+  <c:choose>
+    <c:when test="${empty adviserAction.id}">
+      <h3>Create Adviser Action</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Adviser Action</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="adviserAction">
+  	<spring:bind path="adviserAction.adviserId">
+		<input type="hidden" name="adviserId" value="${adviserId}"/>
+	</spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Date</td>
