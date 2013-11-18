@@ -16,7 +16,8 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | select     | institutionalRoleId    | Other Student                                                        |
       | text       | startDate              | 2009-01-01                                                           |
       | text       | notes                  | Chuck Norris can instantiate an abstract class                       |
-    Then I press "Create researcher"
+    Then I press "Save"
+    Then I should not see "already exists in the database"
     Then I wait until I see "Edit"
     
   @nojs @adviser @create
@@ -32,7 +33,8 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | text       | institution            | University of Auckland -- Faculty of Science -- Centre for eResearch                                   |
       | text       | startDate              | 2009-01-01                                                                                             |
       | text       | notes                  | I am the night                                                                                         |
-    Then I press "Create adviser"
+    Then I press "Save"
+    Then I should not see "already exists in the database"
     Then I wait until I see "Edit"
   
   @javascript @project @create
@@ -59,7 +61,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | select     | researcherId             | `Chuck Norris                  |
       | select     | researcherRoleId         | 1                              |
       | text       | notes                    | Watch for the roundhouse kick  |
-    Then I press "Add researcher to project"
+    Then I press "Submit"
     #Then print last response
     Then I wait until I see "Delete researcher from project"
     Then I press "Add adviser to project"
@@ -69,7 +71,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | select     | adviserId                | `Batman                        |
       | select     | adviserRoleId            | Primary Adviser                |
       | text       | notes                    | AKA Bruce Wayne                |
-    Then I press "Add adviser to project"
+    Then I press "Submit"
     Then I wait until I see "Delete adviser from project"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
@@ -80,15 +82,15 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     And I follow "`Save the world"
     Then I wait until I see "Edit"
     And I follow "Edit"
-    Then I wait until I see "Create KPI for project"
-    And I press "Create KPI for project"
+    Then I wait until I see "Add KPI"
+    And I press "Add KPI"
     And I wait until I see "Notes"
     Then I fill in the following <formdetails>
       | field_type | form_id                  | value                                                                               |
       | select     | kpiId                    | NESI-8: Number of users with computations scaled up through parallelisation of code |
       | text       | value                    | 9001                                                                                |
       | text       | notes                    | Number of enemies taken down multiplied by 10 by enlisting the help of Robin        |
-    Then I press "Create KPI"
+    Then I press "Submit"
     Then I wait until I see "NESI-8"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
@@ -106,7 +108,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
       | field_type | form_id                  | value                                                                               |
       | select     | typeId                   | Talk                                                                                |
       | text       | description              | (Norris, 2013) Defending Gotham: A how-to                                           |
-    Then I press "Add research output"
+    Then I press "Submit"
     Then I wait until I see "Gotham"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
@@ -123,7 +125,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I fill in the following <formdetails>
       | field_type | form_id                  | value                                                                               |
       | text       | notes                    | Crime is down 10%                                                                   |
-    Then I press "Add review to project"
+    Then I press "Submit"
     Then I wait until I see "Crime"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
@@ -140,10 +142,10 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I fill in the following <formdetails>
       | field_type | form_id                  | value                                                                               |
       | text       | notes                    | Tore a hole in the spacetime continuum                                              |
-    Then I press "Add follow-up to project"
+    Then I press "Submit"
     Then I wait until I see "spacetime"
     Then I press "Save & Finish Editing"
-    Then I wait until I see "Edit"
+    Then I wait until I see "Project Details"
     
   @javascript @project @edit @aa
   Scenario: Edit the project and add an Adviser Action
@@ -157,7 +159,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I fill in the following <formdetails>
       | field_type | form_id                  | value                                                                               |
       | text       | action                   | Spoke to Alfred                                                                     |
-    Then I press "Add adviser action to project"
+    Then I press "Submit"
     Then I wait until I see "Alfred"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
@@ -174,7 +176,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I fill in the following <formdetails>
       | field_type | form_id                  | value                                                                               |
       | select     | facilityId               | Pan                                                                                 |
-    Then I press "Add HPC facility to project"
+    Then I press "Submit"
     Then I wait until I see "Pan"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"

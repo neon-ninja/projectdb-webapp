@@ -137,10 +137,13 @@ public class ProjectController extends GlobalController {
     }
 	
 	@RequestMapping(value = "editproject", method = RequestMethod.POST)
-	public RedirectView editPost(ProjectWrapper pw) throws Exception {
-		String op = pw.getOperation();
-		Integer pid = pw.getProject().getId();
+	public RedirectView editPost(ProjectWrapper newPw) throws Exception {
+		String op = newPw.getOperation();
+		Integer pid = newPw.getProject().getId();
 		this.authzAspect.verifyUserIsAdviserOnProject(pid);
+		ProjectWrapper pw = tempProjectManager.get(pid);
+		pw.setProject(newPw.getProject());
+		pw.setRedirect(newPw.getRedirect());
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());
 
 		if (op.equals("CANCEL")) {

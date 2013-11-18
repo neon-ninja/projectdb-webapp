@@ -80,7 +80,7 @@
       <td>${pw.project.nextFollowUpDate}</td>
     </tr>
     <tr>
-      <td><nobr>First Day:</nobr></td>
+      <td><nobr>Last Day:</nobr></td>
       <td>${pw.project.endDate}</td>
     </tr>
     <tr>
