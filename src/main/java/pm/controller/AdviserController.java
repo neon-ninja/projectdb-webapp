@@ -111,7 +111,7 @@ public class AdviserController extends GlobalController {
 			return "Adviser name cannot be empty";
 		}
 		for (Adviser other:projectDao.getAdvisers()) {
-			if (a.getFullName().equals(other.getFullName())) {
+			if (a.getFullName().equals(other.getFullName()) && (a.getId()==null || !a.getId().equals(other.getId()))) {
 				return a.getFullName() + " already exists in the database";
 			}
 		}
