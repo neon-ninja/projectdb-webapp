@@ -125,7 +125,7 @@ if (!isset($_GET['inst'])) {
         $title = $row['name'];
         $description = $row['description'];
         if (!$title || !$description) continue;
-        if ($researchers = $db->query("SELECT researcher.fullName, pictureUrl, rr.name as role FROM researcher
+        if ($researchers = $db->query("SELECT researcher.fullName, pictureUrl, rr.id as role FROM researcher
                                        INNER JOIN researcher_project rp ON researcher.id=rp.researcherId AND rp.projectId=$p
                                        INNER JOIN researcherrole rr ON rr.id=rp.researcherRoleId")) {
           $researcherNames = array();
@@ -138,7 +138,8 @@ if (!isset($_GET['inst'])) {
               $size = 150;
               $img = "<img src='".$row['pictureUrl']."' title='".$row['fullName']."' alt='".$row['fullName']."' height='$size'>";
             }
-            if ($row['role']=='PI') {
+            print_r($row);
+            if ($row['role']==1) {
               // PI's names and photos get printed first
               array_unshift($researcherNames,$row['fullName']);
               array_unshift($pictures,$img);
