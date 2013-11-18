@@ -49,13 +49,16 @@ if (!isset($_GET['inst'])) {
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
-                                     AND institution='$i' ORDER BY division")) {
+                                     AND institution='$i' 
+                                     AND division!='' ORDER BY division")) {
         // If there's a result, enumerate through it
-        while ($row = $departments->fetch_row()) {
-          $d = $row[0];
-          if ($d!='') {
-            print "<a href='?inst=$i&dept=$d'>$d</a><br/>";
+        if ($departments->num_rows>1) {
+          echo "<ul>";
+          while ($row = $departments->fetch_row()) {
+            $d = $row[0];
+            print "<li><a href='?inst=$i&dept=$d'>$d</a><br/></li>";
           }
+          echo "</ul>";
         }
         echo '</div>';
       } else {
@@ -82,18 +85,17 @@ if (!isset($_GET['inst'])) {
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
-                                     AND institution='$i' ORDER BY division")) {
+                                     AND institution='$i'  
+                                     AND division!='' ORDER BY division")) {
       if ($departments->num_rows>1) {
         //include('header.php');
-        echo "<h1>$i</h1><div class='instBlock'>";
+        echo "<h1>$i</h1><div class='instBlock'><ul>";
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {
           $d = $row[0];
-          if ($d!='') {
-            print "<a href='?inst=$i&dept=$d'>$d</a><br/>";
-          }
+          print "<li><a href='?inst=$i&dept=$d'>$d</a><br/></li>";
         }
-        echo '</div>';
+        echo '</ul></div>';
         die;
       }
     } else {
@@ -167,7 +169,7 @@ if (!isset($_GET['inst'])) {
         
         print "<table cellspacing=0 cellpadding=10 id='$title'>
                <tr>
-               <th style='width:80%'><a href='#$title'><h2>$title</h2></a></th>
+               <th style='width:80%'><a href='#$title'><h3>$title</h3></a></th>
                <th style='width:20%'>$researcherNames</th>
                </tr>
                <tr>
