@@ -142,6 +142,7 @@ public class ProjectController extends GlobalController {
 		Integer pid = newPw.getProject().getId();
 		this.authzAspect.verifyUserIsAdviserOnProject(pid);
 		ProjectWrapper pw = tempProjectManager.get(pid);
+		newPw.getProject().setProjectCode(pw.getProject().getProjectCode());
 		pw.setProject(newPw.getProject());
 		pw.setRedirect(newPw.getRedirect());
 		pw.setSecondsLeft(this.tempProjectManager.getSessionDuration());

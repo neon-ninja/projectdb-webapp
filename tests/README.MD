@@ -41,8 +41,8 @@ Custom steps can be placed in features/bootstrap/FeatureContext.php
 ## Usage
 
 Prerequisites:
-  The default adviser in the TestFilter (currently mfel395@auckland.ac.nz) must be configured as admin.
-  (isAdmin column in adviser table must have value 1 for adviser with fullName 'Martin Feller')
+  Run generate_admin_and_adviser.sql on your local database to generate adviser/admin accounts. Uncomment Line 39 of AuditFilter to specify Behat Adviser as the default adviser
+  for javascript tests. Set remoteUserHeader=RemoteUser in configuration.properties.
 
 From the tests directory,
 

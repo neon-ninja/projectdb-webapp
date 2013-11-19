@@ -2,8 +2,28 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
   In order to create a meaningful project
   I need to link it to an Adviser and a Researcher etc
   
+  @nojs @authenticated @researcher @create
+  Scenario: Try to create a researcher as an authenticated user who is not an adviser/admin
+    When I'm logged in as authenticated
+    When I go to "/viewresearchers"
+    And I follow "Create new researcher"
+    And I fill in the following <formdetails>
+      | field_type | form_id                | value                                                                |
+      | text       | fullName               | `Chuck Norris                                                        |
+      | text       | pictureUrl             | http://images.wikia.com/tesfanon/images/5/5c/Chuck_Norris.jpg        |
+      | text       | email                  | chuck@space.com                                                      |
+      | text       | phone                  | 1234                                                                 |
+      | text       | institution            | University of Auckland -- Faculty of Science -- Centre for eResearch |
+      | select     | institutionalRoleId    | Other Student                                                        |
+      | text       | startDate              | 2009-01-01                                                           |
+      | text       | notes                  | Chuck Norris can instantiate an abstract class                       |
+    Then I press "Save"
+    Then I should not see "already exists in the database"
+    Then I should see "Only an adviser can perform this operation"
+  
   @nojs @researcher @create
   Scenario: Create a researcher
+    When I'm logged in as adviser
     When I go to "/viewresearchers"
     And I follow "Create new researcher"
     And I fill in the following <formdetails>
@@ -22,6 +42,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     
   @nojs @adviser @create
   Scenario: Create an adviser
+    When I'm logged in as adviser
     When I go to "/viewadvisers"
     And I follow "Create new adviser"
     And I fill in the following <formdetails>
@@ -36,9 +57,18 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I press "Save"
     Then I should not see "already exists in the database"
     Then I wait until I see "Edit"
+    
+  @nojs @authenticated @adviser @delete
+  Scenario: Try to delete an adviser as an adviser
+    When I'm logged in as adviser
+    When I go to "/viewadvisers"
+    And I follow "`Batman"
+    Then I follow "Delete"
+    Then I wait until I see "Only an admin can perform this operation"
   
   @javascript @project @create
   Scenario: Create a project
+    # Selenium 2 doesn't support Request Header modification :(
     When I go to "/viewprojects"
     And I follow "Create new project"
     Then I wait until I see "Create Project"
@@ -69,8 +99,16 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     And I fill in the following <formdetails>
       | field_type | form_id                  | value                          |
       | select     | adviserId                | `Batman                        |
-      | select     | adviserRoleId            | Primary Adviser                |
+      | select     | adviserRoleId            | 2                              |
       | text       | notes                    | AKA Bruce Wayne                |
+    Then I press "Submit"
+    Then I wait until I see "Delete adviser from project"
+    Then I press "Add adviser to project"
+    Then I wait until I see "Behat Adviser" 
+    And I fill in the following <formdetails>
+      | field_type | form_id                  | value                          |
+      | select     | adviserId                | Behat Adviser                  |
+      | select     | adviserRoleId            | 1                              |
     Then I press "Submit"
     Then I wait until I see "Delete adviser from project"
     Then I press "Save & Finish Editing"
@@ -180,14 +218,39 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
     Then I wait until I see "Pan"
     Then I press "Save & Finish Editing"
     Then I wait until I see "Edit"
+    
+  @nojs @project @authz
+  Scenario: Attempt to a edit a project that I don't own, when I'm not admin
+    When I'm logged in as adviser2
+    When I go to "/viewprojects"
+    And I follow "`Save the world"
+    Then I wait until I see "Edit"
+    And I follow "Edit"
+    Then I should see "Only an adviser of this project or an admin can perform this operation"
+    
+  @nojs @project @edit @collision
+  Scenario: Open a session, cause an edit collision
+    When I'm logged in as adviser
+    When I go to "/viewprojects"
+    And I follow "`Save the world"
+    Then I wait until I see "Edit"
+    And I follow "Edit"
+    Then I'm logged in as admin
+    When I go to "/viewprojects"
+    And I follow "`Save the world"
+    Then I wait until I see "Edit"
+    And I follow "Edit"
+    Then I should see "This project is currently being edited by Behat Adviser"
   
   @nojs @ro
   Scenario: View all research outputs
+    When I'm logged in as authenticated
     When I go to "/viewresearchoutput"
     Then I wait until I see "Gotham"
   
   @nojs @cleanup @researcher
   Scenario: Delete the test researcher
+    When I'm logged in as admin
     When I go to "/viewresearchers"
     And I follow "`Chuck Norris"
     Then I follow "Delete"
@@ -195,6 +258,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
   
   @nojs @cleanup @adviser
   Scenario: Delete the test adviser
+    When I'm logged in as admin
     When I go to "/viewadvisers"
     And I follow "`Batman"
     Then I follow "Delete"
@@ -202,6 +266,7 @@ Feature: Create an Adviser, a Researcher, a ResearchOutput, a KPI, and a Project
   
   @nojs @cleanup @project
   Scenario: Delete the test project
+    When I'm logged in as adviser
     When I go to "/viewprojects"
     And I follow "`Save the world"
     Then I follow "Delete"
