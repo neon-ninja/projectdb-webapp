@@ -3,6 +3,7 @@ package pm.temp;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,6 +21,7 @@ public class TempProjectManager {
 	private String remoteUserHeader;
 	private ProjectDao projectDao;
 	private TempProjectDao tempDao;
+	@Value("${session.duration.seconds}")
 	private Integer sessionDuration;
 
 	public synchronized void register(ProjectWrapper pw) throws Exception {

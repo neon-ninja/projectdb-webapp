@@ -22,10 +22,20 @@
 
   <div id="body">
   
-  <h3>Edit research output</h3>
+  <c:choose>
+    <c:when test="${empty researchOutput.id}">
+      <h3>Create Research Output</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Research Output</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="researchOutput">
+	<spring:bind path="researchOutput.projectId">
+		<input type="hidden" name="adviserId" value="${adviserId}"/>
+	</spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Date</td>

@@ -37,11 +37,20 @@
 
   <div id="body">
   
-  <h3>Edit project KPI</h3>
+  <c:choose>
+    <c:when test="${empty projectkpi.id}">
+      <h3>Create Project KPI</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Project KPI</h3>
+    </c:otherwise>
+  </c:choose>
   <br>
   
   <form:form method="post" commandName="projectkpi">
-  
+  <spring:bind path="projectkpi.adviserId">
+		<input type="hidden" name="adviserId" value="${adviserId}"/>
+  </spring:bind>
   <table border="0" cellspacing="0" cellpadding="3">
     <tr>
       <td>Date</td>

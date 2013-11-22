@@ -1,7 +1,12 @@
+<?php
+header('Content-type: text/html; charset=UTF-8');
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>Center for e-Research Projects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 </head>
 <body>
 <?php
@@ -23,6 +28,7 @@ if ($db->connect_errno) {
     //echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
     error('db1');
 }
+$db->set_charset("utf8");
 
 if (!isset($_GET['inst'])) {
   //include('header.php');
@@ -43,13 +49,16 @@ if (!isset($_GET['inst'])) {
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
-                                     AND institution='$i' ORDER BY division")) {
+                                     AND institution='$i' 
+                                     AND division!='' ORDER BY division")) {
         // If there's a result, enumerate through it
-        while ($row = $departments->fetch_row()) {
-          $d = $row[0];
-          if ($d!='') {
-            print "<a href='?inst=$i&dept=$d'>$d</a><br/>";
+        if ($departments->num_rows>1) {
+          echo "<ul>";
+          while ($row = $departments->fetch_row()) {
+            $d = $row[0];
+            print "<li><a href='?inst=$i&dept=$d'>$d</a><br/></li>";
           }
+          echo "</ul>";
         }
         echo '</div>';
       } else {
@@ -76,18 +85,17 @@ if (!isset($_GET['inst'])) {
                                      INNER JOIN researcher r ON r.id=rp.researcherId AND rp.researcherRoleId=1
                                      INNER JOIN project_facility pf ON project.id=pf.projectId AND (pf.facilityId=1 OR pf.facilityId=5)
                                      WHERE (project.endDate IS NULL OR project.endDate='' OR project.endDate>CURDATE())
-                                     AND institution='$i' ORDER BY division")) {
+                                     AND institution='$i'  
+                                     AND division!='' ORDER BY division")) {
       if ($departments->num_rows>1) {
         //include('header.php');
-        echo "<h1>$i</h1><div class='instBlock'>";
+        echo "<h1>$i</h1><div class='instBlock'><ul>";
         // If there's a result, enumerate through it
         while ($row = $departments->fetch_row()) {
           $d = $row[0];
-          if ($d!='') {
-            print "<a href='?inst=$i&dept=$d'>$d</a><br/>";
-          }
+          print "<li><a href='?inst=$i&dept=$d'>$d</a><br/></li>";
         }
-        echo '</div>';
+        echo '</ul></div>';
         die;
       }
     } else {
@@ -117,7 +125,7 @@ if (!isset($_GET['inst'])) {
         $title = $row['name'];
         $description = $row['description'];
         if (!$title || !$description) continue;
-        if ($researchers = $db->query("SELECT researcher.fullName, pictureUrl, rr.name as role FROM researcher
+        if ($researchers = $db->query("SELECT researcher.fullName, pictureUrl, rr.id as role FROM researcher
                                        INNER JOIN researcher_project rp ON researcher.id=rp.researcherId AND rp.projectId=$p
                                        INNER JOIN researcherrole rr ON rr.id=rp.researcherRoleId")) {
           $researcherNames = array();
@@ -130,7 +138,7 @@ if (!isset($_GET['inst'])) {
               $size = 150;
               $img = "<img src='".$row['pictureUrl']."' title='".$row['fullName']."' alt='".$row['fullName']."' height='$size'>";
             }
-            if ($row['role']=='PI') {
+            if ($row['role']==1) {
               // PI's names and photos get printed first
               array_unshift($researcherNames,$row['fullName']);
               array_unshift($pictures,$img);
@@ -159,9 +167,9 @@ if (!isset($_GET['inst'])) {
         $kpiString.='</i>';
         // Output results as a table
         
-        print "<table cellspacing=0 cellpadding=10>
+        print "<table cellspacing=0 cellpadding=10 id='$title'>
                <tr>
-               <th style='width:80%'><h2>$title</h2></th>
+               <th style='width:80%'><a href='#$title'><h3>$title</h3></a></th>
                <th style='width:20%'>$researcherNames</th>
                </tr>
                <tr>

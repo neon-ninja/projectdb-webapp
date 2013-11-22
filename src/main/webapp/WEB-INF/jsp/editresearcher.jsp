@@ -24,7 +24,14 @@
 
   <a href="<%=request.getContextPath()%>/html/viewresearcher?id=${researcher.id}">Back to view</a><br>
   
-  <h3>Edit Researcher</h3>
+  <c:choose>
+    <c:when test="${empty researcher.id}">
+      <h3>Create Researcher</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Researcher</h3>
+    </c:otherwise>
+  </c:choose>
   
   <c:if test="${not empty error}">
     <font color="red"><b>${error}</b></font>
@@ -38,6 +45,11 @@
       <td>Full Name</td>
       <td>&nbsp;</td>
       <td><form:input path="fullName" size="120"/></td>
+    </tr>
+    <tr>
+      <td>Preferred Name</td>
+      <td>&nbsp;</td>
+      <td><form:input path="preferredName" size="120"/></td>
     </tr>
     <tr>
       <td>Picture URL</td>

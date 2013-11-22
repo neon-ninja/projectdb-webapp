@@ -359,6 +359,7 @@
    <insert id="createResearcher" parameterClass="pm.pojo.Researcher">
       INSERT INTO researcher (
         fullName,
+        preferredName,
         pictureUrl,
         email,
         phone,
@@ -370,7 +371,8 @@
         endDate,
         notes
       ) values (
-        #fullName#, 
+        #fullName#,
+        #preferredName#,
         #pictureUrl#, 
         #email#, 
         #phone#, 
@@ -400,7 +402,7 @@
         endDate,
         notes
       ) values (
-        #fullName#, 
+        #fullName#,
         #pictureUrl#,
         #email#, 
         #phone#, 
@@ -555,6 +557,7 @@
    <update id="updateResearcher" parameterClass="pm.pojo.Researcher">
       UPDATE researcher set
         fullName = #fullName#,
+        preferredName = #preferredName#,
         pictureUrl = #pictureUrl#,
         email = #email#,
         phone = #phone#,

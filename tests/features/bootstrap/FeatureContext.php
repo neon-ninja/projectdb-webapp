@@ -29,7 +29,8 @@ class FeatureContext extends MinkContext
      */
     public function __construct(array $parameters)
     {
-        // Initialize your context here
+      // Initialize your context here
+      $this->users = $parameters['users'];
     }
 
     /**
@@ -95,4 +96,14 @@ class FeatureContext extends MinkContext
     }
     throw new Exception("Timed out waiting for $arg1 to appear");
   }
+  
+  /**
+   * @When /^I\'m logged in as ([^"]*)$/
+   */
+  public function iMLoggedInAs($arg1)
+  {
+    $user = $this->users[$arg1];
+    $this->getSession()->setRequestHeader("RemoteUser",$user);
+  }
+  
 }

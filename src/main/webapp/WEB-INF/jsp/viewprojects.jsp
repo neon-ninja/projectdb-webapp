@@ -51,10 +51,10 @@
         <th>#</th>
 	    <th>Name</th>
 	    <th>Code</th>
-   	    <th>Start</th>
+   	    <th>First Day</th>
    	    <th>Next review</th>
    	    <th>Next follow-up</th>
-   	    <th>End</th>
+   	    <th>Last Day</th>
 	    <th>Host Institution</th>
         <th>Type</th>
       </tr>

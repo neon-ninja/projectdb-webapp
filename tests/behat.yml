@@ -1,5 +1,17 @@
 # behat.yml
 default:
+  paths:
+    features: 'features'
+    bootstrap: 'features/bootstrap'
+  context:
+    parameters:
+      default_browser: 'goutte'
+      users:
+        anonymous: '_'
+        authenticated: 'behat-authd'
+        adviser: 'behat-adviser'
+        adviser2: 'behat-adviser2'
+        admin: 'behat-admin'
   extensions:
     Behat\MinkExtension\Extension:
       base_url: 'http://localhost/pm/html/'

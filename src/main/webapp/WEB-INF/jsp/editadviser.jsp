@@ -24,7 +24,14 @@
   
   <a href="<%=request.getContextPath()%>/html/viewadviser?id=${adviser.id}">Back to view</a><br>
 
-  <h3>Edit Adviser</h3>
+  <c:choose>
+    <c:when test="${empty adviser.id}">
+      <h3>Create Adviser</h3>
+    </c:when>
+    <c:otherwise>
+      <h3>Edit Adviser</h3>
+    </c:otherwise>
+  </c:choose>
 
   <c:if test="${not empty error}">
     <font color="red"><b>${error}</b></font>

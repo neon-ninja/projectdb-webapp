@@ -30,7 +30,7 @@
 
   <div id="body">
 
-  <a href="<%=request.getContextPath()%>/html/createadviser">Create new adviser</a>
+  <a href="<%=request.getContextPath()%>/html/editadviser">Create new adviser</a>
   
   <h3>Advisers (${f:length(advisers)})</h3>
 
