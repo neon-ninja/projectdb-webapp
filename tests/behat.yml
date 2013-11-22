@@ -14,7 +14,7 @@ default:
         admin: 'behat-admin'
   extensions:
     Behat\MinkExtension\Extension:
-      base_url: 'http://localhost/pm/html/'
+      base_url: 'http://localhost:8080/pm/html/'
       default_session: 'goutte'
       goutte:
         guzzle_parameters:
