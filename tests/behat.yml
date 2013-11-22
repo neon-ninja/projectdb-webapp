@@ -16,5 +16,8 @@ default:
     Behat\MinkExtension\Extension:
       base_url: 'http://localhost/pm/html/'
       default_session: 'goutte'
-      goutte: ~
+      goutte:
+        guzzle_parameters:
+          curl.options:
+            CURLOPT_PORT: 8080
       selenium2: ~
