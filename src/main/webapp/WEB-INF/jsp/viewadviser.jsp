@@ -51,11 +51,11 @@
       <td>${adviser.department}</td>
     </tr>
     <tr>
-      <td>Start date:</td>
+      <td>First Day:</td>
       <td>${adviser.startDate}</td>
     </tr>
     <tr>
-      <td>End date:</td>
+      <td>Last Day:</td>
       <td>${adviser.endDate}</td>
     </tr>
     <tr>
@@ -80,10 +80,10 @@
 	    <th>Type</th>
 	    <th>Adviser's Role</th>
 	    <th>Host Institution</th>
-	    <th>Start Date</th>
+	    <th>First Day</th>
 	    <th>Next Review</th>
 	    <th>Next Follow-up</th>
-	    <th>End Date</th>
+	    <th>Last Day</th>
       </tr>
     </thead>
     <tbody>

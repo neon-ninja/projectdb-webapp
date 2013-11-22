@@ -44,8 +44,8 @@
 	    <th>Division/Faculty</th>
 	    <th>Department</th>
 	    <th>Institutional Role</th>
-	    <th>Start Date</th>
-	    <th>End Date</th>
+	    <th>First Day</th>
+	    <th>Last Day</th>
       </tr>
     </thead>
     <tbody>

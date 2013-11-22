@@ -67,7 +67,7 @@
       <td><form:input path="phone" size="120"/></td>
     </tr>
     <tr>
-      <td>Affiliation:</td>
+      <td>Affiliation</td>
       <td>&nbsp;</td>
       <td><form:select path="institution" items="${affiliations}"/></td>
     </tr>
@@ -77,12 +77,12 @@
       <td><form:select path="institutionalRoleId" items="${institutionalRoles}"/></td>
     </tr>
     <tr>
-      <td>Start date</td>
+      <td>First Day</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker1" path="startDate" size="20"/></td>
     </tr>
     <tr>
-      <td>End date</td>
+      <td>Last Day</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker2" path="endDate" size="20"/></td>
     </tr>
