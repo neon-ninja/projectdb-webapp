@@ -197,7 +197,7 @@ def printOutput(inst, dep1, dep2, body, relationships):
         # Generate a picture paragraph if the picture has downloaded
         if hasDownloaded : (relationships, picpara) = picture(relationships, filename, researcher_and_role['fullName'])
       
-      if researcher_and_role['role'] == 'PI':
+      if researcher_and_role['role'] == 'Project Owner':
         researcherString += '%s|%s' % (researcher_and_role['fullName'], researcherString)
         if (picpara != None) : 
             picpara.append(pictures)
@@ -211,10 +211,10 @@ def printOutput(inst, dep1, dep2, body, relationships):
     #print '%s\n' % (title)
     researchers = researcherString.strip('|').replace('||', ', ').replace('|', ', ')
 
-    # check if the PI of the project is affiliated with the currently processed department
+    # check if the owner of the project is affiliated with the currently processed department
     affil = query('SELECT fullName, institution, division, department from researcher \
                      INNER JOIN researcher_project rp ON researcher.id = rp.researcherId AND rp.projectId=%s \
-                     INNER JOIN researcherrole rr ON rr.id = rp.researcherRoleId AND rr.name=\'PI\'' % pid)[0]
+                     INNER JOIN researcherrole rr ON rr.id = rp.researcherRoleId AND rr.name=\'Project Owner\'' % pid)[0]
     
     outputs=[]
     kpis = ''
