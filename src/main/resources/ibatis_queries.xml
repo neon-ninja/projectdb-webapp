@@ -132,7 +132,7 @@
    <select id="getFacilities" resultClass="pm.pojo.Facility">
        SELECT *
        FROM facility
-       ORDER BY name
+       ORDER BY id
    </select>   
 
    <select id="getFacilityById" resultClass="pm.pojo.Facility" parameterClass="java.lang.Integer">
