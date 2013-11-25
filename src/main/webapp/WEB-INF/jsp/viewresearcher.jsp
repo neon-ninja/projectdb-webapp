@@ -30,6 +30,10 @@
   <br><img src="${researcher.pictureUrl}" width="80px"/><br><br>
   
   <table border="0" cellspacing="0" cellpadding="5">
+  	<tr>
+      <td valign="top">Preferred Name:</td>
+      <td>${researcher.preferredName}</td>
+    </tr>
     <tr>
       <td valign="top">Email:</td>
       <td>${researcher.email}</td>
