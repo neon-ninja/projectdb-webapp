@@ -267,6 +267,11 @@ public class ProjectController extends GlobalController {
 			pw.setErrorMessage("There must be exactly 1 primary adviser on a project");
 			return false;
 		}
+		// At least one HPC
+		if (pw.getProjectFacilities().isEmpty()) {
+			pw.setErrorMessage("There must be at least one HPC facility associated with the project");
+			return false;
+		}
 		return true;
 	}
 }
