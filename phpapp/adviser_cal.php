@@ -63,7 +63,8 @@ CREATED:$now
 DESCRIPTION:$desc
 LAST-MODIFIED:$now
 SUMMARY:$pname review date
-END:VEVENT";
+END:VEVENT
+";
   }
   if (!empty($p->nextFollowUpDate)) {
     echo "BEGIN:VEVENT
