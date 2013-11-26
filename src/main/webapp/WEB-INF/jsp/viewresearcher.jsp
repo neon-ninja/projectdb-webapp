@@ -59,11 +59,11 @@
       <td>${researcher.institutionalRoleName}</td>
     </tr>
     <tr>
-      <td>Start date:</td>
+      <td>First Day:</td>
       <td>${researcher.startDate}</td>
     </tr>
     <tr>
-      <td>End date:</td>
+      <td>Last Day:</td>
       <td>${researcher.endDate}</td>
     </tr>
     <tr>
@@ -87,10 +87,10 @@
 	    <th>Code</th>
 	    <th>Type</th>
 	    <th>Status</th>
-	    <th>Start Date</th>
+	    <th>First Day</th>
 	    <th>Next review</th>
 	    <th>Next follow-up</th>
-	    <th>End Date</th>
+	    <th>Last Day</th>
       </tr>
     </thead>
     <tbody>

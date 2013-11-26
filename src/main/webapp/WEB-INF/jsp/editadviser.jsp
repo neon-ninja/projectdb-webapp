@@ -67,12 +67,12 @@
       <td><form:select path="institution" items="${affiliations}"/></td>
     </tr>
     <tr>
-      <td>Start date</td>
+      <td>First day</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker1" path="startDate" size="20"/></td>
     </tr>
     <tr>
-      <td>End date</td>
+      <td>Last Day</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker2" path="endDate" size="20"/></td>
     </tr>
