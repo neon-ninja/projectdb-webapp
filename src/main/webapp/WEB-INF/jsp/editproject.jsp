@@ -123,6 +123,11 @@
       <td><form:select path="project.projectTypeId" items="${projectTypes}"/></td>
     </tr>
     <tr>
+      <td>Status:</td>
+      <td>&nbsp;</td>
+      <td><form:select path="project.statusId" items="${statuses}"/></td>
+    </tr>
+    <tr>
       <td>First Day:</td>
       <td>&nbsp;</td>
       <td><form:input id="datepicker1" path="project.startDate" size="20"/></td>

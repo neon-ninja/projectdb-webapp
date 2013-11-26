@@ -71,8 +71,13 @@
       <td>${researcher.notes}</td>
     </tr>
   </table>
-  
-  <br><br>   
+  <c:if test="${not empty linuxUsername}">
+  	<br>
+  	<b>External Records:</b><br/>
+  	<a href="http://ganglia.uoa.nesi.org.nz/hpc/cgi-bin/showq.cgi?user=${linuxUsername }">Currently Running/Queued</a><br/>
+  	<a href="http://ganglia.uoa.nesi.org.nz/jobaudit/html/userrecords?upi=${linuxUsername }">Jobaudit Records (History)</a>
+  </c:if>
+  <br><br>
   <b>Projects:</b>
 
   <table id="myTable" class="tablesorter">
@@ -81,6 +86,7 @@
 	    <th>Name</th>
 	    <th>Code</th>
 	    <th>Type</th>
+	    <th>Status</th>
 	    <th>Start Date</th>
 	    <th>Next review</th>
 	    <th>Next follow-up</th>
@@ -93,6 +99,7 @@
         <td><a href="<%=request.getContextPath()%>/html/viewproject?id=${project.id}">${project.name}</a></td>
         <td>${project.projectCode}</td>
         <td>${project.projectTypeName}</td>
+        <td>${project.statusName}</td>
         <td>${project.startDate}</td>        
         <td>${project.nextReviewDate}</td>
         <td>${project.nextFollowUpDate}</td>
