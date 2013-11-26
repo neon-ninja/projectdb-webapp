@@ -104,6 +104,11 @@
       <td>${pw.project.todo}</td>
     </tr>
   </table>
+  
+  <br>
+  <a href="http://ganglia.uoa.nesi.org.nz/jobaudit/html/statistics_project?from_y=2012&from_m=0&to_y=2013&to_m=10&project=${pw.project.projectCode }">Jobaudit record for project</a>
+  <br/>
+  NB: Jobaudit currently only records data on nesi projects (e.g. nesi00001)
 
   <br>
   <h4>Researchers on project</h4>
