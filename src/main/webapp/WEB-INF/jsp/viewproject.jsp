@@ -2,6 +2,7 @@
 <%@taglib prefix="c-rt" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="f" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -106,7 +107,8 @@
   </table>
   
   <br>
-  <a href="http://ganglia.uoa.nesi.org.nz/jobaudit/html/statistics_project?from_y=2012&from_m=0&to_y=2013&to_m=10&project=${pw.project.projectCode }">Jobaudit record for project</a>
+  <jsp:useBean id="today" class="java.util.Date" scope="page" />
+  <a href="${jobauditBaseProjectUrl}to_y=<fmt:formatDate value="${today}" pattern="y" />&to_m=11&project=${pw.project.projectCode }">Jobaudit record for project</a>
   <br/>
   NB: Jobaudit currently only records data on nesi projects (e.g. nesi00001)
 
